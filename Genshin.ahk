@@ -1,10 +1,10 @@
-﻿; Put this file in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-; or in C:\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
-; Credits to https://github.com/onoderis/bgc-script
+﻿; Create a shortcut to this file in C:\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+; with administrator access
 
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance Force
+
+#Include GlobalVariables.ahk
 
 ; Rerun script with administrator rights if required.
 if (!A_IsAdmin) {
@@ -32,13 +32,26 @@ SuspendOnGameInactive() {
     }
 }
 
+ClickOnBottomRightButton() {
+    ScreenClick(0.9, 0.95)
+}
+
+ScreenClick(x, y) {
+	screenX := floor(A_ScreenWidth * x)
+	screenY := floor(A_ScreenHeight * y)
+	Click, %screenX% %screenY%
+}
+
+
 ; =======================================
 ; Enable/disable contextual bindings
 ; =======================================
 
 Member1 := "hutao"
 Member4 := "ganyu"
+StatusCold := false
 
+// Run at character select screen to match macros to charcters
 ConfigureContextualBindings() {
 	global Member1
 	global Member4
@@ -91,10 +104,16 @@ NumPad5::
 	ConfigureTeamHotkeys()
 return
 
-;not used
-NumPad7::	
-	ConfigureContextualBindings()
-	;ClickOnBottomRightButton()
+NumpadMult::
+	StatusCold := true
+	SoundPlay, %A_WinDir%\Media\Windows Logoff Sound.wav
+	ConfigureTeamHotkeys()
+return
+
+NumpadDiv::
+	StatusCold := false
+	SoundPlay, %A_WinDir%\Media\Windows Logon.wav
+	ConfigureTeamHotkeys()
 return
 
 ConfigureTeamHotkeys() {
@@ -112,7 +131,7 @@ ConfigureTeamHotkeys() {
 		ActivateRegularCharacter()
 	}
 	
-	Hotkey, ~q, ActivateRegularCharacter
+	Hotkey, ~q, ActivateRegularCharacter	
 	
 	Hotkey, ~3, ActivateRegularCharacter
 	
@@ -129,7 +148,7 @@ ActivateKlee() {
 }
 
 ActivateHuTao() {
-	Hotkey, ~XButton1, HuTao_ChargeAttack_N2C
+	Hotkey, ~XButton1, HuTao_ChargeAttack
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
@@ -143,61 +162,26 @@ ActivateRegularCharacter() {
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
-HuTao_ChargeAttack_Frozen() {
-	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-	numCycle := 0
-	loop
-	{
-		if (numCycle < 2)
-		{
-			Click, down
-			Sleep, 425
-			if (not GetKeyState(hk, "P"))
-				break
-			Click, right
-			Sleep, 300
-			if (not GetKeyState(hk, "P"))
-				break
-			Click, up
-			Sleep, 200  ; 175
-			;numCycle++
-		}
-		else
-		{
-			HuTao_ChargeAttack_N2C()
-			numCycle := 0
-		}
-		if (not GetKeyState(hk, "P"))
-			break
-	}
-}
-
 HuTao_ChargeAttack() {
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-	numCycle := 0
-	loop
-	{
-		if (numCycle < 2)
-		{
-			Click, down
-			Sleep, 400
-			if (not GetKeyState(hk, "P"))
-				break
-			Click, right
-			Sleep, 275
-			if (not GetKeyState(hk, "P"))
-				break
-			Click, up
-			Sleep, 200  ; 175
-			;numCycle++
-		}
-		else
-		{
-			HuTao_ChargeAttack_N2C()
-			numCycle := 0
-		}
-		if (not GetKeyState(hk, "P"))
-			break
+	pause1 := 60
+	pause2 := 50
+	pause3 := 300
+	pause4 := 240
+    while (GetKeyState(hk, "P")) {
+		Click, down
+		Sleep, %pause1%
+		Click, up
+		Sleep, %pause2%
+		Click, down
+		Sleep, %pause1%
+		Click, up
+		Sleep, %pause2%
+		Click, down
+		Sleep, %pause3%
+		Click, up
+		Click, right
+		Sleep, %pause4%
 	}
 }
 
@@ -226,7 +210,7 @@ HuTao_ChargeAttack_N2C() { ; Good at 230ms
 HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms
 	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
 		Click
 		Sleep, 30
 		Click
@@ -259,7 +243,7 @@ HuTao_ChargeAttack_N1C() {
 HuTao_ChargeAttack_N1C_Hold() {
 	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
 		Click, down
 		Sleep, 600  ; 600
 		Click, up
@@ -268,9 +252,38 @@ HuTao_ChargeAttack_N1C_Hold() {
 	}
 }
 
+HuTao_ChargeAttack_Frozen() {
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+	numCycle := 0
+	loop
+	{
+		if (numCycle < 2)
+		{
+			Click, down
+			Sleep, 425
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, right
+			Sleep, 300
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, up
+			Sleep, 200  ; 175
+			;numCycle++
+		}
+		else
+		{
+			HuTao_ChargeAttack_N2C()
+			numCycle := 0
+		}
+		if (not GetKeyState(hk, "P"))
+			break
+	}
+}
+
 Klee_ChargeAttack() {
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
 		Click, down
 		Sleep, 500  ; 500
 		Click, up
@@ -290,8 +303,8 @@ Ganyu_ChargeAttack() {
         ; hold LMB minimum for 2000ms
         Sleep, % 2000 - TimeSinceKeyPressed
     }
-    while(GetKeyState(hk, "P")) {
-		; hold LMB if hotkey is still pressed. I think this can be deleted?
+    while (GetKeyState(hk, "P")) {
+		; Hold LMB if hotkey is still pressed. I think this can be deleted?
 	}
 	Click, up
 }
@@ -301,7 +314,7 @@ Regular_ChargeAttack() {
 	KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370) {	; 350
-        ; hold LMB minimum for 370ms
+        ; Hold LMB minimum for 370ms
         Sleep, % 370 - TimeSinceKeyPressed
     }
     Click, up
@@ -309,17 +322,25 @@ Regular_ChargeAttack() {
 
 Klee_AutoAttack() {
 	; Klee walk cancel
+	
+	global StatusCold
+	
+	if (StatusCold)
+		pause := 680	; 650?
+	else
+		pause := 510
+		
 	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
         Click
-        Sleep, 575  ; 550
+        Sleep, %pause%
     }
 }
 
 Klee_AutoAttack2() {
 	; Klee jump cancel
 	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
 		Click
 		Sleep, 35
 		Send, {Space}
@@ -329,7 +350,7 @@ Klee_AutoAttack2() {
 
 Regular_AutoAttack() {
 	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while(GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P")) {
         Click
         Sleep, 30
     }
@@ -349,68 +370,43 @@ Regular_AutoAttack() {
 	} ; ~ passes the keyup through
 return
 
-; For getting out of boat
-Numpad0::Space
+; Hold to exit the boat
+NumPad0::Space
+
+; Hold to animation cancel elemental skills
+NumPad6::
+	Send, {4}
+	Click, right
+return
+
+NumPad7::LAlt
 
 LShift::MButton
 
-;PrintScreen::!PrintScreen
-Insert::!PrintScreen
+PrintScreen::!PrintScreen
+;Insert::!PrintScreen
 
 ; =======================================
 ; Test
 ; =======================================
 
-ScreenClick(X, Y) {
-	ScreenX := floor(A_ScreenWidth * X)
-	ScreenY := floor(A_ScreenHeight * Y)
-	Click, %ScreenX% %ScreenY%
+GetColorAtLocation(x, y) {
+	PixelGetColor, color, x, y
+	MsgBox, %x% x %y% =>%color%
 }
 
-X_(X) {
-	return floor(A_ScreenWidth * X)
+GetColorAndLocationAtMouse() {
+	MouseGetPos, mouseX, mouseY
+	screenX := mouseX / A_ScreenWidth
+	screenY := mouseY / A_ScreenHeight
+	PixelGetColor, color, %mouseX%, %mouseY%
+	MsgBox, %mouseX% (%screenX%) x %mouseY% (%screenY%) => %color%
 }
 
-Y_(Y) {
-	return floor(A_ScreenHeight * Y)
-}
-
-GetColorAndPoseAtMouse() {
-	MouseGetPos, MouseX, MouseY
-	PixelGetColor, color, %MouseX%, %MouseY%
-	MsgBox, %MouseX% x %MouseY% => %color%
-	;ScreenX := MouseX / A_ScreenWidth
-	;ScreenY := MouseY / A_ScreenHeight
-	;MsgBox, %ScreenX% x %ScreenY% => %color%
-}
-
-GetColorAtLoc() {
-	PixelGetColor, color, 480, 612
-	MsgBox, colorAtLoc %color%
-}
-
-;RButton::
-;	GetColorAtLoc()
-;return
+NumPad9::
+	;GetColorAtLocation(480, 612)
+	GetColorAndLocationAtMouse()
+return
 
 
-; =======================================
-; Expeditions
-; =======================================
-
-ReceiveReward() {
-    ; SelectExpedition(Expedition)
-
-    ; receive reward
-    ClickOnBottomRightButton()
-    Sleep, 200
-    ; Sleep, ReceiveRewardLag
-
-    ;skip reward menu
-    ClickOnBottomRightButton()
-    Sleep, 200
-}
-
-ClickOnBottomRightButton() {
-    ScreenClick(0.9, 0.95)
-}
+#Include Expedition.ahk
