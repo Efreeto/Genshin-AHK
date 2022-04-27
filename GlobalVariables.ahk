@@ -4,21 +4,21 @@
 ; =======================================
 
 ; Expedition duration coordinates
-Duration4H := { X: 1500*1.333, Y: 700*1.333 }
-Duration20H := { X: 1800*1.333, Y: 700*1.333 }
+Duration4H := { x: 1500*1.333, y: 700*1.333 }
+Duration20H := { x: 1800*1.333, y: 700*1.333 }
 
 ; Expeditions (crystals)
-WhisperingWoodsExpedition := { MapNumber: 0, X: 1050*1.333, Y: 330*1.333 }
-DadaupaGorgeExpedition := { MapNumber: 0, X: 1170*1.333, Y: 660*1.333 }
-YaoguangShoalExpedition := { MapNumber: 1, X: 950*1.333, Y: 450*1.333 }
+WhisperingWoodsExpedition := { mapNumber: 0, x: 1050*1.333, y: 330*1.333, isFirstOnMap: true }
+DadaupaGorgeExpedition := { mapNumber: 0, x: 1170*1.333, y: 660*1.333 }
+yaoguangShoalExpedition := { mapNumber: 1, x: 950*1.333, y: 450*1.333 }
 
 ; Expeditions (mora)
-StormterrorLairExpedition := { MapNumber: 0, X: 550*1.333, Y: 400*1.333 }
-DihuaMarshExpedition := { MapNumber: 1, X: 728*1.333, Y: 332*1.333 }
-JueyunKarstExpedition := { MapNumber: 1, X: 559*1.333, Y: 561*1.333 }
-JinrenIslandExpedition := { MapNumber: 2, X: 1097*1.333, Y: 274*1.333 }
-TarasunaExpedition := { MapNumber: 2, X: 828*1.333, Y: 828*1.333 }
+StormterrorLairExpedition := { mapNumber: 0, x: 550*1.333, y: 400*1.333 }
+DihuaMarshExpedition := { mapNumber: 1, x: 728*1.333, y: 332*1.333, isFirstOnMap: true }
+JueyunKarstExpedition := { mapNumber: 1, x: 559*1.333, y: 561*1.333 }
+JinrenIslandExpedition := { mapNumber: 2, x: 1097*1.333, y: 274*1.333, isFirstOnMap: true }
+TarasunaExpedition := { mapNumber: 2, x: 828*1.333, y: 828*1.333 }
 
 ; Expeditions (food)
-WindriseExpedition := { MapNumber: 0, X: 1111, Y: 455 }
-GuiliPlainsExpedition := { MapNumber: 1, X: 800, Y: 550 }
+WindriseExpedition := { mapNumber: 0, x: 1111, y: 455 }
+GuiliPlainsExpedition := { mapNumber: 1, x: 800, y: 550 }

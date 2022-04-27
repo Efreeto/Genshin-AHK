@@ -404,6 +404,7 @@ GetColorAndLocationAtMouse() {
 }
 
 NumPad9::
+    ;SoundBeep, 100
 	;GetColorAtLocation(480, 612)
 	GetColorAndLocationAtMouse()
 return

@@ -6,7 +6,7 @@ The script is hard coded for 2560x1440 game resolution.
 ### How to use it
 1. Download [autohotkey](https://www.autohotkey.com) (the script is tested on version 1.1.33.10)
 2. Download this repository (including all `.ahk` files)
-3. Run `Genshin.ahk` (requires administrator rights)
+3. Run `GenshinAHK.ahk` (requires administrator rights)
 4. Run the game in fullscreen mode or in [borderless window mode](https://gaming.stackexchange.com/a/376533)
 
 ### Features
