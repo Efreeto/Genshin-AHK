@@ -16,13 +16,11 @@ if (!A_IsAdmin) {
     }
 }
 
-GameProcessName := "ahk_exe GenshinImpact.exe"
-
 SetTimer, SuspendOnGameInactive, -1
-SetTimer, HuTao_First, -1
+SetTimer, ConfigureTeamHotkeys, -1
 
 SuspendOnGameInactive() {
-    global GameProcessName
+	GameProcessName := "ahk_exe GenshinImpact.exe"
 
     Suspend ; Run suspended
     loop {
@@ -38,16 +36,22 @@ SuspendOnGameInactive() {
 ; Enable/disable contextual bindings
 ; =======================================
 
+Member1 := "hutao"
+Member4 := "ganyu"
+
 ConfigureContextualBindings() {
+	global Member1
+	global Member4
+
 	KleeColor := 0x112DB1
 	HuTaoColor := 0x191C35
 	
 	;GetColorAtLoc()
 	
 	if (PixelSearchInPartySetup(KleeColor)) {
-		Klee_First()
+		Member1 := "klee"
 	} else if (PixelSearchInPartySetup(HuTaoColor)) {
-		HuTao_First()
+		Member1 := "hutao"
 	} else {
 		SoundBeep, 100
 		Hotkey, ~1, ActivateRegularCharacter
@@ -63,22 +67,60 @@ PixelSearchInPartySetup(color) {
 	return !ErrorLevel
 }
 
-Klee_First() {
-	SoundBeep, 1000
-	Hotkey, ~1, ActivateKlee
-	Hotkey, ~q, ActivateRegularCharacter
-	Hotkey, ~3, ActivateRegularCharacter
-	Hotkey, ~e, ActivateGanyu
-	ActivateKlee()
-}
+NumPad1::
+	Member1 := "hutao"
+	SoundPlay, %A_WinDir%\Media\chimes.wav
+	ConfigureTeamHotkeys()
+return
 
-HuTao_First() {
-	SoundBeep, 1500
-	Hotkey, ~1, ActivateHuTao
+NumPad2::
+	Member1 := "klee"
+	SoundPlay, %A_WinDir%\Media\tada.wav
+	ConfigureTeamHotkeys()
+return
+
+NumPad4::
+	Member4 := "ganyu"
+	SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
+	ConfigureTeamHotkeys()
+return
+
+NumPad5::
+	Member4 := "regular"
+	SoundPlay, %A_WinDir%\Media\Windows Error.wav
+	ConfigureTeamHotkeys()
+return
+
+;not used
+NumPad7::	
+	ConfigureContextualBindings()
+	;ClickOnBottomRightButton()
+return
+
+ConfigureTeamHotkeys() {
+	global Member1
+	global Member4
+	
+	if (Member1 == "hutao") {
+		Hotkey, ~1, ActivateHuTao
+		ActivateHuTao()
+	} else if (Member1 == "klee") {
+		Hotkey, ~1, ActivateKlee
+		ActivateKlee()
+	} else {
+		Hotkey, ~1, ActivateRegularCharacter
+		ActivateRegularCharacter()
+	}
+	
 	Hotkey, ~q, ActivateRegularCharacter
+	
 	Hotkey, ~3, ActivateRegularCharacter
-	Hotkey, ~e, ActivateRegularCharacter
-	ActivateHuTao()
+	
+	if (Member4 == "ganyu") {
+		Hotkey, ~e, ActivateGanyu
+	} else {
+		Hotkey, ~e, ActivateRegularCharacter
+	}
 }
 
 ActivateKlee() {
@@ -87,7 +129,7 @@ ActivateKlee() {
 }
 
 ActivateHuTao() {
-	Hotkey, ~XButton1, HuTao_ChargeAttack
+	Hotkey, ~XButton1, HuTao_ChargeAttack_N2C
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
@@ -101,7 +143,65 @@ ActivateRegularCharacter() {
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
-HuTao_ChargeAttack() { ; Good at 230ms
+HuTao_ChargeAttack_Frozen() {
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+	numCycle := 0
+	loop
+	{
+		if (numCycle < 2)
+		{
+			Click, down
+			Sleep, 425
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, right
+			Sleep, 300
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, up
+			Sleep, 200  ; 175
+			;numCycle++
+		}
+		else
+		{
+			HuTao_ChargeAttack_N2C()
+			numCycle := 0
+		}
+		if (not GetKeyState(hk, "P"))
+			break
+	}
+}
+
+HuTao_ChargeAttack() {
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+	numCycle := 0
+	loop
+	{
+		if (numCycle < 2)
+		{
+			Click, down
+			Sleep, 400
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, right
+			Sleep, 275
+			if (not GetKeyState(hk, "P"))
+				break
+			Click, up
+			Sleep, 200  ; 175
+			;numCycle++
+		}
+		else
+		{
+			HuTao_ChargeAttack_N2C()
+			numCycle := 0
+		}
+		if (not GetKeyState(hk, "P"))
+			break
+	}
+}
+
+HuTao_ChargeAttack_N2C() { ; Good at 230ms
 	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	Click
 	Sleep, 30
@@ -118,12 +218,12 @@ HuTao_ChargeAttack() { ; Good at 230ms
 	Click, down
 	Sleep, 350
 	Click, right
-	Sleep, 150
+	Sleep, 50
 	Click, up
 	;Sleep, 200  ; 150
 }
 
-HuTao_ChargeAttack_Hold() { ; Good at 230ms
+HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms
 	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while(GetKeyState(hk, "P")) {
@@ -256,19 +356,6 @@ LShift::MButton
 
 ;PrintScreen::!PrintScreen
 Insert::!PrintScreen
-
-NumPad7::
-	ConfigureContextualBindings()
-	;ClickOnBottomRightButton()
-return
-
-NumPad1::
-	Hutao_First()
-return
-
-NumPad2::
-	Klee_First()
-return
 
 ; =======================================
 ; Test
