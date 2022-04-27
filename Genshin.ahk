@@ -1,4 +1,6 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿; Put this file in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance Force
 
 ; Rerun script with administrator rights if required.
@@ -39,17 +41,16 @@ ConfigureContextualBindings() {
 	;GetColorAtLoc()
 	
 	if (PixelSearchInPartySetup(KleeColor)) {
-		SoundBeep, 1000
-		Hotkey, ~XButton1, HuTao_ChargeCancel, Off
-		Hotkey, ~*Numpad8, Klee_AutoAttackCancel, On
+		Klee_First()
 	} else if (PixelSearchInPartySetup(HuTaoColor)) {
-		SoundBeep, 1500
-		Hotkey, ~XButton1, HuTao_ChargeCancel, On
-		Hotkey, ~*Numpad8, All_AutoAttack, On
+		HuTao_First()
 	} else {
 		SoundBeep, 100
-		Hotkey, ~XButton1, HuTao_ChargeCancel, Off
-		Hotkey, ~*Numpad8, All_AutoAttack, On
+		Hotkey, ~1, ActivateRegularCharacter
+		Hotkey, ~q, ActivateRegularCharacter
+		Hotkey, ~3, ActivateRegularCharacter
+		Hotkey, ~e, ActivateRegularCharacter
+		ActivateRegularCharacter()
 	}
 }
 
@@ -58,28 +59,76 @@ PixelSearchInPartySetup(color) {
 	return !ErrorLevel
 }
 
-; Hu Tao Blood Blossom cancel (Need Constellation 1)
-HuTao_ChargeCancel() {
+Klee_First() {
+	SoundBeep, 1000
+	Hotkey, ~1, ActivateKlee
+	Hotkey, ~q, ActivateRegularCharacter
+	Hotkey, ~3, ActivateRegularCharacter
+	Hotkey, ~e, ActivateRegularCharacter
+	ActivateKlee()
+}
+
+HuTao_First() {
+	SoundBeep, 1500
+	Hotkey, ~1, ActivateHuTao
+	Hotkey, ~q, ActivateRegularCharacter
+	Hotkey, ~3, ActivateRegularCharacter
+	Hotkey, ~e, ActivateRegularCharacter
+	ActivateHuTao()
+}
+
+ActivateKlee() {
+	Hotkey, ~XButton1, Klee_ChargeAttack
+	Hotkey, ~*Numpad8, Klee_AutoAttack
+}
+
+ActivateHuTao() {
+	Hotkey, ~XButton1, HuTao_ChargeAttack
+	Hotkey, ~*Numpad8, Regular_AutoAttack
+}
+
+ActivateRegularCharacter() {
+	Hotkey, ~XButton1, Regular_ChargeAttack
+	Hotkey, ~*Numpad8, Regular_AutoAttack
+}
+
+HuTao_ChargeAttack() {
+	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while(GetKeyState(hk, "P")) {
 		Click, down
-		Sleep, 420
-		Click, right
+		Sleep, 600
 		Click, up
-		Sleep, 200
+		Click, right
+		Sleep, 150
 	}
 }
 
-All_AutoAttack() {
-	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
+Klee_ChargeAttack() {
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while(GetKeyState(hk, "P")) {
-        Click
-        Sleep, 30
-    }
+		Click, down
+		Sleep, 500
+		Click, up
+		Send, {Space}
+		Sleep, 550
+	}
 }
 
-; Klee auto attack cancel (Hold wsad together)
-Klee_AutoAttackCancel() {
+Regular_ChargeAttack() {
+	;hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+    TimeSinceKeyPressed := A_TimeSinceThisHotkey
+	Click, down
+	KeyWait, XButton1  ; variable doesn't work with KeyWait
+    if (TimeSinceKeyPressed < 350) {
+        ; hold LMB minimum for 350ms
+        Sleep, 350 - %TimeSinceKeyPressed%
+    }
+    Click, up
+}
+
+Klee_AutoAttack() {
+	; Klee walk cancel
 	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
     while(GetKeyState(hk, "P")) {
         Click
@@ -87,16 +136,41 @@ Klee_AutoAttackCancel() {
     }
 }
 
+Klee_AutoAttack2() {
+	; Klee jump cancel
+	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
+    while(GetKeyState(hk, "P")) {
+		Click
+		Sleep, 35
+		Send, {Space}
+		Sleep, 550
+	}
+}
+
+Regular_AutoAttack() {
+	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
+    while(GetKeyState(hk, "P")) {
+        Click
+        Sleep, 30
+    }
+}
+
+
+; =======================================
+; Regular actions
+; =======================================
+
 ~Space:: ; ~ passes the key down through
 	Sleep, 300 ; Repeat delay
 	while GetKeyState(A_Space, "P")
 	{
-		SendInput, {Space} ; Repeated keydowns
+		Send, {Space} ; Repeated keydowns
 		Sleep, 30 ; Repeat rate
 	} ; ~ passes the keyup through
 return
 
-Numpad0::Space ; For getting out of boat
+; For getting out of boat
+Numpad0::Space
 
 LShift::MButton
 
@@ -107,7 +181,20 @@ NumPad7::
 	;ClickOnBottomRightButton()
 return
 
+NumPad1::
+	Klee_First()
+	;ActivateKlee()
+return
+
+NumPad2::
+	Hutao_First()
+	;ActivateHuTao()
+return
+
+; =======================================
 ; Test
+; =======================================
+
 ScreenClick(X, Y) {
 	ScreenX := floor(A_ScreenWidth * X)
 	ScreenY := floor(A_ScreenHeight * Y)
