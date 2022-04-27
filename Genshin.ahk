@@ -1,4 +1,7 @@
 ﻿; Put this file in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+; or in C:\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+; Credits to https://github.com/onoderis/bgc-script
 
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance Force
@@ -16,6 +19,7 @@ if (!A_IsAdmin) {
 GameProcessName := "ahk_exe GenshinImpact.exe"
 
 SetTimer, SuspendOnGameInactive, -1
+SetTimer, HuTao_First, -1
 
 SuspendOnGameInactive() {
     global GameProcessName
@@ -64,7 +68,7 @@ Klee_First() {
 	Hotkey, ~1, ActivateKlee
 	Hotkey, ~q, ActivateRegularCharacter
 	Hotkey, ~3, ActivateRegularCharacter
-	Hotkey, ~e, ActivateRegularCharacter
+	Hotkey, ~e, ActivateGanyu
 	ActivateKlee()
 }
 
@@ -87,20 +91,80 @@ ActivateHuTao() {
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
+ActivateGanyu() {
+	Hotkey, ~XButton1, Ganyu_ChargeAttack
+	Hotkey, ~*Numpad8, Regular_AutoAttack
+}
+
 ActivateRegularCharacter() {
 	Hotkey, ~XButton1, Regular_ChargeAttack
 	Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
-HuTao_ChargeAttack() {
+HuTao_ChargeAttack() { ; Good at 230ms
+	; Hu Tao Blood Blossom cancel (Need Constellation 1)
+	Click
+	Sleep, 30
+	Click
+	Sleep, 30
+	Click
+	Sleep, 30
+	Click
+	Sleep, 30
+	Click
+	Sleep, 30
+	Click
+	Sleep, 30
+	Click, down
+	Sleep, 350
+	Click, right
+	Sleep, 150
+	Click, up
+	;Sleep, 200  ; 150
+}
+
+HuTao_ChargeAttack_Hold() { ; Good at 230ms
+	; Hu Tao Blood Blossom cancel (Need Constellation 1)
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+    while(GetKeyState(hk, "P")) {
+		Click
+		Sleep, 30
+		Click
+		Sleep, 30
+		Click
+		Sleep, 30
+		Click
+		Sleep, 30
+		Click
+		Sleep, 30
+		Click
+		Sleep, 30
+		Click, down
+		Sleep, 350
+		Click, right
+		Sleep, 150
+		Click, up
+		Sleep, 200  ; 150
+	}
+}
+
+HuTao_ChargeAttack_N1C() {
+	; Hu Tao Blood Blossom cancel (Need Constellation 1)
+	Click, down
+	Sleep, 550  ; 600
+	Click, up
+	Click, right
+}
+
+HuTao_ChargeAttack_N1C_Hold() {
 	; Hu Tao Blood Blossom cancel (Need Constellation 1)
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while(GetKeyState(hk, "P")) {
 		Click, down
-		Sleep, 600
+		Sleep, 600  ; 600
 		Click, up
 		Click, right
-		Sleep, 150
+		Sleep, 175  ; 150
 	}
 }
 
@@ -108,21 +172,37 @@ Klee_ChargeAttack() {
 	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while(GetKeyState(hk, "P")) {
 		Click, down
-		Sleep, 500
+		Sleep, 500  ; 500
 		Click, up
 		Send, {Space}
-		Sleep, 550
+		Sleep, 575  ; 550
 	}
 }
 
-Regular_ChargeAttack() {
-	;hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    TimeSinceKeyPressed := A_TimeSinceThisHotkey
+Ganyu_ChargeAttack() {
+	hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+	Click	; Apply a normal attack element, if any
+	Sleep, 30
 	Click, down
-	KeyWait, XButton1  ; variable doesn't work with KeyWait
-    if (TimeSinceKeyPressed < 350) {
-        ; hold LMB minimum for 350ms
-        Sleep, 350 - %TimeSinceKeyPressed%
+	KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    TimeSinceKeyPressed := A_TimeSinceThisHotkey
+    if (TimeSinceKeyPressed < 2000) {
+        ; hold LMB minimum for 2000ms
+        Sleep, % 2000 - TimeSinceKeyPressed
+    }
+    while(GetKeyState(hk, "P")) {
+		; hold LMB if hotkey is still pressed. I think this can be deleted?
+	}
+	Click, up
+}
+
+Regular_ChargeAttack() {
+	Click, down
+	KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    TimeSinceKeyPressed := A_TimeSinceThisHotkey
+    if (TimeSinceKeyPressed < 370) {	; 350
+        ; hold LMB minimum for 370ms
+        Sleep, % 370 - TimeSinceKeyPressed
     }
     Click, up
 }
@@ -132,7 +212,7 @@ Klee_AutoAttack() {
 	hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
     while(GetKeyState(hk, "P")) {
         Click
-        Sleep, 550
+        Sleep, 575  ; 550
     }
 }
 
@@ -174,7 +254,8 @@ Numpad0::Space
 
 LShift::MButton
 
-PrintScreen::!PrintScreen
+;PrintScreen::!PrintScreen
+Insert::!PrintScreen
 
 NumPad7::
 	ConfigureContextualBindings()
@@ -182,13 +263,11 @@ NumPad7::
 return
 
 NumPad1::
-	Klee_First()
-	;ActivateKlee()
+	Hutao_First()
 return
 
 NumPad2::
-	Hutao_First()
-	;ActivateHuTao()
+	Klee_First()
 return
 
 ; =======================================
