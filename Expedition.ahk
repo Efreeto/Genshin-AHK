@@ -4,9 +4,9 @@
 ; =======================================
 
 ; Collect all expedition rewards
-NumpadSub::	
-    ReceiveReward(StormterrorLairExpedition)
+NumpadSub::
 	ReceiveReward(WhisperingWoodsExpedition)
+    ReceiveReward(StormterrorLairExpedition)
     ReceiveReward(DihuaMarshExpedition)
     ReceiveReward(JueyunKarstExpedition)
     ReceiveReward(JinrenIslandExpedition)
@@ -15,8 +15,8 @@ return
 ; Send everyone on all the expeditions
 NumpadAdd::
     Duration := Duration20H
-    SendOnExpedition(StormterrorLairExpedition, 1, Duration)
     SendOnExpedition(WhisperingWoodsExpedition, 2, Duration)
+    SendOnExpedition(StormterrorLairExpedition, 1, Duration)
     SendOnExpedition(DihuaMarshExpedition, 1, Duration)
     SendOnExpedition(JueyunKarstExpedition, 2, Duration)
     SendOnExpedition(JinrenIslandExpedition, 1, Duration)
@@ -32,7 +32,7 @@ SelectExpedition(Expedition) {
     WorldY := 160*1.333 + (Expedition["MapNumber"] * 72*1.333) ; initial position + offset between lines
 	
     MouseClick, left, 200*1.333, WorldY
-    Sleep, 500
+    Sleep, 200
 
     ; Click on the expedition
     MouseClick, left, Expedition["X"], Expedition["Y"]
@@ -41,7 +41,7 @@ SelectExpedition(Expedition) {
 
 SelectDuration(Duration) {
     MouseClick, left, Duration["X"], Duration["Y"]
-    Sleep, 100
+    Sleep, 200
 }
 
 ; Send character to an expedition.
@@ -53,7 +53,7 @@ SendOnExpedition(Expedition, CharacterNumberInList, Duration) {
 
     ; Click on "Select Character"
     ClickOnBottomRightButton()
-    Sleep, 500
+    Sleep, 200
 
     ; Find and select the character
     FindAndSelectCharacter(CharacterNumberInList)
@@ -84,15 +84,14 @@ ScrollDownCharacterList(CharacterAmount) {
     }
 }
 
-ReceiveReward(Expedition, receiveRewardLag := 0) {
+ReceiveReward(Expedition) {
     SelectExpedition(Expedition)
 
     ; receive reward
     ClickOnBottomRightButton()
-    Sleep, 500
-    Sleep, receiveRewardLag
+    Sleep, 200
 
     ;skip reward menu
-    Send, Esc
+    Send, {Esc}
     Sleep, 500
 }
