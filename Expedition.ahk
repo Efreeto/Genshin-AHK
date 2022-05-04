@@ -5,8 +5,7 @@
 
 ; Collect all expedition rewards
 NumpadSub::
-    SelectExpedition(DihuaMarshExpedition)
-	ReceiveReward(WhisperingWoodsExpedition)
+    ReceiveReward(WhisperingWoodsExpedition)
     ReceiveReward(StormterrorLairExpedition)
     ReceiveReward(DihuaMarshExpedition)
     ReceiveReward(JueyunKarstExpedition)
@@ -15,8 +14,7 @@ return
 
 ; Send everyone on all the expeditions
 NumpadAdd::
-    SelectExpedition(DihuaMarshExpedition)
-    duration := 0   ;Duration20H
+    duration := 0   ; 0 or Duration20H
     SendOnExpedition(WhisperingWoodsExpedition, 2, duration)
     SendOnExpedition(StormterrorLairExpedition, 1, duration)
     SendOnExpedition(DihuaMarshExpedition, 1, duration)
@@ -30,18 +28,26 @@ return
 ; =======================================
 
 SelectExpedition(expedition) {
+    global expeditionMapSelected
+    
     ; Click on the world
-    WorldY := 160*1.333 + (expedition.mapNumber * 72*1.333) ; initial position + offset between lines
-	
-    MouseClick, left, 200*1.333, WorldY
-    Sleep, 200
-
-    ; Click on the expedition
-    if (!expedition.isFirstOnMap)
+    if (expedition.map != expeditionMapSelected)
     {
-        MouseClick, left, expedition.x, expedition.y
+        WorldY := 160*1.333 + (expedition.map * 72*1.333)   ; initial position + offset between lines        
+        MouseClick, left, 200*1.333, WorldY
         Sleep, 200
-    }    
+        
+        expeditionMapSelected := expedition.map
+        
+        if (expedition.isFirstOnMap)
+        {
+            return
+        }
+    }
+    
+    ; Click on the expedition
+    MouseClick, left, expedition.x, expedition.y
+    Sleep, 200
 }
 
 SelectDuration(duration) {
