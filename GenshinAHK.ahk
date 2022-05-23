@@ -7,8 +7,6 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance Force
 
-#Include GlobalVariables.ahk
-
 ; Rerun script with administrator rights if required.
 if (!A_IsAdmin) {
     try {
@@ -54,7 +52,7 @@ Member1 := "hutao"
 Member4 := "ganyu"
 StatusCold := false
 
-// Run at character select screen to match macros to charcters
+; Run at character select screen to match macros to charcters
 ConfigureContextualBindings() {
     global Member1
     global Member4
@@ -188,8 +186,8 @@ HuTao_ChargeAttack() {
     }
 }
 
+; Hu Tao Blood Blossom cancel (Need Constellation 1)
 HuTao_ChargeAttack_N2C() { ; Good at 230ms
-    ; Hu Tao Blood Blossom cancel (Need Constellation 1)
     Click
     Sleep, 30
     Click
@@ -210,8 +208,8 @@ HuTao_ChargeAttack_N2C() { ; Good at 230ms
     ;Sleep, 200  ; 150
 }
 
-HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms
-    ; Hu Tao Blood Blossom cancel (Need Constellation 1)
+; Hu Tao Blood Blossom cancel (Need Constellation 1)
+HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms    
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P")) {
         Click
@@ -323,9 +321,8 @@ Regular_ChargeAttack() {
     Click, up
 }
 
+; Klee walk cancel
 Klee_AutoAttack() {
-    ; Klee walk cancel
-    
     global StatusCold
     
     if (StatusCold)
@@ -340,8 +337,8 @@ Klee_AutoAttack() {
     }
 }
 
-Klee_AutoAttack2() {
-    ; Klee jump cancel
+; Klee jump cancel
+Klee_AutoAttack2() {    
     hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
     while (GetKeyState(hk, "P")) {
         Click
@@ -364,14 +361,58 @@ Regular_AutoAttack() {
 ; Regular actions
 ; =======================================
 
+TypingMode := false
+; Hold to unfreeze self
 ~Space:: ; ~ passes the key down through
-    Sleep, 300 ; Repeat delay
+    if (TypingMode)
+    {
+        Sleep, 750
+        if not GetKeyState(A_Space, "P")
+            return
+        
+        ; Disable typing mode if pressed for a long time
+        DisableTypingMode()
+    }
+
+    Sleep, 250 ; Repeat delay
     while GetKeyState(A_Space, "P")
     {
         Send, {Space} ; Repeated keydowns
         Sleep, 30 ; Repeat rate
-    } ; ~ passes the keyup through
+    }
 return
+
+; Elemental Sight remapping (These are equivalent to just 1 line 'LShift::MButton', but it doesn't get disabled in typing mode)
+LShift::
+    SetKeyDelay -1   ; If the destination key is a mouse button, SetMouseDelay is used instead.
+    Send {Blind}{MButton DownR}  ; DownR is like Down except that other Send commands in the script won't assume "b" should stay down during their Send.
+return
+
+LShift up::
+    SetKeyDelay -1  ; See note below for why press-duration is not specified with either of these SetKeyDelays.
+    Send {Blind}{MButton up}
+return
+
+; Enable typing mode
+~Backspace::
+    EnableTypingMode()
+return
+
+EnableTypingMode() {
+    global TypingMode
+    
+    TypingMode := true
+    Hotkey, LShift, Off
+    Hotkey, LShift up, Off
+}
+
+DisableTypingMode() {
+    global TypingMode
+    
+    TypingMode := false
+    Hotkey, LShift, On
+    Hotkey, LShift up, On
+}
 
 ; Hold to exit the boat
 NumPad0::Space
@@ -383,8 +424,6 @@ NumPad6::
 return
 
 NumPad7::LAlt
-
-LShift::MButton
 
 PrintScreen::!PrintScreen
 ;Insert::!PrintScreen
