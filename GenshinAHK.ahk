@@ -50,36 +50,6 @@ ScreenClick(x, y) {
 
 Member1 := "hutao"
 Member4 := "ganyu"
-StatusCold := false
-
-; Run at character select screen to match macros to charcters
-ConfigureContextualBindings() {
-    global Member1
-    global Member4
-
-    KleeColor := 0x112DB1
-    HuTaoColor := 0x191C35
-    
-    ;GetColorAtLoc()
-    
-    if (PixelSearchInPartySetup(KleeColor)) {
-        Member1 := "klee"
-    } else if (PixelSearchInPartySetup(HuTaoColor)) {
-        Member1 := "hutao"
-    } else {
-        SoundBeep, 100
-        Hotkey, ~1, ActivateRegularCharacter
-        Hotkey, ~q, ActivateRegularCharacter
-        Hotkey, ~3, ActivateRegularCharacter
-        Hotkey, ~e, ActivateRegularCharacter
-        ActivateRegularCharacter()
-    }
-}
-
-PixelSearchInPartySetup(color) {
-    PixelSearch, varX, varY, 480, 612, 480, 612, color, 8    ; 2560x1440
-    return !ErrorLevel
-}
 
 NumPad1::
     Member1 := "hutao"
@@ -102,18 +72,6 @@ return
 NumPad5::
     Member4 := "regular"
     SoundPlay, %A_WinDir%\Media\Windows Error.wav
-    ConfigureTeamHotkeys()
-return
-
-NumpadMult::
-    StatusCold := true
-    SoundPlay, %A_WinDir%\Media\Windows Logoff Sound.wav
-    ConfigureTeamHotkeys()
-return
-
-NumpadDiv::
-    StatusCold := false
-    SoundPlay, %A_WinDir%\Media\Windows Logon.wav
     ConfigureTeamHotkeys()
 return
 
@@ -322,13 +280,11 @@ Regular_ChargeAttack() {
 }
 
 ; Klee walk cancel
-Klee_AutoAttack() {
-    global StatusCold
-    
-    if (StatusCold)
-        pause := 680    ; 650?
+Klee_AutoAttack() {    
+    if (IsCharacterSlowed())
+        pause := 590    ; at 84-88ms
     else
-        pause := 510
+        pause := 508    ; at 84-88ms
         
     hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
     while (GetKeyState(hk, "P")) {
@@ -354,6 +310,12 @@ Regular_AutoAttack() {
         Click
         Sleep, 30
     }
+}
+
+IsCharacterSlowed() {
+1101 (0.430078) x 1292 (0.897222) => 0xFDFDCD
+    PixelSearch, varX, varY, 1100, 1290, 1102, 1292, 0xFDFDCD, 8    ; 2560x1440
+    return !ErrorLevel
 }
 
 
@@ -382,7 +344,7 @@ TypingMode := false
     }
 return
 
-; Elemental Sight remapping (These are equivalent to just 1 line 'LShift::MButton', but it doesn't get disabled in typing mode)
+; Elemental Sight remapping (The following 2 mappings are equivalent to just 1 line 'LShift::MButton', but they cannot get disabled in typing mode because I'm using a modifier key)
 LShift::
     SetKeyDelay -1   ; If the destination key is a mouse button, SetMouseDelay is used instead.
     Send {Blind}{MButton DownR}  ; DownR is like Down except that other Send commands in the script won't assume "b" should stay down during their Send.
@@ -445,7 +407,7 @@ GetColorAndLocationAtMouse() {
     MsgBox, %mouseX% (%screenX%) x %mouseY% (%screenY%) => %color%
 }
 
-NumPad9::
+*NumPad9::
     ;SoundBeep, 100
     ;GetColorAtLocation(480, 612)
     GetColorAndLocationAtMouse()
