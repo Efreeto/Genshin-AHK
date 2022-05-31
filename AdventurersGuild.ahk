@@ -3,7 +3,7 @@
 ; Expedition controls
 ; =======================================
 
-NumpadSub::
+NumpadAdd::
     ;; Definitions ;;
     ; Expedition duration coordinates
     DurationLastUsed := 0
@@ -25,25 +25,59 @@ NumpadSub::
     ; Expeditions (food)
     WindriseExpedition := { map: 0, x: 1111*1.333, y: 455*1.333 }
     GuiliPlainsExpedition := { map: 1, x: 800*1.333, y: 550*1.333 }
+    
+    isEscPressed := false
 
     ;; Actions ;;
+    OpenKatheryneMenu()
     ScreenClick(0.8, 0.6)
-    Sleep, 200
+    Sleep, 400
     
     expeditionMapSelected := -1 ; Assume no map was selected by default
     ReceiveReward(WhisperingWoodsExpedition)
+    if (GetKeyState("Esc", "P"))    ; hold Esc to cancel script
+        return
     ReceiveReward(StormterrorLairExpedition)
+    if (GetKeyState("Esc", "P"))
+        return
     ReceiveReward(DihuaMarshExpedition)
+    if (GetKeyState("Esc", "P"))
+        return
     ReceiveReward(JueyunKarstExpedition)
+    if (GetKeyState("Esc", "P"))
+        return
     ReceiveReward(JinrenIslandExpedition)
+    if (GetKeyState("Esc", "P"))
+        return
     
     duration := DurationLastUsed
     SendOnExpedition(WhisperingWoodsExpedition, 2, duration)
+    if (GetKeyState("Esc", "P"))
+        return
     SendOnExpedition(StormterrorLairExpedition, 1, duration)
+    if (GetKeyState("Esc", "P"))
+        return
     SendOnExpedition(DihuaMarshExpedition, 1, duration)
+    if (GetKeyState("Esc", "P"))
+        return
     SendOnExpedition(JueyunKarstExpedition, 2, duration)
+    if (GetKeyState("Esc", "P"))
+        return
     SendOnExpedition(JinrenIslandExpedition, 1, duration)
+    if (GetKeyState("Esc", "P"))
+        return
     
+    Send, {Esc}
+return
+
+NumpadSub::
+    OpenKatheryneMenu()
+    ScreenClick(0.8, 0.45)
+    Sleep, 500
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1500
     Send, {Esc}
 return
 
@@ -65,36 +99,33 @@ SelectExpedition(expedition) {
         expeditionMapSelected := expedition.map
         
         if (expedition.isFirstOnMap)
-        {
             return
-        }
     }
     
     ; Click on the expedition
     MouseClick, left, expedition.x, expedition.y
-    Sleep, 200
 }
 
 SelectDuration(duration) {
     MouseClick, left, duration.x, duration.y
-    Sleep, 200
+    Sleep, 150
 }
 
 ; Send character to an expedition.
 ; characterNumberInList - starts from 1.
 SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     SelectExpedition(expedition)
+    Sleep, 150
 
     if (duration != 0)
         SelectDuration(duration)
-
-    ; Click on "Select Character"
-    ClickOnBottomRightButton()
+    
+    ClickOnBottomRightButton()  ; click on "Select Character"
     Sleep, 200
 
     ; Find and select the character
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 200
+    Sleep, 150
 }
 
 FindAndSelectCharacter(characterNumberInList) {
@@ -123,12 +154,22 @@ ScrollDownCharacterList(characterAmount) {
 
 ReceiveReward(expedition) {
     SelectExpedition(expedition)
+    Sleep, 150
 
     ; receive reward
     ClickOnBottomRightButton()
     Sleep, 200
 
-    ;skip reward menu
+    ; skip reward menu
     Send, {Esc}
     Sleep, 200
+}
+
+OpenKatheryneMenu() {
+    Send, {f}   ; talk to Katherine
+    Sleep, 500
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1000
 }

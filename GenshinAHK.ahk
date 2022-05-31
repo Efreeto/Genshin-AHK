@@ -414,4 +414,4 @@ GetColorAndLocationAtMouse() {
 return
 
 
-#Include Expedition.ahk
+#Include AdventurersGuild.ahk
