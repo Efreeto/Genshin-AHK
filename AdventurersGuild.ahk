@@ -4,12 +4,7 @@
 ; =======================================
 
 NumpadAdd::
-    ;; Definitions ;;
-    ; Expedition duration coordinates
-    DurationLastUsed := 0
-    Duration4H := { x: 1500*1.333, y: 700*1.333 }
-    Duration20H := { x: 1800*1.333, y: 700*1.333 }
-    
+    ;; Definitions ;;    
     ; Expeditions (crystals)
     WhisperingWoodsExpedition := { map: 0, x: 1050*1.333, y: 330*1.333, isFirstOnMap: true }
     DadaupaGorgeExpedition := { map: 0, x: 1170*1.333, y: 660*1.333 }
@@ -25,46 +20,47 @@ NumpadAdd::
     ; Expeditions (food)
     WindriseExpedition := { map: 0, x: 1111*1.333, y: 455*1.333 }
     DihuaMarshExpedition := { map: 1, x: 728*1.333, y: 332*1.333, isFirstOnMap: true }
-    
-    isEscPressed := false
+
 
     ;; Actions ;;
     OpenKatheryneMenu()
-    ScreenClick(0.8, 0.6)
+    ScreenClick(0.8, 0.6)   ; Expedition option from Mondstadt/Liyue
     Sleep, 400
     
     expeditionMapSelected := -1 ; Assume no map was selected by default
     ReceiveReward(WhisperingWoodsExpedition)
-    if (GetKeyState("Esc", "P"))    ; hold Esc to cancel script
+    if (CheckForEscPressed())    ; hold Esc to cancel script
         return
     ReceiveReward(StormterrorLairExpedition)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     ReceiveReward(GuiliPlainsExpedition)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     ReceiveReward(JueyunKarstExpedition)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     ReceiveReward(JinrenIslandExpedition)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     
-    duration := DurationLastUsed
+    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+    duration := 0  
+    
     SendOnExpedition(WhisperingWoodsExpedition, 2, duration)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     SendOnExpedition(StormterrorLairExpedition, 1, duration)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     SendOnExpedition(GuiliPlainsExpedition, 1, duration)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     SendOnExpedition(JueyunKarstExpedition, 2, duration)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     SendOnExpedition(JinrenIslandExpedition, 1, duration)
-    if (GetKeyState("Esc", "P"))
+    if (CheckForEscPressed())
         return
     
     Send, {Esc}
@@ -72,7 +68,7 @@ return
 
 NumpadSub::
     OpenKatheryneMenu()
-    ScreenClick(0.8, 0.45)
+    ScreenClick(0.8, 0.45)  ; Commissions option from Mondstadt/Liyue
     Sleep, 500
     Send, {f}   ; skip dialogue
     Sleep, 200
@@ -108,9 +104,23 @@ SelectExpedition(expedition) {
     MouseClick, left, expedition.x, expedition.y
 }
 
-SelectDuration(duration) {
-    MouseClick, left, duration.x, duration.y
-    Sleep, 150
+SelectDuration(duration := 0) {        
+    switch duration
+    {
+    case 0:
+        return
+    case 4:
+        MouseClick, left, 1500*1.333, 700*1.333
+        Sleep, 150
+        return
+    case 20:
+        MouseClick, left, 1800*1.333, 700*1.333
+        Sleep, 150
+        return
+    Default:
+        MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+        return
+    }
 }
 
 ; Send character to an expedition.
@@ -119,8 +129,7 @@ SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     SelectExpedition(expedition)
     Sleep, 150
 
-    if (duration != 0)
-        SelectDuration(duration)
+    SelectDuration(duration)
     
     ClickOnBottomRightButton()  ; click on "Select Character"
     Sleep, 200
@@ -174,4 +183,13 @@ OpenKatheryneMenu() {
     Sleep, 200
     Send, {f}   ; close dialogue
     Sleep, 1000
+}
+
+CheckForEscPressed() {
+    if (GetKeyState("Esc", "P"))
+    {
+        SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+        return true
+    }
+    return false
 }
