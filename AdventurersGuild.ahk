@@ -17,14 +17,14 @@ NumpadAdd::
 
     ; Expeditions (mora)
     StormterrorLairExpedition := { map: 0, x: 550*1.333, y: 400*1.333 }
-    DihuaMarshExpedition := { map: 1, x: 728*1.333, y: 332*1.333, isFirstOnMap: true }
+    GuiliPlainsExpedition := { map: 1, x: 800*1.333, y: 550*1.333 }
     JueyunKarstExpedition := { map: 1, x: 559*1.333, y: 561*1.333 }
     JinrenIslandExpedition := { map: 2, x: 1097*1.333, y: 274*1.333, isFirstOnMap: true }
     TarasunaExpedition := { map: 2, x: 828*1.333, y: 828*1.333 }
 
     ; Expeditions (food)
     WindriseExpedition := { map: 0, x: 1111*1.333, y: 455*1.333 }
-    GuiliPlainsExpedition := { map: 1, x: 800*1.333, y: 550*1.333 }
+    DihuaMarshExpedition := { map: 1, x: 728*1.333, y: 332*1.333, isFirstOnMap: true }
     
     isEscPressed := false
 
@@ -40,7 +40,7 @@ NumpadAdd::
     ReceiveReward(StormterrorLairExpedition)
     if (GetKeyState("Esc", "P"))
         return
-    ReceiveReward(DihuaMarshExpedition)
+    ReceiveReward(GuiliPlainsExpedition)
     if (GetKeyState("Esc", "P"))
         return
     ReceiveReward(JueyunKarstExpedition)
@@ -57,7 +57,7 @@ NumpadAdd::
     SendOnExpedition(StormterrorLairExpedition, 1, duration)
     if (GetKeyState("Esc", "P"))
         return
-    SendOnExpedition(DihuaMarshExpedition, 1, duration)
+    SendOnExpedition(GuiliPlainsExpedition, 1, duration)
     if (GetKeyState("Esc", "P"))
         return
     SendOnExpedition(JueyunKarstExpedition, 2, duration)
@@ -79,6 +79,8 @@ NumpadSub::
     Send, {f}   ; close dialogue
     Sleep, 1500
     Send, {Esc}
+    
+    Send, {NumpadAdd}
 return
 
 
@@ -131,9 +133,9 @@ SendOnExpedition(expedition, characterNumberInList, duration := 0) {
 FindAndSelectCharacter(characterNumberInList) {
     firstCharacterX := 100*1.333
     firstCharacterX := 150*1.333
-    spacingBetweenCharacters := 125*1.333
+    spacingBetweenCharacters := 140
 
-    if (characterNumberInList <= 7) {
+    if (characterNumberInList <= 9) {
         MouseClick, left, firstCharacterX, firstCharacterX + (spacingBetweenCharacters * (characterNumberInList - 1))
     } else {
         ScrollDownCharacterList(characterNumberInList - 7.5)
