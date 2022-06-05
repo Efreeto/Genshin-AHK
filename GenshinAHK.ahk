@@ -107,23 +107,23 @@ ConfigureTeamHotkeys() {
 }
 
 ActivateKlee() {
-    Hotkey, ~7, Klee_ChargeAttack
-    Hotkey, ~*8, Klee_AutoAttack
+    Hotkey, ~XButton1, Klee_ChargeAttack
+    Hotkey, ~*Numpad8, Klee_AutoAttack
 }
 
 ActivateHuTao() {
-    Hotkey, ~7, HuTao_ChargeAttack
-    Hotkey, ~*8, Regular_AutoAttack
+    Hotkey, ~XButton1, HuTao_ChargeAttack
+    Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
 ActivateGanyu() {
-    Hotkey, ~7, Ganyu_ChargeAttack
-    Hotkey, ~*8, Regular_AutoAttack
+    Hotkey, ~XButton1, Ganyu_ChargeAttack
+    Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
 ActivateRegularCharacter() {
-    Hotkey, ~7, Regular_ChargeAttack
-    Hotkey, ~*8, Regular_AutoAttack
+    Hotkey, ~XButton1, Regular_ChargeAttack
+    Hotkey, ~*Numpad8, Regular_AutoAttack
 }
 
 HuTao_ChargeAttack() {
@@ -261,7 +261,7 @@ Ganyu_ChargeAttack() {
     Click    ; Apply a normal attack element, if any
     Sleep, 30
     Click, down
-    KeyWait, 7  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 2000) {
         ; hold LMB minimum for 2000ms
@@ -275,7 +275,7 @@ Ganyu_ChargeAttack() {
 
 Regular_ChargeAttack() {
     Click, down
-    KeyWait, 7  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370) {    ; 350
         ; Hold LMB minimum for 370ms
