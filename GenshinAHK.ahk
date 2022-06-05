@@ -33,6 +33,11 @@ SuspendOnGameInactive() {
     }
 }
 
+GetWinTitle() {
+    WinGet, activeprocess, ProcessName, A
+    MsgBox, The active ahk_exe is "%activeprocess%".
+}
+
 ClickOnBottomRightButton() {
     ScreenClick(0.9, 0.95)
 }
@@ -102,23 +107,23 @@ ConfigureTeamHotkeys() {
 }
 
 ActivateKlee() {
-    Hotkey, ~XButton1, Klee_ChargeAttack
-    Hotkey, ~*Numpad8, Klee_AutoAttack
+    Hotkey, ~7, Klee_ChargeAttack
+    Hotkey, ~*8, Klee_AutoAttack
 }
 
 ActivateHuTao() {
-    Hotkey, ~XButton1, HuTao_ChargeAttack
-    Hotkey, ~*Numpad8, Regular_AutoAttack
+    Hotkey, ~7, HuTao_ChargeAttack
+    Hotkey, ~*8, Regular_AutoAttack
 }
 
 ActivateGanyu() {
-    Hotkey, ~XButton1, Ganyu_ChargeAttack
-    Hotkey, ~*Numpad8, Regular_AutoAttack
+    Hotkey, ~7, Ganyu_ChargeAttack
+    Hotkey, ~*8, Regular_AutoAttack
 }
 
 ActivateRegularCharacter() {
-    Hotkey, ~XButton1, Regular_ChargeAttack
-    Hotkey, ~*Numpad8, Regular_AutoAttack
+    Hotkey, ~7, Regular_ChargeAttack
+    Hotkey, ~*8, Regular_AutoAttack
 }
 
 HuTao_ChargeAttack() {
@@ -256,7 +261,7 @@ Ganyu_ChargeAttack() {
     Click    ; Apply a normal attack element, if any
     Sleep, 30
     Click, down
-    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, 7  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 2000) {
         ; hold LMB minimum for 2000ms
@@ -270,7 +275,7 @@ Ganyu_ChargeAttack() {
 
 Regular_ChargeAttack() {
     Click, down
-    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, 7  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370) {    ; 350
         ; Hold LMB minimum for 370ms
@@ -380,12 +385,10 @@ DisableTypingMode() {
 NumPad0::Space
 
 ; Hold to animation cancel elemental skills
-NumPad6::
+WheelRight::
     Send, {4}
     Click, right
 return
-
-NumPad7::LAlt
 
 PrintScreen::!PrintScreen
 ;Insert::!PrintScreen
@@ -410,7 +413,8 @@ GetColorAndLocationAtMouse() {
 *NumPad9::
     ;SoundBeep, 100
     ;GetColorAtLocation(480, 612)
-    GetColorAndLocationAtMouse()
+    ;GetColorAndLocationAtMouse()
+    GetWinTitle()
 return
 
 
