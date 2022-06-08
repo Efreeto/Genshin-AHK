@@ -84,7 +84,7 @@ return
 ; Expedition utility functions
 ; =======================================
 
-SelectExpedition(expedition) {
+SelectExpedition(expedition, calledFromReceiveReward := false) {
     global expeditionMapSelected
     
     ; Click on the world
@@ -96,7 +96,8 @@ SelectExpedition(expedition) {
         
         expeditionMapSelected := expedition.map
         
-        if (expedition.isFirstOnMap)
+        ; If the current expedition is the first one on the map, or if this was called from ReceiveReward(), the expedition must be already selected after the map change
+        if (expedition.isFirstOnMap || calledFromReceiveReward)
             return
     }
     
@@ -127,16 +128,16 @@ SelectDuration(duration := 0) {
 ; characterNumberInList - starts from 1.
 SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     SelectExpedition(expedition)
-    Sleep, 150
+    Sleep, 160
 
     SelectDuration(duration)
     
     ClickOnBottomRightButton()  ; click on "Select Character"
-    Sleep, 200
+    Sleep, 160
 
     ; Find and select the character
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 150
+    Sleep, 160
 }
 
 FindAndSelectCharacter(characterNumberInList) {
@@ -164,7 +165,7 @@ ScrollDownCharacterList(characterAmount) {
 }
 
 ReceiveReward(expedition) {
-    SelectExpedition(expedition)
+    SelectExpedition(expedition, true)
     Sleep, 150
 
     ; receive reward
