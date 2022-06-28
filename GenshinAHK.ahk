@@ -318,7 +318,7 @@ Regular_AutoAttack() {
 }
 
 IsCharacterSlowed() {
-1101 (0.430078) x 1292 (0.897222) => 0xFDFDCD
+    ;1101 (0.430078) x 1292 (0.897222) => 0xFDFDCD
     PixelSearch, varX, varY, 1100, 1290, 1102, 1292, 0xFDFDCD, 8    ; 2560x1440
     return !ErrorLevel
 }
@@ -346,6 +346,16 @@ TypingMode := false
     {
         Send, {Space} ; Repeated keydowns
         Sleep, 30 ; Repeat rate
+    }
+return
+
+; Special interactions
+g::
+    if (IsNearKatheryne()) {
+        SoundPlay, %A_WinDir%\Media\Speech On.wav
+        CollectExpeditionRewardsAndSendExpeditions()
+    } else {
+        SoundPlay, %A_WinDir%\Media\Speech Off.wav
     }
 return
 
@@ -384,13 +394,13 @@ DisableTypingMode() {
 ; Hold to exit the boat
 NumPad0::Space
 
+F16::LAlt
+
 ; Hold to animation cancel elemental skills
-F16::
-    Send, {4}
+F17::
+    Send, {F14}
     Click, right
 return
-
-F17::LAlt
 
 PrintScreen::!PrintScreen
 ;Insert::!PrintScreen

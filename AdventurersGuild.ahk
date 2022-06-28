@@ -3,7 +3,27 @@
 ; Expedition controls
 ; =======================================
 
-NumpadAdd::
+OpenKatheryneMenu() {
+    Send, {f}   ; talk to Katherine
+    Sleep, 500
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1000
+}
+
+CollectCommissionRewards() {
+    OpenKatheryneMenu()
+    ScreenClick(0.8, 0.45)  ; Commissions option from Mondstadt or Liyue, not Inazuma
+    Sleep, 500
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1500
+    Send, {Esc}    
+}
+
+CollectExpeditionRewardsAndSendExpeditions() {
     ;; Definitions ;;    
     ; Expeditions (crystals)
     WhisperingWoodsExpedition := { map: 0, x: 1050*1.333, y: 330*1.333, isFirstOnMap: true }
@@ -64,20 +84,7 @@ NumpadAdd::
         return
     
     Send, {Esc}
-return
-
-NumpadSub::
-    OpenKatheryneMenu()
-    ScreenClick(0.8, 0.45)  ; Commissions option from Mondstadt/Liyue
-    Sleep, 500
-    Send, {f}   ; skip dialogue
-    Sleep, 200
-    Send, {f}   ; close dialogue
-    Sleep, 1500
-    Send, {Esc}
-    
-    Send, {NumpadAdd}
-return
+}
 
 
 ; =======================================
@@ -124,7 +131,19 @@ SelectDuration(duration := 0) {
     }
 }
 
-; Send character to an expedition.
+ReceiveReward(expedition) {
+    SelectExpedition(expedition, true)
+    Sleep, 160
+
+    ; receive reward
+    ClickOnBottomRightButton()
+    Sleep, 160
+
+    ; skip reward menu
+    Send, {Esc}
+    Sleep, 160
+}
+
 ; characterNumberInList - starts from 1.
 SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     SelectExpedition(expedition)
@@ -137,7 +156,7 @@ SendOnExpedition(expedition, characterNumberInList, duration := 0) {
 
     ; Find and select the character
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 160
+    Sleep, 180
 }
 
 FindAndSelectCharacter(characterNumberInList) {
@@ -164,28 +183,6 @@ ScrollDownCharacterList(characterAmount) {
     }
 }
 
-ReceiveReward(expedition) {
-    SelectExpedition(expedition, true)
-    Sleep, 150
-
-    ; receive reward
-    ClickOnBottomRightButton()
-    Sleep, 200
-
-    ; skip reward menu
-    Send, {Esc}
-    Sleep, 200
-}
-
-OpenKatheryneMenu() {
-    Send, {f}   ; talk to Katherine
-    Sleep, 500
-    Send, {f}   ; skip dialogue
-    Sleep, 200
-    Send, {f}   ; close dialogue
-    Sleep, 1000
-}
-
 CheckForEscPressed() {
     if (GetKeyState("Esc", "P"))
     {
@@ -193,4 +190,12 @@ CheckForEscPressed() {
         return true
     }
     return false
+}
+
+IsNearKatheryne() {
+    PixelSearch, varX, varY, 1580, 725, 1582, 727, 0xFFFFFF, 8    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    return true
 }
