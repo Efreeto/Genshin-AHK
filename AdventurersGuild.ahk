@@ -3,9 +3,19 @@
 ; Expedition controls
 ; =======================================
 
-OpenKatheryneMenu() {
+NumpadAdd::
+    CollectExpeditionRewardsAndSendExpeditions()
+return
+
+OpenKatheryneMenu(lang := "EN") {
+    if (lang == "KR") {
+        pause := 500
+    } else {
+        pause := 700
+    }
+
     Send, {f}   ; talk to Katherine
-    Sleep, 500
+    Sleep, %pause%
     Send, {f}   ; skip dialogue
     Sleep, 200
     Send, {f}   ; close dialogue
@@ -13,14 +23,13 @@ OpenKatheryneMenu() {
 }
 
 CollectCommissionRewards() {
-    OpenKatheryneMenu()
     ScreenClick(0.8, 0.45)  ; Commissions option from Mondstadt or Liyue, not Inazuma
     Sleep, 500
     Send, {f}   ; skip dialogue
     Sleep, 200
     Send, {f}   ; close dialogue
     Sleep, 1500
-    Send, {Esc}    
+    Send, {Esc}
 }
 
 CollectExpeditionRewardsAndSendExpeditions() {
@@ -41,9 +50,7 @@ CollectExpeditionRewardsAndSendExpeditions() {
     WindriseExpedition := { map: 0, x: 1111*1.333, y: 455*1.333 }
     DihuaMarshExpedition := { map: 1, x: 728*1.333, y: 332*1.333, isFirstOnMap: true }
 
-
     ;; Actions ;;
-    OpenKatheryneMenu()
     ScreenClick(0.8, 0.6)   ; Expedition option from Mondstadt/Liyue
     Sleep, 400
     

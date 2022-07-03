@@ -33,9 +33,16 @@ SuspendOnGameInactive() {
     }
 }
 
-GetWinTitle() {
+GetFileName() {
     WinGet, activeprocess, ProcessName, A
     MsgBox, The active ahk_exe is "%activeprocess%".
+    ; "GenshinImpact.exe"
+}
+
+GetWinName() {
+    WinGetTitle, Title, A
+    MsgBox, The active window is "%Title%".
+    ; "Genshin Impact", "원신"
 }
 
 ClickOnBottomRightButton() {
@@ -46,6 +53,14 @@ ScreenClick(x, y) {
     screenX := floor(A_ScreenWidth * x)
     screenY := floor(A_ScreenHeight * y)
     Click, %screenX% %screenY%
+}
+
+GetLanguage() {
+    WinGetTitle, winTitle, A
+    if (winTitle == "Genshin Impact")
+        return "EN"
+    else ; "원신"
+        return "KR"
 }
 
 
@@ -353,6 +368,11 @@ return
 g::
     if (IsNearKatheryne()) {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
+        
+        lang := GetLanguage()
+        OpenKatheryneMenu(lang)
+        CollectCommissionRewards()
+        OpenKatheryneMenu(lang)
         CollectExpeditionRewardsAndSendExpeditions()
     } else {
         SoundPlay, %A_WinDir%\Media\Speech Off.wav
@@ -421,6 +441,10 @@ GetColorAndLocationAtMouse() {
     PixelGetColor, color, %mouseX%, %mouseY%
     MsgBox, %mouseX% (%screenX%) x %mouseY% (%screenY%) => %color%
 }
+
+*NumPad8::
+    GetWinName()
+return
 
 *NumPad9::
     ;SoundBeep, 100
