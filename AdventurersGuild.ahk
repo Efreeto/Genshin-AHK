@@ -7,33 +7,19 @@ NumpadAdd::
     CollectExpeditionRewardsAndSendExpeditions()
 return
 
-OpenKatheryneMenu(lang := "EN") {
-    if (lang == "KR") {
-        pause := 500
-    } else {
-        pause := 700
-    }
-
-    Send, {f}   ; talk to Katherine
-    Sleep, %pause%
-    Send, {f}   ; skip dialogue
-    Sleep, 200
-    Send, {f}   ; close dialogue
-    Sleep, 1000
-}
-
 CollectCommissionRewards() {
     ScreenClick(0.8, 0.45)  ; Commissions option from Mondstadt or Liyue, not Inazuma
     Sleep, 500
     Send, {f}   ; skip dialogue
     Sleep, 200
+    CheckEscPressedAndExit()
     Send, {f}   ; close dialogue
     Sleep, 1500
     Send, {Esc}
 }
 
 CollectExpeditionRewardsAndSendExpeditions() {
-    ;; Definitions ;;    
+    ;; Definitions ;;
     ; Expeditions (crystals)
     WhisperingWoodsExpedition := { map: 0, x: 1050*1.333, y: 330*1.333, isFirstOnMap: true }
     DadaupaGorgeExpedition := { map: 0, x: 1170*1.333, y: 660*1.333 }
@@ -55,40 +41,30 @@ CollectExpeditionRewardsAndSendExpeditions() {
     Sleep, 400
     
     expeditionMapSelected := -1 ; Assume no map was selected by default
+    CheckEscPressedAndExit()
     ReceiveReward(WhisperingWoodsExpedition)
-    if (CheckForEscPressed())    ; hold Esc to cancel script
-        return
+    CheckEscPressedAndExit()    ; hold Esc to cancel script
     ReceiveReward(StormterrorLairExpedition)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     ReceiveReward(GuiliPlainsExpedition)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     ReceiveReward(JueyunKarstExpedition)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     ReceiveReward(JinrenIslandExpedition)
-    if (CheckForEscPressed())
-        return
     
     ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
     duration := 0  
     
+    CheckEscPressedAndExit()
     SendOnExpedition(WhisperingWoodsExpedition, 2, duration)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     SendOnExpedition(StormterrorLairExpedition, 1, duration)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     SendOnExpedition(GuiliPlainsExpedition, 1, duration)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     SendOnExpedition(JueyunKarstExpedition, 2, duration)
-    if (CheckForEscPressed())
-        return
+    CheckEscPressedAndExit()
     SendOnExpedition(JinrenIslandExpedition, 1, duration)
-    if (CheckForEscPressed())
-        return
     
     Send, {Esc}
 }
@@ -163,7 +139,7 @@ SendOnExpedition(expedition, characterNumberInList, duration := 0) {
 
     ; Find and select the character
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 180
+    Sleep, 200
 }
 
 FindAndSelectCharacter(characterNumberInList) {
@@ -190,17 +166,16 @@ ScrollDownCharacterList(characterAmount) {
     }
 }
 
-CheckForEscPressed() {
-    if (GetKeyState("Esc", "P"))
-    {
-        SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
-        return true
-    }
-    return false
-}
-
 IsNearKatheryne() {
-    PixelSearch, varX, varY, 1580, 725, 1582, 727, 0xFFFFFF, 8    ; 2560x1440
+    PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+
+    PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
     if ErrorLevel
         return false
         

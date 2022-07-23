@@ -55,7 +55,7 @@ ScreenClick(x, y) {
     Click, %screenX% %screenY%
 }
 
-GetLanguage() {
+DetectDisplayLanguage() {
     WinGetTitle, winTitle, A
     if (winTitle == "Genshin Impact")
         return "EN"
@@ -63,6 +63,19 @@ GetLanguage() {
         return "KR"
 }
 
+SkipDialogue() {
+    lang := DetectDisplayLanguage()
+    if (lang == "KR") {
+        Sleep, 500
+    } else {    ; "EN"
+        Sleep, 700
+    }
+    
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1000    
+}
 
 ; =======================================
 ; Enable/disable contextual bindings
@@ -365,14 +378,18 @@ TypingMode := false
 return
 
 ; Special interactions
-g::
+~g::
+    CheckTypingModeAndExit()
+
     if (IsNearKatheryne()) {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
         
-        lang := GetLanguage()
-        OpenKatheryneMenu(lang)
+        Send, {f}   ; talk to Katherine
+        SkipDialogue()
         CollectCommissionRewards()
-        OpenKatheryneMenu(lang)
+        
+        Send, {f}   ; talk to Katherine
+        SkipDialogue()
         CollectExpeditionRewardsAndSendExpeditions()
     } else {
         SoundPlay, %A_WinDir%\Media\Speech Off.wav
@@ -397,18 +414,39 @@ return
 
 EnableTypingMode() {
     global TypingMode
-    
     TypingMode := true
+    
+    SoundPlay, %A_WinDir%\Media\Windows User Account Control.wav
+    
     Hotkey, LShift, Off
     Hotkey, LShift up, Off
 }
 
 DisableTypingMode() {
     global TypingMode
-    
     TypingMode := false
+    
+    SoundPlay, %A_WinDir%\Media\Windows Notify Calendar.wav
+    
     Hotkey, LShift, On
     Hotkey, LShift up, On
+}
+
+CheckTypingModeAndExit() {
+    global TypingMode
+    
+    if (TypingMode) {
+        SoundPlay, %A_WinDir%\Media\Windows Navigation Start.wav
+        Exit
+    }
+}
+
+CheckEscPressedAndExit() {
+    if (GetKeyState("Esc", "P"))
+    {
+        SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+        Exit
+    }
 }
 
 ; Hold to exit the boat
