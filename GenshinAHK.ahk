@@ -135,32 +135,32 @@ ConfigureTeamHotkeys() {
 }
 
 ActivateKlee() {
-    Hotkey, ~XButton1, Klee_ChargeAttack
-    Hotkey, ~*F18, Klee_AutoAttack
+    Hotkey, F13, Regular_AutoAttack
+    Hotkey, F18, Klee_AutoAttack
+    Hotkey, F19, Klee_ChargeAttack
 }
 
 ActivateHuTao() {
-    Hotkey, ~XButton1, HuTao_ChargeAttack
-    Hotkey, ~*F18, Regular_AutoAttack
+    Hotkey, F13, Regular_AutoAttack
+    Hotkey, F18, HuTao_ChargeAttack
 }
 
 ActivateGanyu() {
-    Hotkey, ~XButton1, Ganyu_ChargeAttack
-    Hotkey, ~*F18, Regular_AutoAttack
+    Hotkey, F13, Regular_AutoAttack
+    Hotkey, F18, Ganyu_ChargeAttack
 }
 
 ActivateRegularCharacter() {
-    Hotkey, ~XButton1, Regular_ChargeAttack
-    Hotkey, ~*F18, Regular_AutoAttack
+    Hotkey, F13, Regular_AutoAttack
+    Hotkey, F18, Regular_ChargeAttack
 }
 
 HuTao_ChargeAttack() {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     pause1 := 60
     pause2 := 50
     pause3 := 300
     pause4 := 240
-    while (GetKeyState(hk, "P")) {
+    while (GetKeyState(A_ThisHotkey, "P")) {
         Click, down
         Sleep, %pause1%
         Click, up
@@ -274,8 +274,7 @@ HuTao_ChargeAttack_Frozen() {
 }
 
 Klee_ChargeAttack() {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    while (GetKeyState(hk, "P")) {
+    while (GetKeyState(A_ThisHotkey, "P")) {
         Click, down
         Sleep, 500  ; 500
         Click, up
@@ -289,7 +288,7 @@ Ganyu_ChargeAttack() {
     Click    ; Apply a normal attack element, if any
     Sleep, 30
     Click, down
-    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, % hk  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 2000) {
         ; hold LMB minimum for 2000ms
@@ -303,7 +302,7 @@ Ganyu_ChargeAttack() {
 
 Regular_ChargeAttack() {
     Click, down
-    KeyWait, XButton1  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait, % hk  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370) {    ; 350
         ; Hold LMB minimum for 370ms
@@ -318,18 +317,16 @@ Klee_AutoAttack() {
         pause := 590    ; at 84-88ms
     else
         pause := 508    ; at 84-88ms
-        
-    hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while (GetKeyState(hk, "P")) {
+
+    while (GetKeyState(A_ThisHotkey, "P")) {
         Click
         Sleep, %pause%
     }
 }
 
 ; Klee jump cancel
-Klee_AutoAttack2() {    
-    hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while (GetKeyState(hk, "P")) {
+Klee_AutoAttack2() {
+    while (GetKeyState(A_ThisHotkey, "P")) {
         Click
         Sleep, 35
         Send, {Space}
@@ -338,8 +335,7 @@ Klee_AutoAttack2() {
 }
 
 Regular_AutoAttack() {
-    hk := SubStr(A_ThisHotkey, 3)  ; remove '~*'
-    while (GetKeyState(hk, "P")) {
+    while (GetKeyState(A_ThisHotkey, "P")) {
         Click
         Sleep, 30
     }
@@ -396,17 +392,6 @@ return
     }
 return
 
-; Elemental Sight remapping (The following 2 mappings are equivalent to just 1 line 'LShift::MButton', but they cannot get disabled in typing mode because I'm using a modifier key)
-LShift::
-    SetKeyDelay -1   ; If the destination key is a mouse button, SetMouseDelay is used instead.
-    Send {Blind}{MButton DownR}  ; DownR is like Down except that other Send commands in the script won't assume "b" should stay down during their Send.
-return
-
-LShift up::
-    SetKeyDelay -1  ; See note below for why press-duration is not specified with either of these SetKeyDelays.
-    Send {Blind}{MButton up}
-return
-
 ; Enable typing mode
 ~Backspace::
     EnableTypingMode()
@@ -417,9 +402,6 @@ EnableTypingMode() {
     TypingMode := true
     
     SoundPlay, %A_WinDir%\Media\Windows User Account Control.wav
-    
-    Hotkey, LShift, Off
-    Hotkey, LShift up, Off
 }
 
 DisableTypingMode() {
@@ -427,9 +409,6 @@ DisableTypingMode() {
     TypingMode := false
     
     SoundPlay, %A_WinDir%\Media\Windows Notify Calendar.wav
-    
-    Hotkey, LShift, On
-    Hotkey, LShift up, On
 }
 
 CheckTypingModeAndExit() {
@@ -451,8 +430,6 @@ CheckEscPressedAndExit() {
 
 ; Hold to exit the boat
 NumPad0::Space
-
-F16::LAlt
 
 ; Hold to animation cancel elemental skills
 F17::
