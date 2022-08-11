@@ -77,6 +77,23 @@ SkipDialogue() {
     Sleep, 1000    
 }
 
+SpecialInteraction() {
+    if (IsNearKatheryne()) {
+        Send, {f}   ; talk to Katherine
+        SkipDialogue()
+        CollectCommissionRewards()
+        
+        Send, {f}   ; talk to Katherine
+        SkipDialogue()
+        CollectExpeditionRewardsAndSendExpeditions()
+    } else {
+        Send, {MButton down}
+        while (GetKeyState(A_ThisHotkey, "P")) {
+        }
+        Send, {MButton up}
+    }
+}
+
 ; =======================================
 ; Enable/disable contextual bindings
 ; =======================================
@@ -91,18 +108,12 @@ NumPad1::
 return
 
 NumPad2::
-    Member2 := "xingqiu"
-    SoundPlay, %A_WinDir%\Media\tada.wav
-    ConfigureTeamHotkeys()
-return
-
-NumPad3::
     Member1 := "klee"
     SoundPlay, %A_WinDir%\Media\tada.wav
     ConfigureTeamHotkeys()
 return
 
-NumPad7::
+NumPad4::
     Member4 := "ganyu"
     SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
     ConfigureTeamHotkeys()
@@ -117,7 +128,6 @@ return
 
 ConfigureTeamHotkeys() {
     global Member1
-    global Member2
     global Member4
     
     if (Member1 == "hutao") {
@@ -131,11 +141,7 @@ ConfigureTeamHotkeys() {
         ActivateRegularCharacter()
     }
     
-    if (Member2 == "xingqiu") {
-        Hotkey, ~q, ActivateXingQiu
-    } else {
-        Hotkey, ~q, ActivateRegularCharacter
-    }
+    Hotkey, ~q, ActivateRegularCharacter
     
     Hotkey, ~3, ActivateRegularCharacter
     
@@ -167,7 +173,7 @@ ActivateGanyu() {
 
 ActivateXingQiu() {
     Hotkey, F13, Regular_AutoAttack
-    Hotkey, F14, XingQiu_ElementalSkill
+    Hotkey, F14, RapidCanceling_ElementalSkill
     Hotkey, F18, Regular_AutoAttack
 }
 
@@ -306,7 +312,7 @@ Klee_ChargeAttack() {
 }
 
 ; Hold to animation cancel elemental skills
-XingQiu_ElementalSkill() {
+RapidCanceling_ElementalSkill() {
     Send, {[}
     Click, right
 }
@@ -382,6 +388,27 @@ IsCharacterSlowed() {
     return !ErrorLevel
 }
 
+IsNearKatheryne() {
+    PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+
+    PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
+    if ErrorLevel
+        return false
+
+    SoundPlay, %A_WinDir%\Media\Speech On.wav
+    return true
+}
+
 
 ; =======================================
 ; Regular actions
@@ -408,25 +435,6 @@ TypingMode := false
     }
 return
 
-; Special interactions
-~g::
-    CheckTypingModeAndExit()
-
-    if (IsNearKatheryne()) {
-        SoundPlay, %A_WinDir%\Media\Speech On.wav
-        
-        Send, {f}   ; talk to Katherine
-        SkipDialogue()
-        CollectCommissionRewards()
-        
-        Send, {f}   ; talk to Katherine
-        SkipDialogue()
-        CollectExpeditionRewardsAndSendExpeditions()
-    } else {
-        SoundPlay, %A_WinDir%\Media\Speech Off.wav
-    }
-return
-
 ; Enable typing mode
 ~Backspace::
     EnableTypingMode()
@@ -450,14 +458,12 @@ CheckTypingModeAndExit() {
     global TypingMode
     
     if (TypingMode) {
-        SoundPlay, %A_WinDir%\Media\Windows Navigation Start.wav
         Exit
     }
 }
 
 CheckEscPressedAndExit() {
-    if (GetKeyState("Esc", "P"))
-    {
+    if (GetKeyState("Esc", "P")) {
         SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
         Exit
     }
@@ -468,10 +474,12 @@ NumpadEnter::Space
 
 F15::]
 
-F16::MButton
+F16::
+    SpecialInteraction()
+return
 
 F17::
-    Regular_AutoAttack()
+    RapidCanceling_ElementalSkill()
 return
 
 PrintScreen::!PrintScreen

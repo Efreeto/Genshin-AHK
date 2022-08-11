@@ -38,7 +38,7 @@ CollectExpeditionRewardsAndSendExpeditions() {
 
     ;; Actions ;;
     ScreenClick(0.8, 0.6)   ; Expedition option from Mondstadt/Liyue
-    Sleep, 400
+    Sleep, 500
     
     expeditionMapSelected := -1 ; Assume no map was selected by default
     CheckEscPressedAndExit()
@@ -116,30 +116,30 @@ SelectDuration(duration := 0) {
 
 ReceiveReward(expedition) {
     SelectExpedition(expedition, true)
-    Sleep, 160
+    Sleep, 170
 
     ; receive reward
     ClickOnBottomRightButton()
-    Sleep, 160
+    Sleep, 170
 
     ; skip reward menu
     Send, {Esc}
-    Sleep, 160
+    Sleep, 170
 }
 
 ; characterNumberInList - starts from 1.
 SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     SelectExpedition(expedition)
-    Sleep, 160
+    Sleep, 170
 
     SelectDuration(duration)
     
     ClickOnBottomRightButton()  ; click on "Select Character"
-    Sleep, 160
+    Sleep, 170
 
     ; Find and select the character
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 200
+    Sleep, 225
 }
 
 FindAndSelectCharacter(characterNumberInList) {
@@ -164,20 +164,4 @@ ScrollDownCharacterList(characterAmount) {
         Send, {WheelDown}
         Sleep, 10
     }
-}
-
-IsNearKatheryne() {
-    PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
-    if ErrorLevel
-        return false
-
-    PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
-    if ErrorLevel
-        return false
-        
-    PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
-    if ErrorLevel
-        return false
-        
-    return true
 }
