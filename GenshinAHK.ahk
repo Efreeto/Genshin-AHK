@@ -81,8 +81,8 @@ SkipDialogue() {
 ; Enable/disable contextual bindings
 ; =======================================
 
-Member1 := "hutao"
-Member4 := "ganyu"
+Member1 := "regular"
+Member4 := "regular"
 
 NumPad1::
     Member1 := "hutao"
@@ -91,18 +91,25 @@ NumPad1::
 return
 
 NumPad2::
+    Member2 := "xingqiu"
+    SoundPlay, %A_WinDir%\Media\tada.wav
+    ConfigureTeamHotkeys()
+return
+
+NumPad3::
     Member1 := "klee"
     SoundPlay, %A_WinDir%\Media\tada.wav
     ConfigureTeamHotkeys()
 return
 
-NumPad4::
+NumPad7::
     Member4 := "ganyu"
     SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
     ConfigureTeamHotkeys()
 return
 
-NumPad5::
+NumPad0::
+    Member1 := "regular"
     Member4 := "regular"
     SoundPlay, %A_WinDir%\Media\Windows Error.wav
     ConfigureTeamHotkeys()
@@ -110,6 +117,7 @@ return
 
 ConfigureTeamHotkeys() {
     global Member1
+    global Member2
     global Member4
     
     if (Member1 == "hutao") {
@@ -123,7 +131,11 @@ ConfigureTeamHotkeys() {
         ActivateRegularCharacter()
     }
     
-    Hotkey, ~q, ActivateRegularCharacter    
+    if (Member2 == "xingqiu") {
+        Hotkey, ~q, ActivateXingQiu
+    } else {
+        Hotkey, ~q, ActivateRegularCharacter
+    }
     
     Hotkey, ~3, ActivateRegularCharacter
     
@@ -134,25 +146,35 @@ ConfigureTeamHotkeys() {
     }
 }
 
-ActivateKlee() {
-    Hotkey, F13, Regular_AutoAttack
-    Hotkey, F18, Klee_AutoAttack
-    Hotkey, F19, Klee_ChargeAttack
-}
-
 ActivateHuTao() {
     Hotkey, F13, Regular_AutoAttack
+    Hotkey, F14, Regular_ElementalSkill
     Hotkey, F18, HuTao_ChargeAttack
+}
+
+ActivateKlee() {
+    Hotkey, F13, Klee_ChargeAttack
+    Hotkey, F14, Regular_ElementalSkill
+    Hotkey, F18, Klee_AutoAttack
+    ;Hotkey, F19, Klee_ChargeAttack
 }
 
 ActivateGanyu() {
     Hotkey, F13, Regular_AutoAttack
+    Hotkey, F14, Regular_ElementalSkill
     Hotkey, F18, Ganyu_ChargeAttack
+}
+
+ActivateXingQiu() {
+    Hotkey, F13, Regular_AutoAttack
+    Hotkey, F14, XingQiu_ElementalSkill
+    Hotkey, F18, Regular_AutoAttack
 }
 
 ActivateRegularCharacter() {
     Hotkey, F13, Regular_AutoAttack
-    Hotkey, F18, Regular_ChargeAttack
+    Hotkey, F14, Regular_ElementalSkill
+    Hotkey, F18, Regular_AutoAttack
 }
 
 HuTao_ChargeAttack() {
@@ -232,8 +254,8 @@ HuTao_ChargeAttack_N1C() {
     Click, right
 }
 
+; Hu Tao Blood Blossom cancel (Need Constellation 1)
 HuTao_ChargeAttack_N1C_Hold() {
-    ; Hu Tao Blood Blossom cancel (Need Constellation 1)
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P")) {
         Click, down
@@ -281,6 +303,19 @@ Klee_ChargeAttack() {
         Send, {Space}
         Sleep, 575  ; 550
     }
+}
+
+; Hold to animation cancel elemental skills
+XingQiu_ElementalSkill() {
+    Send, {[}
+    Click, right
+}
+
+Regular_ElementalSkill() {
+    Send, {[ down}
+    while (GetKeyState(A_ThisHotkey, "P")) {
+    }
+    Send, {[ up}
 }
 
 Ganyu_ChargeAttack() {
@@ -337,7 +372,7 @@ Klee_AutoAttack2() {
 Regular_AutoAttack() {
     while (GetKeyState(A_ThisHotkey, "P")) {
         Click
-        Sleep, 30
+        Sleep, 25
     }
 }
 
@@ -429,12 +464,14 @@ CheckEscPressedAndExit() {
 }
 
 ; Hold to exit the boat
-NumPad0::Space
+NumpadEnter::Space
 
-; Hold to animation cancel elemental skills
+F15::]
+
+F16::MButton
+
 F17::
-    Send, {F14}
-    Click, right
+    Regular_AutoAttack()
 return
 
 PrintScreen::!PrintScreen
