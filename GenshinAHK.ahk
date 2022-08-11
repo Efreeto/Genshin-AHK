@@ -5,6 +5,7 @@
 ; 'Start in:': {this location}
 
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#IfWinActive ahk_exe GenshinImpact.exe
 #SingleInstance Force
 
 ; Rerun script with administrator rights if required.
@@ -17,21 +18,7 @@ if (!A_IsAdmin) {
     }
 }
 
-SetTimer, SuspendOnGameInactive, -1
 SetTimer, ConfigureTeamHotkeys, -1
-
-SuspendOnGameInactive() {
-    GameProcessName := "ahk_exe GenshinImpact.exe"
-
-    Suspend ; Run suspended
-    loop {
-        WinWaitActive, %GameProcessName%
-        Suspend, Off
-
-        WinWaitNotActive, %GameProcessName%
-        Suspend, On
-    }
-}
 
 GetFileName() {
     WinGet, activeprocess, ProcessName, A
@@ -79,6 +66,8 @@ SkipDialogue() {
 
 SpecialInteraction() {
     if (IsNearKatheryne()) {
+        SoundPlay, %A_WinDir%\Media\Speech On.wav
+        
         Send, {f}   ; talk to Katherine
         SkipDialogue()
         CollectCommissionRewards()
@@ -86,6 +75,21 @@ SpecialInteraction() {
         Send, {f}   ; talk to Katherine
         SkipDialogue()
         CollectExpeditionRewardsAndSendExpeditions()
+    } else if (IsAtEndOfDomain()) {
+        SoundPlay, %A_WinDir%\Media\ding.wav
+        
+        Send, {f}   ; collect rewards
+        Sleep, 50
+        Click, 1010 1000    ; use condensed resin
+
+        Sleep, 100
+        Click, 2365 75
+        Sleep, 150
+        Click, 2365 75
+        Sleep, 175
+        Click, 2365 75  ; skip
+        
+        MouseMove, 1600, 1340
     } else {
         Send, {MButton down}
         while (GetKeyState(A_ThisHotkey, "P")) {
@@ -383,7 +387,6 @@ Regular_AutoAttack() {
 }
 
 IsCharacterSlowed() {
-    ;1101 (0.430078) x 1292 (0.897222) => 0xFDFDCD
     PixelSearch, varX, varY, 1100, 1290, 1102, 1292, 0xFDFDCD, 8    ; 2560x1440
     return !ErrorLevel
 }
@@ -405,10 +408,28 @@ IsNearKatheryne() {
     if ErrorLevel
         return false
 
-    SoundPlay, %A_WinDir%\Media\Speech On.wav
     return true
 }
 
+IsAtEndOfDomain() {
+    PixelSearch, varX, varY, 1587, 730, 1587, 730, 0xFFFFFF, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1584, 700, 1584, 700, 0xDDDAD8, 4    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1635, 715, 1635, 715, 0xFFFFFF, 0    ; 2560x1440
+    if ErrorLevel
+        return false
+        
+    PixelSearch, varX, varY, 1915, 725, 1915, 725, 0xFEFEFE, 4    ; 2560x1440
+    if ErrorLevel
+        return false
+
+    return true
+}
 
 ; =======================================
 ; Regular actions
