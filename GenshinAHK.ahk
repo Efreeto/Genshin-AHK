@@ -1,22 +1,22 @@
-﻿; Create a shortcut in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+﻿; To run on Windows startup
+; Create a shortcut in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
 ; or in C:\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 ; with 
 ; 'Target': "C:\{AutoHotkey install location}\AutoHotkey.exe" "GenshinAHK.ahk"
 ; 'Start in:': {this location}
+; 'Advanced...' > Enable 'Run as administrator'
+; 
+; To reload the script when developing it
+; Create a short cut in desktop
+; with
+; 'Target': "{this location}\GenshinAHK.ahk"
+; 'Start in:': {this location}
+; 'Advanced...' > Enable 'Run as administrator'
 
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+
 #IfWinActive ahk_exe GenshinImpact.exe
 #SingleInstance Force
-
-; Rerun script with administrator rights if required.
-if (!A_IsAdmin) {
-    try {
-        Run *RunAs "%A_ScriptFullPath%"
-    } catch e {
-        MsgBox, Failed to run script with administrator rights
-        ExitApp
-    }
-}
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
 SetTimer, ConfigureTeamHotkeys, -1
 
