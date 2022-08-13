@@ -392,23 +392,34 @@ IsCharacterSlowed() {
 }
 
 IsNearKatheryne() {
-    PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
-    if ErrorLevel
-        return false
-
-    PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
-    if ErrorLevel
-        return false
-        
-    PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
-    if ErrorLevel
-        return false
-        
-    PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
-    if ErrorLevel
-        return false
-
-    return true
+    ImageSearch, VarX, VarY, 1440, 660, 1760, 760, *TransBlack *2 Katheryne_KR.png
+    found_KR := !ErrorLevel
+    
+    ImageSearch, VarX, VarY, 1000, 500, 2000, 1000, *TransBlack *50 Katheryne_EN.png
+    found_EN := !ErrorLevel
+    
+    found := found_KR || found_EN
+    MsgBox, %ErrorLevel%  %found_KR% %found_EN% FOUND: %found%
+    ;return !ErrorLevel
+    
+    
+    ;PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
+    ;
+    ;PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
+    ;    
+    ;PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
+    ;    
+    ;PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
+    ;
+    ;return true
 }
 
 IsAtEndOfDomain() {
