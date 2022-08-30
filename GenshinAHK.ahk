@@ -4,19 +4,24 @@
 ; with 
 ; 'Target': "C:\{AutoHotkey install location}\AutoHotkey.exe" "GenshinAHK.ahk"
 ; 'Start in:': {this location}
-; 'Advanced...' > Enable 'Run as administrator'
+; and change property of "C:\{AutoHotkey install location}\AutoHotkey.exe" > Compatibility > Run as Administrator
 ; 
 ; To reload the script when developing it
 ; Create a short cut in desktop
 ; with
 ; 'Target': "{this location}\GenshinAHK.ahk"
 ; 'Start in:': {this location}
-; 'Advanced...' > Enable 'Run as administrator'
 
 
 #IfWinActive ahk_exe GenshinImpact.exe
 #SingleInstance Force
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+
+if not A_IsAdmin
+{
+   Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
+   ExitApp
+}
 
 SetTimer, ConfigureTeamHotkeys, -1
 
@@ -82,14 +87,16 @@ SpecialInteraction() {
         Sleep, 50
         Click, 1010 1000    ; use condensed resin
 
-        Sleep, 100
+        Sleep, 125
+        Click, 2365 75
+        Sleep, 125
         Click, 2365 75
         Sleep, 150
         Click, 2365 75
-        Sleep, 175
+        Sleep, 150
         Click, 2365 75  ; skip
         
-        MouseMove, 1600, 1340
+        MouseMove, 1600, 1340   ; put cursor at Continue challenge(sic)
     } else {
         Send, {MButton down}
         while (GetKeyState(A_ThisHotkey, "P")) {
@@ -175,11 +182,11 @@ ActivateGanyu() {
     Hotkey, F18, Ganyu_ChargeAttack
 }
 
-ActivateXingQiu() {
-    Hotkey, F13, Regular_AutoAttack
-    Hotkey, F14, RapidCanceling_ElementalSkill
-    Hotkey, F18, Regular_AutoAttack
-}
+; ActivateXingQiu() {
+;     Hotkey, F13, Regular_AutoAttack
+;     Hotkey, F14, RapidCanceling_ElementalSkill
+;     Hotkey, F18, Regular_AutoAttack
+; }
 
 ActivateRegularCharacter() {
     Hotkey, F13, Regular_AutoAttack
@@ -319,6 +326,7 @@ Klee_ChargeAttack() {
 RapidCanceling_ElementalSkill() {
     Send, {[}
     Click, right
+    Sleep, 30
 }
 
 Regular_ElementalSkill() {
@@ -400,13 +408,15 @@ IsNearKatheryne() {
     if ErrorLevel
         return false
         
-    PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
-    if ErrorLevel
-        return false
+    ; EN specific
+    ;PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
         
-    PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
-    if ErrorLevel
-        return false
+    ; EN specific
+    ;PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
 
     return true
 }
@@ -415,18 +425,20 @@ IsAtEndOfDomain() {
     PixelSearch, varX, varY, 1587, 730, 1587, 730, 0xFFFFFF, 0    ; 2560x1440
     if ErrorLevel
         return false
-        
+    
     PixelSearch, varX, varY, 1584, 700, 1584, 700, 0xDDDAD8, 4    ; 2560x1440
     if ErrorLevel
         return false
-        
-    PixelSearch, varX, varY, 1635, 715, 1635, 715, 0xFFFFFF, 0    ; 2560x1440
-    if ErrorLevel
-        return false
-        
-    PixelSearch, varX, varY, 1915, 725, 1915, 725, 0xFEFEFE, 4    ; 2560x1440
-    if ErrorLevel
-        return false
+    
+    ; EN specific
+    ;PixelSearch, varX, varY, 1635, 715, 1635, 715, 0xFFFFFF, 0    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
+    
+    ; EN specific
+    ;PixelSearch, varX, varY, 1915, 725, 1915, 725, 0xFEFEFE, 4    ; 2560x1440
+    ;if ErrorLevel
+    ;    return false
 
     return true
 }
@@ -437,20 +449,25 @@ IsAtEndOfDomain() {
 
 TypingMode := false
 ; Hold to unfreeze self
-~Space:: ; ~ passes the key down through
-    if (TypingMode)
-    {
-        Sleep, 750
-        if not GetKeyState(A_Space, "P")
-            return
-        
-        ; Disable typing mode if pressed for a long time
-        DisableTypingMode()
+Space::
+    global TypingMode    
+    Send, {Space down}
+    if (TypingMode) {
+        while (GetKeyState(A_ThisHotkey, "P")) {
+            if (A_TimeSinceThisHotkey > 750) {
+                ; Disable typing mode if pressed for a long time
+                DisableTypingMode()
+                break
+            }
+        }
+        Send, {Space up}
+        return
+    } else {
+        Sleep, 250 ; Repeat delay
     }
-
-    Sleep, 250 ; Repeat delay
-    while GetKeyState(A_Space, "P")
-    {
+    
+    Send, {Space up}    
+    while GetKeyState(A_Space, "P") {
         Send, {Space} ; Repeated keydowns
         Sleep, 30 ; Repeat rate
     }
@@ -463,21 +480,22 @@ return
 
 EnableTypingMode() {
     global TypingMode
-    TypingMode := true
-    
-    SoundPlay, %A_WinDir%\Media\Windows User Account Control.wav
+    if (!TypingMode) {
+        SoundPlay, %A_WinDir%\Media\Windows User Account Control.wav
+        TypingMode := true
+    }
 }
 
 DisableTypingMode() {
     global TypingMode
-    TypingMode := false
-    
-    SoundPlay, %A_WinDir%\Media\Windows Notify Calendar.wav
+    if (TypingMode) {
+        SoundPlay, %A_WinDir%\Media\Windows Notify Calendar.wav
+        TypingMode := false
+    }
 }
 
 CheckTypingModeAndExit() {
     global TypingMode
-    
     if (TypingMode) {
         Exit
     }
