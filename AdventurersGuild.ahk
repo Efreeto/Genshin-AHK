@@ -4,7 +4,7 @@
 ; =======================================
 
 NumpadAdd::
-    CollectExpeditionRewardsAndSendExpeditions()
+CollectExpeditionRewardsAndSendExpeditions()
 return
 
 CollectCommissionRewards() {
@@ -39,7 +39,7 @@ CollectExpeditionRewardsAndSendExpeditions() {
     ;; Actions ;;
     ScreenClick(0.8, 0.6)   ; Expedition option from Mondstadt/Liyue
     Sleep, 500
-    
+
     expeditionMapSelected := -1 ; Assume no map was selected by default
     CheckEscPressedAndExit()
     ReceiveReward(WhisperingWoodsExpedition)
@@ -51,10 +51,10 @@ CollectExpeditionRewardsAndSendExpeditions() {
     ReceiveReward(JueyunKarstExpedition)
     CheckEscPressedAndExit()
     ReceiveReward(JinrenIslandExpedition)
-    
+
     ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-    duration := 0  
-    
+    duration := 0
+
     CheckEscPressedAndExit()
     SendOnExpedition(WhisperingWoodsExpedition, 2, duration)
     CheckEscPressedAndExit()
@@ -65,7 +65,7 @@ CollectExpeditionRewardsAndSendExpeditions() {
     SendOnExpedition(JueyunKarstExpedition, 2, duration)
     CheckEscPressedAndExit()
     SendOnExpedition(JinrenIslandExpedition, 1, duration)
-    
+
     Send, {Esc}
 }
 
@@ -76,41 +76,41 @@ CollectExpeditionRewardsAndSendExpeditions() {
 
 SelectExpedition(expedition, calledFromReceiveReward := false) {
     global expeditionMapSelected
-    
+
     ; Click on the world
     if (expedition.map != expeditionMapSelected)
     {
-        WorldY := 160*1.333 + (expedition.map * 72*1.333)   ; initial position + offset between lines        
+        WorldY := 160*1.333 + (expedition.map * 72*1.333)   ; initial position + offset between lines
         MouseClick, left, 200*1.333, WorldY
         Sleep, 200
-        
+
         expeditionMapSelected := expedition.map
-        
+
         ; If the current expedition is the first one on the map, or if this was called from ReceiveReward(), the expedition must be already selected after the map change
         if (expedition.isFirstOnMap || calledFromReceiveReward)
             return
     }
-    
+
     ; Click on the expedition
     MouseClick, left, expedition.x, expedition.y
 }
 
-SelectDuration(duration := 0) {        
+SelectDuration(duration := 0) {
     switch duration
     {
-    case 0:
-        return
-    case 4:
-        MouseClick, left, 1500*1.333, 700*1.333
-        Sleep, 150
-        return
-    case 20:
-        MouseClick, left, 1800*1.333, 700*1.333
-        Sleep, 150
-        return
-    Default:
-        MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-        return
+        case 0:
+            return
+        case 4:
+            MouseClick, left, 1500*1.333, 700*1.333
+            Sleep, 150
+            return
+        case 20:
+            MouseClick, left, 1800*1.333, 700*1.333
+            Sleep, 150
+            return
+        Default:
+            MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+            return
     }
 }
 
@@ -133,7 +133,7 @@ SendOnExpedition(expedition, characterNumberInList, duration := 0) {
     Sleep, 170
 
     SelectDuration(duration)
-    
+
     ClickOnBottomRightButton()  ; click on "Select Character"
     Sleep, 170
 

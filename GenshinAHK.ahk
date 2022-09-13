@@ -1,11 +1,11 @@
 ﻿; To run on Windows startup
 ; Create a shortcut in C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
 ; or in C:\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-; with 
+; with
 ; 'Target': "C:\{AutoHotkey install location}\AutoHotkey.exe" "GenshinAHK.ahk"
 ; 'Start in:': {this location}
 ; and change property of "C:\{AutoHotkey install location}\AutoHotkey.exe" > Compatibility > Run as Administrator
-; 
+;
 ; To reload the script when developing it
 ; Create a short cut in desktop
 ; with
@@ -19,8 +19,8 @@
 
 if not A_IsAdmin
 {
-   Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
-   ExitApp
+    Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
+    ExitApp
 }
 
 SetTimer, Initialize, -1
@@ -53,7 +53,7 @@ X(posX) {
     return Round(A_ScreenWidth * posX)
 }
 
-Y(posY) {    
+Y(posY) {
     return Round(A_ScreenHeight * posY)
 }
 
@@ -72,27 +72,27 @@ SkipDialogue() {
     } else {    ; "EN"
         Sleep, 700
     }
-    
+
     Send, {f}   ; skip dialogue
     Sleep, 200
     Send, {f}   ; close dialogue
-    Sleep, 1000    
+    Sleep, 1000
 }
 
 SpecialInteraction() {
     if (IsNearKatheryne()) {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
-        
+
         Send, {f}   ; talk to Katherine
         SkipDialogue()
         CollectCommissionRewards()
-        
+
         Send, {f}   ; talk to Katherine
         SkipDialogue()
         CollectExpeditionRewardsAndSendExpeditions()
     } else if (IsAtEndOfDomain()) {
         SoundPlay, %A_WinDir%\Media\ding.wav
-        
+
         Send, {f}   ; collect rewards
         Sleep, 50
         ScreenClick(0.3945, 0.6944)    ; use condensed resin
@@ -105,7 +105,7 @@ SpecialInteraction() {
         ScreenClick(0.9238, 0.0521)
         Sleep, 150
         ScreenClick(0.9238, 0.0521)  ; skip
-        
+
         MouseMove, X(0.6250), Y(0.9305)   ; put cursor at Continue challenge(sic)
     } else {
         Send, {MButton down}
@@ -123,34 +123,34 @@ Member1 := "regular"
 Member4 := "regular"
 
 NumPad1::
-    Member1 := "hutao"
-    SoundPlay, %A_WinDir%\Media\chimes.wav
-    ConfigureTeamHotkeys()
+Member1 := "hutao"
+SoundPlay, %A_WinDir%\Media\chimes.wav
+ConfigureTeamHotkeys()
 return
 
 NumPad2::
-    Member1 := "klee"
-    SoundPlay, %A_WinDir%\Media\tada.wav
-    ConfigureTeamHotkeys()
+Member1 := "klee"
+SoundPlay, %A_WinDir%\Media\tada.wav
+ConfigureTeamHotkeys()
 return
 
 NumPad4::
-    Member4 := "ganyu"
-    SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
-    ConfigureTeamHotkeys()
+Member4 := "ganyu"
+SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
+ConfigureTeamHotkeys()
 return
 
 NumPad0::
-    Member1 := "regular"
-    Member4 := "regular"
-    SoundPlay, %A_WinDir%\Media\Windows Error.wav
-    ConfigureTeamHotkeys()
+Member1 := "regular"
+Member4 := "regular"
+SoundPlay, %A_WinDir%\Media\Windows Error.wav
+ConfigureTeamHotkeys()
 return
 
 ConfigureTeamHotkeys() {
     global Member1
     global Member4
-    
+
     if (Member1 == "hutao") {
         Hotkey, ~1, ActivateHuTao
         ActivateHuTao()
@@ -161,11 +161,11 @@ ConfigureTeamHotkeys() {
         Hotkey, ~1, ActivateRegularCharacter
         ActivateRegularCharacter()
     }
-    
+
     Hotkey, ~q, ActivateRegularCharacter
-    
+
     Hotkey, ~3, ActivateRegularCharacter
-    
+
     if (Member4 == "ganyu") {
         Hotkey, ~e, ActivateGanyu
     } else {
@@ -249,7 +249,7 @@ HuTao_ChargeAttack_N2C() { ; Good at 230ms
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms    
+HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P")) {
         Click
@@ -375,7 +375,7 @@ Regular_ChargeAttack() {
 }
 
 ; Klee walk cancel
-Klee_AutoAttack() {    
+Klee_AutoAttack() {
     if (IsCharacterSlowed())
         pause := 590    ; at 84-88ms
     else
@@ -413,16 +413,16 @@ IsNearKatheryne() {
     PixelSearch, varX, varY, X(0.6172), Y(0.5035), X(0.6172), Y(0.5035), 0xFFFFFF, 0
     if ErrorLevel
         return false
-        
+
     PixelSearch, varX, varY, X(0.5805), Y(0.4917), X(0.5805), Y(0.4917), 0x626262, 0
     if ErrorLevel
         return false
-        
+
     ; EN specific
     ;PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
     ;if ErrorLevel
     ;    return false
-        
+
     ; EN specific
     ;PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
     ;if ErrorLevel
@@ -434,17 +434,17 @@ IsNearKatheryne() {
 IsAtEndOfDomain() {
     PixelSearch, varX, varY, X(0.6199), Y(0.5069), X(0.6199), Y(0.5069), 0xFFFFFF, 0
     if ErrorLevel
-        return false   
-    
+        return false
+
     PixelSearch, varX, varY, X(0.6190), Y(0.4884), X(0.6190), Y(0.4884), 0x7D644F, 4
     if ErrorLevel
         return false
-    
+
     ; EN specific
     ;PixelSearch, varX, varY, 1635, 715, 1635, 715, 0xFFFFFF, 0    ; 2560x1440
     ;if ErrorLevel
     ;    return false
-    
+
     ; EN specific
     ;PixelSearch, varX, varY, 1915, 725, 1915, 725, 0xFEFEFE, 4    ; 2560x1440
     ;if ErrorLevel
@@ -460,32 +460,32 @@ IsAtEndOfDomain() {
 TypingMode := false
 ; Hold to unfreeze self
 Space::
-    global TypingMode    
-    Send, {Space down}
-    if (TypingMode) {
-        while (GetKeyState(A_ThisHotkey, "P")) {
-            if (A_TimeSinceThisHotkey > 750) {
-                ; Disable typing mode if pressed for a long time
-                DisableTypingMode()
-                break
-            }
+global TypingMode
+Send, {Space down}
+if (TypingMode) {
+    while (GetKeyState(A_ThisHotkey, "P")) {
+        if (A_TimeSinceThisHotkey > 750) {
+            ; Disable typing mode if pressed for a long time
+            DisableTypingMode()
+            break
         }
-        Send, {Space up}
-        return
-    } else {
-        Sleep, 250 ; Repeat delay
     }
-    
-    Send, {Space up}    
-    while GetKeyState(A_Space, "P") {
-        Send, {Space} ; Repeated keydowns
-        Sleep, 30 ; Repeat rate
-    }
+    Send, {Space up}
+    return
+} else {
+    Sleep, 250 ; Repeat delay
+}
+
+Send, {Space up}
+while GetKeyState(A_Space, "P") {
+    Send, {Space} ; Repeated keydowns
+    Sleep, 30 ; Repeat rate
+}
 return
 
 ; Enable typing mode
 ~Backspace::
-    EnableTypingMode()
+EnableTypingMode()
 return
 
 EnableTypingMode() {
@@ -524,11 +524,11 @@ NumpadEnter::Space
 F15::]
 
 F16::
-    SpecialInteraction()
+SpecialInteraction()
 return
 
 F17::
-    RapidCanceling_ElementalSkill()
+RapidCanceling_ElementalSkill()
 return
 
 PrintScreen::!PrintScreen
@@ -552,13 +552,13 @@ GetColorAndLocationAtMouse() {
 }
 
 *NumPad8::
-    MouseMove, X(0.6188), Y(0.4861)   ; put cursor at Continue challenge(sic)
+MouseMove, X(0.6188), Y(0.4861)   ; put cursor at Continue challenge(sic)
 return
 
 *NumPad9::
-    ;SoundBeep, 100
-    ;GetColorAtLocation(480, 612)
-    GetColorAndLocationAtMouse()
+;SoundBeep, 100
+;GetColorAtLocation(480, 612)
+GetColorAndLocationAtMouse()
 return
 
 
