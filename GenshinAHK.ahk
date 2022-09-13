@@ -42,7 +42,7 @@ GetWinName() {
 }
 
 ClickOnBottomRightButton() {
-    ScreenClick(0.9, 0.95)
+    ScreenClick(14.4, 8.55)
 }
 
 ScreenClick(posX, posY) {
@@ -50,11 +50,11 @@ ScreenClick(posX, posY) {
 }
 
 X(posX) {
-    return Round(A_ScreenWidth * posX)
+    return Round(A_ScreenWidth * posX / 16)
 }
 
 Y(posY) {
-    return Round(A_ScreenHeight * posY)
+    return Round(A_ScreenHeight * posY / 9)
 }
 
 DetectDisplayLanguage() {
@@ -95,18 +95,18 @@ SpecialInteraction() {
 
         Send, {f}   ; collect rewards
         Sleep, 50
-        ScreenClick(0.3945, 0.6944)    ; use condensed resin
+        ScreenClick(6.31, 6.25)    ; use condensed resin
 
         Sleep, 125
-        ScreenClick(0.9238, 0.0521)
+        ScreenClick(14.78, 0.47)
         Sleep, 125
-        ScreenClick(0.9238, 0.0521)
+        ScreenClick(14.78, 0.47)
         Sleep, 150
-        ScreenClick(0.9238, 0.0521)
+        ScreenClick(14.78, 0.47)
         Sleep, 150
-        ScreenClick(0.9238, 0.0521)  ; skip
+        ScreenClick(14.78, 0.47)  ; skip
 
-        MouseMove, X(0.6250), Y(0.9305)   ; put cursor at Continue challenge(sic)
+        MouseMove, X(10), Y(8.37)   ; put cursor at Continue challenge(sic)
     } else {
         Send, {MButton down}
         while (GetKeyState(A_ThisHotkey, "P")) {
@@ -405,16 +405,16 @@ Regular_AutoAttack() {
 }
 
 IsCharacterSlowed() {
-    PixelSearch, varX, varY, X(0.4297), Y(0.8958), X(0.4305), Y(0.8972), 0xFDFDCD, 8
+    PixelSearch, varX, varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8
     return !ErrorLevel
 }
 
 IsNearKatheryne() {
-    PixelSearch, varX, varY, X(0.6172), Y(0.5035), X(0.6172), Y(0.5035), 0xFFFFFF, 0
+    PixelSearch, varX, varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0
     if ErrorLevel
         return false
 
-    PixelSearch, varX, varY, X(0.5805), Y(0.4917), X(0.5805), Y(0.4917), 0x626262, 0
+    PixelSearch, varX, varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0
     if ErrorLevel
         return false
 
@@ -432,11 +432,11 @@ IsNearKatheryne() {
 }
 
 IsAtEndOfDomain() {
-    PixelSearch, varX, varY, X(0.6199), Y(0.5069), X(0.6199), Y(0.5069), 0xFFFFFF, 0
+    PixelSearch, varX, varY, X(9.92), Y(4.56), X(9.92), Y(4.56), 0xFFFFFF, 0
     if ErrorLevel
         return false
 
-    PixelSearch, varX, varY, X(0.6190), Y(0.4884), X(0.6190), Y(0.4884), 0x7D644F, 4
+    PixelSearch, varX, varY, X(9.9), Y(4.4), X(9.9), Y(4.4), 0x7D644F, 4
     if ErrorLevel
         return false
 
@@ -545,8 +545,8 @@ GetColorAtLocation(x, y) {
 
 GetColorAndLocationAtMouse() {
     MouseGetPos, mouseX, mouseY
-    screenX := mouseX / A_ScreenWidth
-    screenY := mouseY / A_ScreenHeight
+    screenX := mouseX / A_ScreenWidth * 16
+    screenY := mouseY / A_ScreenHeight * 9
     PixelGetColor, color, %mouseX%, %mouseY%
     MsgBox, %mouseX% (%screenX%) x %mouseY% (%screenY%) => %color%
 }
