@@ -23,7 +23,11 @@ if not A_IsAdmin
    ExitApp
 }
 
-SetTimer, ConfigureTeamHotkeys, -1
+SetTimer, Initialize, -1
+
+Initialize() {
+    ConfigureTeamHotkeys()
+}
 
 GetFileName() {
     WinGet, activeprocess, ProcessName, A
@@ -41,10 +45,16 @@ ClickOnBottomRightButton() {
     ScreenClick(0.9, 0.95)
 }
 
-ScreenClick(x, y) {
-    screenX := floor(A_ScreenWidth * x)
-    screenY := floor(A_ScreenHeight * y)
-    Click, %screenX% %screenY%
+ScreenClick(posX, posY) {
+    MouseClick, left, X(posX), Y(posY)
+}
+
+X(posX) {
+    return Round(A_ScreenWidth * posX)
+}
+
+Y(posY) {    
+    return Round(A_ScreenHeight * posY)
 }
 
 DetectDisplayLanguage() {
@@ -85,18 +95,18 @@ SpecialInteraction() {
         
         Send, {f}   ; collect rewards
         Sleep, 50
-        Click, 1010 1000    ; use condensed resin
+        ScreenClick(0.3945, 0.6944)    ; use condensed resin
 
         Sleep, 125
-        Click, 2365 75
+        ScreenClick(0.9238, 0.0521)
         Sleep, 125
-        Click, 2365 75
+        ScreenClick(0.9238, 0.0521)
         Sleep, 150
-        Click, 2365 75
+        ScreenClick(0.9238, 0.0521)
         Sleep, 150
-        Click, 2365 75  ; skip
+        ScreenClick(0.9238, 0.0521)  ; skip
         
-        MouseMove, 1600, 1340   ; put cursor at Continue challenge(sic)
+        MouseMove, X(0.6250), Y(0.9305)   ; put cursor at Continue challenge(sic)
     } else {
         Send, {MButton down}
         while (GetKeyState(A_ThisHotkey, "P")) {
@@ -395,16 +405,16 @@ Regular_AutoAttack() {
 }
 
 IsCharacterSlowed() {
-    PixelSearch, varX, varY, 1100, 1290, 1102, 1292, 0xFDFDCD, 8    ; 2560x1440
+    PixelSearch, varX, varY, X(0.4297), Y(0.8958), X(0.4305), Y(0.8972), 0xFDFDCD, 8
     return !ErrorLevel
 }
 
 IsNearKatheryne() {
-    PixelSearch, varX, varY, 1580, 725, 1580, 725, 0xFFFFFF, 0    ; 2560x1440
+    PixelSearch, varX, varY, X(0.6172), Y(0.5035), X(0.6172), Y(0.5035), 0xFFFFFF, 0
     if ErrorLevel
         return false
-
-    PixelSearch, varX, varY, 1490, 715, 1490, 715, 0xB1B1B1, 0    ; 2560x1440
+        
+    PixelSearch, varX, varY, X(0.5805), Y(0.4917), X(0.5805), Y(0.4917), 0x626262, 0
     if ErrorLevel
         return false
         
@@ -422,11 +432,11 @@ IsNearKatheryne() {
 }
 
 IsAtEndOfDomain() {
-    PixelSearch, varX, varY, 1587, 730, 1587, 730, 0xFFFFFF, 0    ; 2560x1440
+    PixelSearch, varX, varY, X(0.6199), Y(0.5069), X(0.6199), Y(0.5069), 0xFFFFFF, 0
     if ErrorLevel
-        return false
+        return false   
     
-    PixelSearch, varX, varY, 1584, 700, 1584, 700, 0xDDDAD8, 4    ; 2560x1440
+    PixelSearch, varX, varY, X(0.6190), Y(0.4884), X(0.6190), Y(0.4884), 0x7D644F, 4
     if ErrorLevel
         return false
     
@@ -542,7 +552,7 @@ GetColorAndLocationAtMouse() {
 }
 
 *NumPad8::
-    GetWinName()
+    MouseMove, X(0.6188), Y(0.4861)   ; put cursor at Continue challenge(sic)
 return
 
 *NumPad9::
