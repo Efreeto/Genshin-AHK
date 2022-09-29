@@ -335,7 +335,7 @@ Klee_ChargeAttack() {
 ; Hold to animation cancel elemental skills
 RapidCanceling_ElementalSkill() {
     Send, {[}
-    Click, right
+    Send, {Space}
     Sleep, 30
 }
 
