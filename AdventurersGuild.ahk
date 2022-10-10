@@ -7,9 +7,8 @@ NumpadAdd::
 CollectExpeditionRewardsAndSendExpeditions()
 return
 
-CollectCommissionRewards() {
-    ScreenClick(12.8, 4.1)  ; Commissions option from Mondstadt or Liyue, not Inazuma
-    Sleep, 500
+CollectCommissionRewards()
+{
     Send, {f}   ; skip dialogue
     Sleep, 200
     CheckEscPressedAndExit()
@@ -18,10 +17,11 @@ CollectCommissionRewards() {
     Send, {Esc}
 }
 
-CollectExpeditionRewardsAndSendExpeditions() {
+CollectExpeditionRewardsAndSendExpeditions()
+{
     ;; Definitions ;;
     ; Expeditions (crystals)
-    WhisperingWoods := { map: 0, x: 8.75, y: 2.75, isFirstOnMap: true } ; 1920 x 1080
+    WhisperingWoods := { map: 0, x: 8.75, y: 2.75, isFirstOnMap: true }
     DadaupaGorge := { map: 0, x: 9.75, y: 5.5 }
     YaoguangShoal := { map: 1, x: 7.92, y: 3.75 }
 
@@ -40,11 +40,7 @@ CollectExpeditionRewardsAndSendExpeditions() {
     ;; Conditions ;;
     expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna] ; Choose 5 expeditions
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-    expeditionMapSelected := -1 ; Assume no map was selected by default
-
-    ;; Actions ;;
-    ScreenClick(12.8, 5.4)   ; The expedition selection from Mondstadt & Liyue's Katheryne
-    Sleep, 500
+    expeditionMapSelected := -1 ; Assume no map was selected and select the map of the first expedition
 
     For i, expedition in expeditions
     {
@@ -127,19 +123,19 @@ SendOnExpedition(expedition, duration := 0) {
 
 SelectDuration(duration := 0) {
     Switch duration {
-    Case 0:
-        return
-    Case 4:
-        ScreenClick(12.5, 5.83)
-        Sleep, 150
-        return
-    Case 20:
-        ScreenClick(15, 5.83)
-        Sleep, 150
-        return
-    Default :
-        MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-        return
+        Case 0:
+            return
+        Case 4:
+            ScreenClick(12.5, 5.83)
+            Sleep, 150
+            return
+        Case 20:
+            ScreenClick(15, 5.83)
+            Sleep, 150
+            return
+        Default :
+            MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+            return
     }
 }
 

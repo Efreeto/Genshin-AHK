@@ -80,15 +80,36 @@ SkipDialogue() {
 }
 
 SpecialInteraction() {
-    if (IsNearKatheryne()) {
+    if (CheckCommissionRewards_AtMondstadtOrLiyue())
+    {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
 
-        Send, {f}   ; talk to Katherine
-        SkipDialogue()
+        ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
+        Sleep, 500
         CollectCommissionRewards()
+    }
+    else if (CheckCommissionRewards_AtInazumaOrSumeru())
+    {
+        SoundPlay, %A_WinDir%\Media\Speech On.wav
 
-        Send, {f}   ; talk to Katherine
-        SkipDialogue()
+        ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+        Sleep, 500
+        CollectCommissionRewards()
+    }
+    else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
+    {
+        SoundPlay, %A_WinDir%\Media\Speech On.wav
+
+        ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
+        Sleep, 500
+        CollectExpeditionRewardsAndSendExpeditions()
+    }
+    else if (CheckExpeditionRewards_AtInazumaOrSumeru())
+    {
+        SoundPlay, %A_WinDir%\Media\Speech On.wav
+
+        ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
+        Sleep, 500
         CollectExpeditionRewardsAndSendExpeditions()
     } else if (IsAtEndOfDomain()) {
         SoundPlay, %A_WinDir%\Media\ding.wav
@@ -409,26 +430,120 @@ IsCharacterSlowed() {
     return !ErrorLevel
 }
 
-IsNearKatheryne() {
-    PixelSearch, varX, varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0
-    if ErrorLevel
-        return false
+CheckCommissionRewards_AtMondstadtOrLiyue()
+{
+    lang := DetectDisplayLanguage()
+    if (lang == "KR")
+    {
+        PixelSearch, varX, varY, X(11.13), Y(4.25), X(11.13), Y(4.25), 0x00FFFF, 0
+        if ErrorLevel
+            return false
 
-    PixelSearch, varX, varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0
-    if ErrorLevel
-        return false
+        PixelSearch, varX, varY, X(13.34), Y(4.27), X(13.34), Y(4.27), 0x00FFFF, 0
+        if ErrorLevel
+            return false
 
-    ; EN specific
-    ;PixelSearch, varX, varY, 1650, 715, 1650, 715, 0x433528, 8    ; 2560x1440
-    ;if ErrorLevel
-    ;    return false
+        return true
+    }
+    else    ; "EN"
+    {
+        PixelSearch, varX, varY, X(11.09), Y(4.24), X(11.09), Y(4.24), 0x00FFFF, 0
+        if ErrorLevel
+            return false
 
-    ; EN specific
-    ;PixelSearch, varX, varY, 1825, 715, 1825, 715, 0xF0F0F0, 8    ; 2560x1440
-    ;if ErrorLevel
-    ;    return false
+        PixelSearch, varX, varY, X(14.95), Y(4.12), X(14.95), Y(4.12), 0x00FFFF, 0
+        if ErrorLevel
+            return false
 
-    return true
+        return true
+    }
+}
+
+CheckCommissionRewards_AtInazumaOrSumeru()
+{
+    lang := DetectDisplayLanguage()
+    if (lang == "KR")
+    {
+        PixelSearch, varX, varY, X(11.12), Y(3.63), X(11.12), Y(3.63), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(12.15), Y(3.50), X(12.15), Y(3.50), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
+    else    ; "EN"
+    {
+        PixelSearch, varX, varY, X(11.20), Y(3.51), X(11.20), Y(3.51), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(14.96), Y(3.60), X(14.96), Y(3.60), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
+}
+
+CheckExpeditionRewards_AtMondstadtOrLiyue()
+{
+    lang := DetectDisplayLanguage()
+    if (lang == "KR")
+    {
+        PixelSearch, varX, varY, X(11.10), Y(5.40), X(11.10), Y(5.40), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(11.98), Y(5.39), X(11.98), Y(5.39), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
+    else    ; "EN"
+    {
+        PixelSearch, varX, varY, X(11.10), Y(5.37), X(11.10), Y(5.37), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(15.03), Y(5.46), X(15.03), Y(5.46), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
+}
+
+CheckExpeditionRewards_AtInazumaOrSumeru()
+{
+    lang := DetectDisplayLanguage()
+    if (lang == "KR")
+    {
+        PixelSearch, varX, varY, X(11.22), Y(4.88), X(11.22), Y(4.88), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(11.93), Y(4.77), X(11.93), Y(4.77), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
+    else    ; "EN"
+    {
+        PixelSearch, varX, varY, X(11.20), Y(4.83), X(11.20), Y(4.83), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        PixelSearch, varX, varY, X(13.83), Y(4.76), X(13.83), Y(4.76), 0x00FFFF, 0
+        if ErrorLevel
+            return false
+
+        return true
+    }
 }
 
 IsAtEndOfDomain() {
