@@ -80,38 +80,13 @@ SkipDialogue() {
 }
 
 SpecialInteraction() {
-    if (CheckCommissionRewards_AtMondstadtOrLiyue())
+    if (IsNearKatheryne())
     {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
-
-        ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
-        Sleep, 500
-        CollectCommissionRewards()
+        CollectKatheryneRewards()
     }
-    else if (CheckCommissionRewards_AtInazumaOrSumeru())
+    else if (IsAtEndOfDomain())
     {
-        SoundPlay, %A_WinDir%\Media\Speech On.wav
-
-        ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
-        Sleep, 500
-        CollectCommissionRewards()
-    }
-    else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
-    {
-        SoundPlay, %A_WinDir%\Media\Speech On.wav
-
-        ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
-        Sleep, 500
-        CollectExpeditionRewardsAndSendExpeditions()
-    }
-    else if (CheckExpeditionRewards_AtInazumaOrSumeru())
-    {
-        SoundPlay, %A_WinDir%\Media\Speech On.wav
-
-        ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
-        Sleep, 500
-        CollectExpeditionRewardsAndSendExpeditions()
-    } else if (IsAtEndOfDomain()) {
         SoundPlay, %A_WinDir%\Media\ding.wav
 
         Send, {f}   ; collect rewards
@@ -535,6 +510,19 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
 }
 
+IsNearKatheryne() {
+    PixelSearch, varX, varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0
+    if ErrorLevel
+        return false
+
+    PixelSearch, varX, varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0
+    if ErrorLevel
+        return false
+
+    return true
+}
+
+
 IsAtEndOfDomain() {
     PixelSearch, varX, varY, X(9.92), Y(4.56), X(9.92), Y(4.56), 0xFFFFFF, 0
     if ErrorLevel
@@ -617,7 +605,7 @@ CheckTypingModeAndExit() {
 
 CheckEscPressedAndExit() {
     if (GetKeyState("Esc", "P")) {
-        SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+        SoundPlay, %A_WinDir%\Media\Speech Off.wav
         Exit
     }
 }

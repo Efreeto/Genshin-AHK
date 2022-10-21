@@ -7,6 +7,45 @@ NumpadAdd::
 CollectExpeditionRewardsAndSendExpeditions()
 return
 
+CollectKatheryneRewards()
+{
+    Loop
+    {
+        Send, {f}   ; talk to Katherine
+        SkipDialogue()
+
+        if (CheckCommissionRewards_AtMondstadtOrLiyue())
+        {
+            ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
+            Sleep, 500
+            CollectCommissionRewards()
+        }
+        else if (CheckCommissionRewards_AtInazumaOrSumeru())
+        {
+            ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+            Sleep, 500
+            CollectCommissionRewards()
+        }
+        else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
+        {
+            ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
+            Sleep, 500
+            CollectExpeditionRewardsAndSendExpeditions()
+        }
+        else if (CheckExpeditionRewards_AtInazumaOrSumeru())
+        {
+            ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
+            Sleep, 500
+            CollectExpeditionRewardsAndSendExpeditions()
+        }
+        else
+        {
+            SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+            break
+        }
+    }
+}
+
 CollectCommissionRewards()
 {
     Send, {f}   ; skip dialogue
