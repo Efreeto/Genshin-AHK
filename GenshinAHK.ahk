@@ -194,35 +194,24 @@ ConfigureTeamHotkeys() {
     }
 }
 
+ActivateRegularCharacter() {
+    Hotkey, F18, Regular_AutoAttack
+    Hotkey, F19, HuTao_ChargeAttack
+}
+
 ActivateHuTao() {
-    Hotkey, F13, Regular_AutoAttack
-    Hotkey, F14, Regular_ElementalSkill
-    Hotkey, F18, HuTao_ChargeAttack
+    Hotkey, F18, Regular_AutoAttack
+    Hotkey, F19, HuTao_ChargeAttack
 }
 
 ActivateKlee() {
-    Hotkey, F13, Klee_ChargeAttack
-    Hotkey, F14, Regular_ElementalSkill
     Hotkey, F18, Klee_AutoAttack
-    ;Hotkey, F19, Klee_ChargeAttack
+    Hotkey, F19, Klee_ChargeAttack
 }
 
 ActivateGanyu() {
     Hotkey, F13, Regular_AutoAttack
-    Hotkey, F14, Regular_ElementalSkill
     Hotkey, F18, Ganyu_ChargeAttack
-}
-
-; ActivateXingQiu() {
-;     Hotkey, F13, Regular_AutoAttack
-;     Hotkey, F14, RapidCanceling_ElementalSkill
-;     Hotkey, F18, Regular_AutoAttack
-; }
-
-ActivateRegularCharacter() {
-    Hotkey, F13, Regular_AutoAttack
-    Hotkey, F14, Regular_ElementalSkill
-    Hotkey, F18, Regular_AutoAttack
 }
 
 HuTao_ChargeAttack() {
@@ -355,8 +344,8 @@ Klee_ChargeAttack() {
 
 ; Hold to animation cancel elemental skills
 RapidCanceling_ElementalSkill() {
-    Send, {[}
-    Send, {Space}
+    ; Send, {[}
+    Click, right   ; OR Send, {Space}
     Sleep, 30
 }
 
@@ -636,15 +625,15 @@ CheckEscPressedAndExit() {
 ; Hold to exit the boat
 NumpadEnter::Space
 
+F13::RapidCanceling_ElementalSkill()
+
+F14::[
+
 F15::]
 
-F16::
-SpecialInteraction()
-return
+F16::SpecialInteraction()
 
-F17::
-RapidCanceling_ElementalSkill()
-return
+F17::RapidCanceling_ElementalSkill()
 
 PrintScreen::!PrintScreen
 ;Insert::!PrintScreen
