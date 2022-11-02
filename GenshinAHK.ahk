@@ -80,7 +80,31 @@ SkipDialogue() {
 }
 
 SpecialInteraction() {
-    if (IsNearKatheryne())
+    if (CheckCommissionRewards_AtMondstadtOrLiyue())
+    {
+        ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
+        Sleep, 500
+        CollectCommissionRewards()
+    }
+    else if (CheckCommissionRewards_AtInazumaOrSumeru())
+    {
+        ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+        Sleep, 500
+        CollectCommissionRewards()
+    }
+    else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
+    {
+        ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
+        Sleep, 500
+        CollectExpeditionRewardsAndSendExpeditions()
+    }
+    else if (CheckExpeditionRewards_AtInazumaOrSumeru())
+    {
+        ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
+        Sleep, 500
+        CollectExpeditionRewardsAndSendExpeditions()
+    }
+    else if (IsNearKatheryne())
     {
         SoundPlay, %A_WinDir%\Media\Speech On.wav
         CollectKatheryneRewards()
@@ -389,12 +413,14 @@ Regular_AutoAttack() {
     }
 }
 
-IsCharacterSlowed() {
+IsCharacterSlowed()
+{
     PixelSearch, varX, varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8
     return !ErrorLevel
 }
 
-IsNearKatheryne() {
+IsNearKatheryne()
+{
     PixelSearch, varX, varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0
     if ErrorLevel
         return false
@@ -406,25 +432,15 @@ IsNearKatheryne() {
     return true
 }
 
-
-IsAtEndOfDomain() {
+IsAtEndOfDomain()
+{
     PixelSearch, varX, varY, X(9.92), Y(4.56), X(9.92), Y(4.56), 0xFFFFFF, 0
     if ErrorLevel
         return false
 
-    PixelSearch, varX, varY, X(9.9), Y(4.4), X(9.9), Y(4.4), 0x7D644F, 4
+    PixelSearch, varX, varY, X(9.9), Y(4.4), X(9.9), Y(4.4), 0x705A47, 2
     if ErrorLevel
         return false
-
-    ; EN specific
-    ;PixelSearch, varX, varY, 1635, 715, 1635, 715, 0xFFFFFF, 0    ; 2560x1440
-    ;if ErrorLevel
-    ;    return false
-
-    ; EN specific
-    ;PixelSearch, varX, varY, 1915, 725, 1915, 725, 0xFEFEFE, 4    ; 2560x1440
-    ;if ErrorLevel
-    ;    return false
 
     return true
 }
@@ -528,12 +544,11 @@ GetColorAndLocationAtMouse() {
 }
 
 *NumPad8::
-MouseMove, X(0.6188), Y(0.4861)   ; put cursor at Continue challenge(sic)
+GetColorAtLocation(X(9.9), Y(4.4))
 return
 
 *NumPad9::
 ;SoundBeep, 100
-;GetColorAtLocation(480, 612)
 GetColorAndLocationAtMouse()
 return
 

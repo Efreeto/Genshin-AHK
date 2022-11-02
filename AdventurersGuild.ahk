@@ -41,6 +41,11 @@ CollectKatheryneRewards()
         else
         {
             SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+            ScreenClick(11.5, 6.7)  ; Exit Katherine
+            Sleep, 500
+            Send, {f}   ; Skip dialogue
+            Sleep, 200
+            Send, {f}   ; Close dialogue
             break
         }
     }
@@ -48,10 +53,10 @@ CollectKatheryneRewards()
 
 CollectCommissionRewards()
 {
-    Send, {f}   ; skip dialogue
+    Send, {f}   ; Skip dialogue
     Sleep, 200
     CheckEscPressedAndExit()
-    Send, {f}   ; close dialogue
+    Send, {f}   ; Close dialogue
     Sleep, 1500
     Send, {Esc}
 }
@@ -90,7 +95,7 @@ CollectExpeditionRewardsAndSendExpeditions()
     For i, expedition in expeditions
     {
         CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        SendOnExpedition(expedition)
+        SendOnExpedition(expedition, duration)
     }
 
     Send, {Esc} ; Exit
@@ -252,7 +257,7 @@ SelectMap(expedition)
     return false
 }
 
-SendOnExpedition(expedition, duration := 0) {
+SendOnExpedition(expedition, duration) {
     mapWasChanged := SelectMap(expedition)
     Sleep, 170
 
@@ -276,7 +281,7 @@ SendOnExpedition(expedition, duration := 0) {
     Sleep, 225
 }
 
-SelectDuration(duration := 0) {
+SelectDuration(duration) {
     Switch duration {
         Case 0:
             return
