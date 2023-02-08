@@ -17,25 +17,21 @@ CollectKatheryneRewards()
         if (CheckCommissionRewards_AtMondstadtOrLiyue())
         {
             ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
-            Sleep, 500
-            CollectCommissionRewards()
-        }
-        else if (CheckCommissionRewards_AtInazumaOrSumeru())
-        {
-            ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
-            Sleep, 500
             CollectCommissionRewards()
         }
         else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
         {
             ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
-            Sleep, 500
             CollectExpeditionRewardsAndSendExpeditions()
+        }
+        else if (CheckCommissionRewards_AtInazumaOrSumeru())
+        {
+            ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+            CollectCommissionRewards()
         }
         else if (CheckExpeditionRewards_AtInazumaOrSumeru())
         {
             ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
-            Sleep, 500
             CollectExpeditionRewardsAndSendExpeditions()
         }
         else
@@ -53,6 +49,7 @@ CollectKatheryneRewards()
 
 CollectCommissionRewards()
 {
+    Sleep, 525
     Send, {f}   ; Skip dialogue
     Sleep, 200
     CheckEscPressedAndExit()
@@ -63,13 +60,8 @@ CollectCommissionRewards()
 
 CollectExpeditionRewardsAndSendExpeditions()
 {
-    ;; Definitions ;;
-    ; Expeditions (crystals)
-    WhisperingWoods := { map: 0, x: 8.75, y: 2.75, isFirstOnMap: true }
-    DadaupaGorge := { map: 0, x: 9.75, y: 5.5 }
-    YaoguangShoal := { map: 1, x: 7.92, y: 3.75 }
-
-    ; Expeditions (mora)
+    ;; Expeditions ;;
+    ; Mora
     StormterrorLair := { map: 0, x: 4.58, y: 3.33 }
     GuiliPlains := { map: 1, x: 6.67, y: 4.58 }
     JueyunKarst := { map: 1, x: 4.7, y: 4.7}
@@ -77,14 +69,21 @@ CollectExpeditionRewardsAndSendExpeditions()
     Tatarasuna := { map: 2, x: 6.9, y: 6.9 }
     ArdraviValley := { map: 3, x: 8.6, y: 5.1 }
 
-    ; Expeditions (food)
+    ; Crystals
+    WhisperingWoods := { map: 0, x: 8.75, y: 2.75, isFirstOnMap: true }
+    DadaupaGorge := { map: 0, x: 9.75, y: 5.5 }
+    YaoguangShoal := { map: 1, x: 7.92, y: 3.75 }
+
+    ; Food
     Windrise := { map: 0, x: 9.26, y: 3.79 }
     DihuaMarsh := { map: 1, x: 6.07, y: 2.77, isFirstOnMap: true }
 
     ;; Conditions ;;
-    expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna] ; Choose 5 expeditions
+    expeditions := [StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna, ArdraviValley] ; Choose 5 expeditions
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
     expeditionMapSelected := -1 ; Assume no map was selected and select the map of the first expedition
+
+    Sleep, 500
 
     For i, expedition in expeditions
     {
@@ -225,7 +224,7 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
 ReceiveReward(expedition)
 {
     mapWasChanged := SelectMap(expedition)
-    Sleep, 170
+    Sleep, 175
 
     ; If there's a reward waiting on the expedition (and is before the next expedition, which is not implemented yet), the expedition must be already selected after the map change
     if (!mapWasChanged)
@@ -234,10 +233,10 @@ ReceiveReward(expedition)
     }
 
     ClickOnBottomRightButton()  ; Receive reward
-    Sleep, 170
+    Sleep, 175
 
     Send, {Esc} ; Skip reward menu
-    Sleep, 170
+    Sleep, 175
 }
 
 SelectMap(expedition)

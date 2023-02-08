@@ -41,28 +41,43 @@ GetWinName() {
     ; "Genshin Impact", "원신"
 }
 
-ClickOnBottomRightButton() {
-    ScreenClick(14.4, 8.55)
-}
-
-ScreenClick(posX, posY) {
-    MouseClick, left, X(posX), Y(posY)
-}
-
-X(posX) {
-    return Round(A_ScreenWidth * posX / 16)
-}
-
-Y(posY) {
-    return Round(A_ScreenHeight * posY / 9)
-}
-
 DetectDisplayLanguage() {
     WinGetTitle, winTitle, A
     if (winTitle == "Genshin Impact")
         return "EN"
     else ; "원신"
         return "KR"
+}
+
+X(posX)
+{
+    return Round(A_ScreenWidth * posX / 16)
+}
+
+Y(posY)
+{
+    return Round(A_ScreenHeight * posY / 9)
+}
+
+ScreenClick(posX, posY)
+{
+    MouseClick, left, X(posX), Y(posY)
+}
+
+ScreenMove(posX, posY)
+{
+    MouseMove, X(posX), Y(posY)
+}
+
+ClickOnBottomRightButton()
+{
+    ScreenClick(14.0, 8.5)
+}
+
+IsColorAtPosition(posX, posY, rgb = 0xFFFFFF, rgbVariation = 0)
+{
+    PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
+    return !ErrorLevel
 }
 
 SkipDialogue() {
@@ -79,7 +94,8 @@ SkipDialogue() {
     Sleep, 1000
 }
 
-SpecialInteraction() {
+SpecialInteraction1()
+{
     if (CheckCommissionRewards_AtMondstadtOrLiyue())
     {
         ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
@@ -127,12 +143,20 @@ SpecialInteraction() {
         ScreenClick(14.78, 0.47)  ; skip
 
         MouseMove, X(10), Y(8.37)   ; put cursor at Continue challenge(sic)
-    } else {
+    }
+    else
+    {
         Send, {MButton down}
-        while (GetKeyState(A_ThisHotkey, "P")) {
+        while (GetKeyState(A_ThisHotkey, "P"))
+        {
         }
         Send, {MButton up}
     }
+}
+
+SpecialInteraction2()
+{
+    CheckWarpPoint()
 }
 
 ; =======================================
@@ -209,8 +233,8 @@ ActivateKlee() {
 }
 
 ActivateGanyu() {
-    Hotkey, F13, Regular_AutoAttack
-    Hotkey, F18, Ganyu_ChargeAttack
+    Hotkey, F18, Regular_AutoAttack
+    Hotkey, F19, Ganyu_ChargeAttack
 }
 
 HuTao_ChargeAttack() {
@@ -372,11 +396,13 @@ Ganyu_ChargeAttack() {
     Click, up
 }
 
-Regular_ChargeAttack() {
+Regular_ChargeAttack()
+{
     Click, down
     KeyWait, % hk  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
-    if (TimeSinceKeyPressed < 370) {    ; 350
+    if (TimeSinceKeyPressed < 370)    ; 350
+    {
         ; Hold LMB minimum for 370ms
         Sleep, % 370 - TimeSinceKeyPressed
     }
@@ -384,21 +410,25 @@ Regular_ChargeAttack() {
 }
 
 ; Klee walk cancel
-Klee_AutoAttack() {
+Klee_AutoAttack()
+{
     if (IsCharacterSlowed())
         pause := 590    ; at 84-88ms
     else
         pause := 508    ; at 84-88ms
 
-    while (GetKeyState(A_ThisHotkey, "P")) {
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
         Click
         Sleep, %pause%
     }
 }
 
 ; Klee jump cancel
-Klee_AutoAttack2() {
-    while (GetKeyState(A_ThisHotkey, "P")) {
+Klee_AutoAttack2()
+{
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
         Click
         Sleep, 35
         Send, {Space}
@@ -406,8 +436,10 @@ Klee_AutoAttack2() {
     }
 }
 
-Regular_AutoAttack() {
-    while (GetKeyState(A_ThisHotkey, "P")) {
+Regular_AutoAttack()
+{
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
         Click
         Sleep, 25
     }
@@ -519,23 +551,23 @@ F14::[
 
 F15::]
 
-F16::SpecialInteraction()
+F16::SpecialInteraction1()
 
-F17::RapidCanceling_ElementalSkill()
+F17::SpecialInteraction2()
 
-PrintScreen::!PrintScreen
+PrintScreen::!#PrintScreen ; HDR Screenshot
 ;Insert::!PrintScreen
 
 ; =======================================
 ; Test
 ; =======================================
 
-GetColorAtLocation(x, y) {
+SnapshotColorAtPosition(x, y) {
     PixelGetColor, color, x, y
     MsgBox, %x% x %y% =>%color%
 }
 
-GetColorAndLocationAtMouse() {
+SnapshotColorAtMousePosition() {
     MouseGetPos, mouseX, mouseY
     screenX := mouseX / A_ScreenWidth * 16
     screenY := mouseY / A_ScreenHeight * 9
@@ -544,13 +576,15 @@ GetColorAndLocationAtMouse() {
 }
 
 *NumPad8::
-GetColorAtLocation(X(9.9), Y(4.4))
+;SnapshotColorAtPosition(X(9.9), Y(4.4))
+ScreenMove(12.3, 8.3)
 return
 
 *NumPad9::
 ;SoundBeep, 100
-GetColorAndLocationAtMouse()
+SnapshotColorAtMousePosition()
 return
 
 
 #Include AdventurersGuild.ahk
+#Include MapNavigation.ahk
