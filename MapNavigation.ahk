@@ -7,64 +7,48 @@ CheckWarpPoint()
     {
         ClickWarpAndExit()
     }
-    else if (IsFirstOptionWarpPoint())
+
+    ; Scan list items
+    posX := 1082
+    posY := 608
+    loop 3
     {
-        ClickFirstOption()
-        Sleep, %pause1%
-        ClickWarpAndExit()
+        if (IsListItemWarpPoint(posX, posY))
+        {
+            ScreenClick(posX, posY)
+            Sleep, %pause1%
+            ClickWarpAndExit()
+        }
+
+        posY := posY + 62.5
     }
-    else if (IsSecondOptionWarpPoint())
+
+    ; Scan skewed list items when there are too many
+    posY := 450
+    loop 6
     {
-        ClickSecondOption()
-        Sleep, %pause1%
-        ClickWarpAndExit()
-    }
-    else if (IsThirdOptionWarpPoint())
-    {
-        ClickThirdOption()
-        Sleep, %pause1%
-        ClickWarpAndExit()
+        if (IsListItemWarpPoint(posX, posY))
+        {
+            ScreenClick(posX, posY)
+            Sleep, %pause1%
+            ClickWarpAndExit()
+        }
+
+        posY := posY + 62.5
     }
 }
 
 IsWarpPointSelected()
 {
-    return IsColorAtPosition(12.3, 8.3125, 0x00FFFF)
-        and IsColorAtPosition(12.3, 8.375, 0x575757)
-        and IsColorAtPosition(12.3, 8.43, 0x00FFFF)
+    return IsColorAtPosition(1230, 831.25, 0x00FFFF)
+        and IsColorAtPosition(1230, 837.5, 0x575757)
+        and IsColorAtPosition(1230, 843, 0x00FFFF)
 }
 
-IsFirstOptionWarpPoint()
+IsListItemWarpPoint(posX, posY)
 {
-    return IsColorAtPosition(10.82, 6.08, 0xFFF500)
-        and IsColorAtPosition(10.82, 6.2125, 0xFFFFFF)
-}
-
-IsSecondOptionWarpPoint()
-{
-    return IsColorAtPosition(10.82, 6.72, 0xFFF500)
-        and IsColorAtPosition(10.82, 6.83, 0xFFFFFF)
-}
-
-IsThirdOptionWarpPoint()
-{
-    return IsColorAtPosition(10.82, 7.34, 0xFFF500)
-        and IsColorAtPosition(10.82, 7.45, 0xFFFFFF)
-}
-
-ClickFirstOption()
-{
-    ScreenClick(10.82, 6.08)
-}
-
-ClickSecondOption()
-{
-    ScreenClick(10.82, 6.72)
-}
-
-ClickThirdOption()
-{
-    ScreenClick(10.82, 7.34)
+    return IsColorAtPosition(posX, posY, 0xFFF500)
+        and IsColorAtPosition(posX, posY + 12, 0xFFFFFF)
 }
 
 ClickWarpAndExit()

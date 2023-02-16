@@ -51,12 +51,12 @@ DetectDisplayLanguage() {
 
 X(posX)
 {
-    return Round(A_ScreenWidth * posX / 16)
+    return Round(A_ScreenWidth * posX / 1600)
 }
 
 Y(posY)
 {
-    return Round(A_ScreenHeight * posY / 9)
+    return Round(A_ScreenHeight * posY / 900)
 }
 
 ScreenClick(posX, posY)
@@ -71,10 +71,10 @@ ScreenMove(posX, posY)
 
 ClickOnBottomRightButton()
 {
-    ScreenClick(14.0, 8.5)
+    ScreenClick(1400, 850)
 }
 
-IsColorAtPosition(posX, posY, rgb = 0xFFFFFF, rgbVariation = 0)
+IsColorAtPosition(posX, posY, rgb, rgbVariation = 0)
 {
     PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
     return !ErrorLevel
@@ -98,25 +98,25 @@ SpecialInteraction1()
 {
     if (CheckCommissionRewards_AtMondstadtOrLiyue())
     {
-        ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
+        ScreenClick(1280, 410)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
         Sleep, 500
         CollectCommissionRewards()
     }
     else if (CheckCommissionRewards_AtInazumaOrSumeru())
     {
-        ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+        ScreenClick(1280, 350)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
         Sleep, 500
         CollectCommissionRewards()
     }
     else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
     {
-        ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
+        ScreenClick(1280, 540)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
         Sleep, 500
         CollectExpeditionRewardsAndSendExpeditions()
     }
     else if (CheckExpeditionRewards_AtInazumaOrSumeru())
     {
-        ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
+        ScreenClick(1280, 480)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
         Sleep, 500
         CollectExpeditionRewardsAndSendExpeditions()
     }
@@ -127,22 +127,27 @@ SpecialInteraction1()
     }
     else if (IsAtEndOfDomain())
     {
-        SoundPlay, %A_WinDir%\Media\ding.wav
-
         Send, {f}   ; collect rewards
         Sleep, 50
-        ScreenClick(6.31, 6.25)    ; use condensed resin
-
+        ScreenClick(631, 625)    ; use condensed resin
         Sleep, 125
-        ScreenClick(14.78, 0.47)
-        Sleep, 125
-        ScreenClick(14.78, 0.47)
-        Sleep, 150
-        ScreenClick(14.78, 0.47)
-        Sleep, 150
-        ScreenClick(14.78, 0.47)  ; skip
 
-        MouseMove, X(10), Y(8.37)   ; put cursor at Continue challenge(sic)
+        if (IsColorAtPosition(1066.7, 433.3, 0x6F5549, 2))    ; bag is full
+        {
+            SoundPlay, %A_WinDir%\Media\ding.wav
+            ScreenClick(800, 450)    ; dismiss the pop-up
+            return
+        }
+
+        ScreenClick(1478, 47)
+        Sleep, 125
+        ScreenClick(1478, 47)
+        Sleep, 150
+        ScreenClick(1478, 47)
+        Sleep, 150
+        ScreenClick(1478, 47)  ; skip
+
+        MouseMove, X(1000), Y(837)   ; put cursor at Continue challenge(sic)
     }
     else
     {
@@ -466,15 +471,8 @@ IsNearKatheryne()
 
 IsAtEndOfDomain()
 {
-    PixelSearch, varX, varY, X(9.92), Y(4.56), X(9.92), Y(4.56), 0xFFFFFF, 0
-    if ErrorLevel
-        return false
-
-    PixelSearch, varX, varY, X(9.9), Y(4.4), X(9.9), Y(4.4), 0x705A47, 2
-    if ErrorLevel
-        return false
-
-    return true
+    return IsColorAtPosition(992, 456, 0xFFFFFF)
+        and IsColorAtPosition(990, 440, 0x705A47)
 }
 
 ; =======================================
@@ -562,22 +560,24 @@ PrintScreen::!#PrintScreen ; HDR Screenshot
 ; Test
 ; =======================================
 
-SnapshotColorAtPosition(x, y) {
-    PixelGetColor, color, x, y
-    MsgBox, %x% x %y% =>%color%
+SnapshotColorAtPosition(posX, posY) {
+    mouseX := X(posX)
+    mouseY := Y(posY)
+    PixelGetColor, color, mouseX, mouseY
+    MsgBox, %mouseX% (%posX%) x %mouseY% (%posY%) => %color%
 }
 
 SnapshotColorAtMousePosition() {
     MouseGetPos, mouseX, mouseY
-    screenX := mouseX / A_ScreenWidth * 16
-    screenY := mouseY / A_ScreenHeight * 9
+    posX := mouseX / A_ScreenWidth * 1600
+    posY := mouseY / A_ScreenHeight * 900
     PixelGetColor, color, %mouseX%, %mouseY%
-    MsgBox, %mouseX% (%screenX%) x %mouseY% (%screenY%) => %color%
+    MsgBox, %mouseX% (%posX%) x %mouseY% (%posY%) => %color%
 }
 
 *NumPad8::
-;SnapshotColorAtPosition(X(9.9), Y(4.4))
-ScreenMove(12.3, 8.3)
+;SnapshotColorAtPosition(990, 440)
+ScreenMove(1080, 608)
 return
 
 *NumPad9::

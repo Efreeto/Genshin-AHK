@@ -9,35 +9,35 @@ return
 
 CollectKatheryneRewards()
 {
-    Loop
+    loop
     {
         Send, {f}   ; talk to Katherine
         SkipDialogue()
 
         if (CheckCommissionRewards_AtMondstadtOrLiyue())
         {
-            ScreenClick(12.8, 4.1)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
+            ScreenClick(1280, 410)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
             CollectCommissionRewards()
         }
         else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
         {
-            ScreenClick(12.8, 5.4)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
+            ScreenClick(1280, 540)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
             CollectExpeditionRewardsAndSendExpeditions()
         }
         else if (CheckCommissionRewards_AtInazumaOrSumeru())
         {
-            ScreenClick(12.8, 3.5)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
+            ScreenClick(1280, 350)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
             CollectCommissionRewards()
         }
         else if (CheckExpeditionRewards_AtInazumaOrSumeru())
         {
-            ScreenClick(12.8, 4.8)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
+            ScreenClick(1280, 480)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
             CollectExpeditionRewardsAndSendExpeditions()
         }
         else
         {
             SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
-            ScreenClick(11.5, 6.7)  ; Exit Katherine
+            ScreenClick(1150, 670)  ; Exit Katherine
             Sleep, 500
             Send, {f}   ; Skip dialogue
             Sleep, 200
@@ -62,21 +62,21 @@ CollectExpeditionRewardsAndSendExpeditions()
 {
     ;; Expeditions ;;
     ; Mora
-    StormterrorLair := { map: 0, x: 4.58, y: 3.33 }
-    GuiliPlains := { map: 1, x: 6.67, y: 4.58 }
-    JueyunKarst := { map: 1, x: 4.7, y: 4.7}
-    JinrenIsland := { map: 2, x: 9.14, y: 2.28, isFirstOnMap: true }
-    Tatarasuna := { map: 2, x: 6.9, y: 6.9 }
-    ArdraviValley := { map: 3, x: 8.6, y: 5.1 }
+    StormterrorLair := { map: 0, x: 458, y: 333 }
+    GuiliPlains := { map: 1, x: 667, y: 458 }
+    JueyunKarst := { map: 1, x: 470, y: 470}
+    JinrenIsland := { map: 2, x: 914, y: 228, isFirstOnMap: true }
+    Tatarasuna := { map: 2, x: 690, y: 690 }
+    ArdraviValley := { map: 3, x: 860, y: 510 }
 
     ; Crystals
-    WhisperingWoods := { map: 0, x: 8.75, y: 2.75, isFirstOnMap: true }
-    DadaupaGorge := { map: 0, x: 9.75, y: 5.5 }
-    YaoguangShoal := { map: 1, x: 7.92, y: 3.75 }
+    WhisperingWoods := { map: 0, x: 875, y: 275, isFirstOnMap: true }
+    DadaupaGorge := { map: 0, x: 975, y: 550 }
+    YaoguangShoal := { map: 1, x: 792, y: 375 }
 
     ; Food
-    Windrise := { map: 0, x: 9.26, y: 3.79 }
-    DihuaMarsh := { map: 1, x: 6.07, y: 2.77, isFirstOnMap: true }
+    Windrise := { map: 0, x: 926, y: 379 }
+    DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
 
     ;; Conditions ;;
     expeditions := [StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna, ArdraviValley] ; Choose 5 expeditions
@@ -110,11 +110,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(11.13), Y(4.25), X(11.13), Y(4.25), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1113), Y(425), X(1113), Y(425), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(13.34), Y(4.27), X(13.34), Y(4.27), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1334), Y(427), X(1334), Y(427), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -122,11 +122,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(11.09), Y(4.24), X(11.09), Y(4.24), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1109), Y(424), X(1109), Y(424), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(14.95), Y(4.12), X(14.95), Y(4.12), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1495), Y(412), X(1495), Y(412), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -139,11 +139,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(11.12), Y(3.63), X(11.12), Y(3.63), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1112), Y(363), X(1112), Y(363), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(12.15), Y(3.50), X(12.15), Y(3.50), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1215), Y(350), X(1215), Y(350), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -151,11 +151,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(11.20), Y(3.51), X(11.20), Y(3.51), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1120), Y(351), X(1120), Y(351), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(14.96), Y(3.60), X(14.96), Y(3.60), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1496), Y(360), X(1496), Y(360), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -168,11 +168,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(11.10), Y(5.40), X(11.10), Y(5.40), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1110), Y(540), X(1110), Y(540), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(11.98), Y(5.39), X(11.98), Y(5.39), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1198), Y(539), X(1198), Y(539), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -180,11 +180,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(11.10), Y(5.37), X(11.10), Y(5.37), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1110), Y(537), X(1110), Y(537), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(15.03), Y(5.46), X(15.03), Y(5.46), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1503), Y(546), X(1503), Y(546), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -197,11 +197,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(11.22), Y(4.88), X(11.22), Y(4.88), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1122), Y(488), X(1122), Y(488), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(11.93), Y(4.77), X(11.93), Y(4.77), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1193), Y(477), X(1193), Y(477), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -209,11 +209,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(11.20), Y(4.83), X(11.20), Y(4.83), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1120), Y(483), X(1120), Y(483), 0x00FFFF, 0
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(13.83), Y(4.76), X(13.83), Y(4.76), 0x00FFFF, 0
+        PixelSearch, varX, varY, X(1383), Y(476), X(1383), Y(476), 0x00FFFF, 0
         if ErrorLevel
             return false
 
@@ -245,8 +245,8 @@ SelectMap(expedition)
 
     if (expedition.map != expeditionMapSelected)
     {
-        WorldY := 1.333 + (expedition.map * 0.6)   ; initial position + offset between lines
-        ScreenClick(1.667, WorldY)
+        WorldY := 133.3 + (expedition.map * 60)   ; initial position + offset between lines
+        ScreenClick(166.7, WorldY)
         Sleep, 200
 
         expeditionMapSelected := expedition.map
@@ -285,11 +285,11 @@ SelectDuration(duration) {
         Case 0:
             return
         Case 4:
-            ScreenClick(12.5, 5.83)
+            ScreenClick(1250, 583)
             Sleep, 150
             return
         Case 20:
-            ScreenClick(15, 5.83)
+            ScreenClick(1500, 583)
             Sleep, 150
             return
         Default :
@@ -300,9 +300,9 @@ SelectDuration(duration) {
 
 ; characterNumberInList - starts from 1.
 FindAndSelectCharacter(characterNumberInList) {
-    firstCharacterX := 1.25
-    firstCharacterY := 1.25
-    spacingBetweenCharacters := 1.17
+    firstCharacterX := 125
+    firstCharacterY := 125
+    spacingBetweenCharacters := 117
 
     ScreenClick(firstCharacterX, firstCharacterY + (spacingBetweenCharacters * (characterNumberInList - 1)))
 }
