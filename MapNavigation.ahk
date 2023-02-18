@@ -13,7 +13,14 @@ CheckWarpPoint()
     posY := 608
     loop 3
     {
-        if (IsListItemWarpPoint(posX, posY))
+        if (CheckForWarpPoint(posX, posY))
+        {
+            ScreenClick(posX, posY)
+            Sleep, %pause1%
+            ClickWarpAndExit()
+        }
+
+        if (CheckForSereniteaPotWarpPoint(posX, posY))
         {
             ScreenClick(posX, posY)
             Sleep, %pause1%
@@ -27,7 +34,14 @@ CheckWarpPoint()
     posY := 450
     loop 6
     {
-        if (IsListItemWarpPoint(posX, posY))
+        if (CheckForWarpPoint(posX, posY))
+        {
+            ScreenClick(posX, posY)
+            Sleep, %pause1%
+            ClickWarpAndExit()
+        }
+
+        if (CheckForSereniteaPotWarpPoint(posX, posY))
         {
             ScreenClick(posX, posY)
             Sleep, %pause1%
@@ -45,10 +59,16 @@ IsWarpPointSelected()
         and IsColorAtPosition(1230, 843, 0x00FFFF)
 }
 
-IsListItemWarpPoint(posX, posY)
+CheckForWarpPoint(posX, posY)
 {
     return IsColorAtPosition(posX, posY, 0xFFF500)
         and IsColorAtPosition(posX, posY + 12, 0xFFFFFF)
+}
+
+CheckForSereniteaPotWarpPoint(posX, posY)
+{
+    return IsColorAtPosition(posX, posY, 0xFFFFFF)
+        and IsColorAtPosition(posX, posY + 12, 0x00FFFF)
 }
 
 ClickWarpAndExit()
