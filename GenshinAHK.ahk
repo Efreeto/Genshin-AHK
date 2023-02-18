@@ -96,6 +96,15 @@ SkipDialogue() {
 
 SpecialInteraction1()
 {
+    Send, {MButton down}
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
+    }
+    Send, {MButton up}
+}
+
+SpecialInteraction2()
+{
     if (CheckCommissionRewards_AtMondstadtOrLiyue())
     {
         ScreenClick(1280, 410)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
@@ -149,19 +158,8 @@ SpecialInteraction1()
 
         MouseMove, X(1000), Y(837)   ; put cursor at Continue challenge(sic)
     }
-    else
-    {
-        Send, {MButton down}
-        while (GetKeyState(A_ThisHotkey, "P"))
-        {
-        }
-        Send, {MButton up}
-    }
-}
 
-SpecialInteraction2()
-{
-    CheckWarpPoint()
+    TeleportShortcut()
 }
 
 ; =======================================
