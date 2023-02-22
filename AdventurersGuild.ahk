@@ -12,7 +12,7 @@ CollectKatheryneRewards()
     loop
     {
         Send, {f}   ; talk to Katherine
-        SkipDialogue()
+        SkipKatherineDialogue()
 
         if (CheckCommissionRewards_AtMondstadtOrLiyue())
         {
@@ -45,6 +45,20 @@ CollectKatheryneRewards()
             break
         }
     }
+}
+
+SkipKatherineDialogue() {
+    lang := DetectDisplayLanguage()
+    if (lang == "KR") {
+        Sleep, 500
+    } else {    ; "EN"
+        Sleep, 700
+    }
+
+    Send, {f}   ; skip dialogue
+    Sleep, 200
+    Send, {f}   ; close dialogue
+    Sleep, 1000
 }
 
 CollectCommissionRewards()

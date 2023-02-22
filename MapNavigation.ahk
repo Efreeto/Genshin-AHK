@@ -12,13 +12,17 @@ TeleportShortcut()
     loop 3
     {
         CheckForAllTeleportPoints(posX, posY)
+
+        posY := posY + 62.5
     }
 
     ; Scan skewed list items when there are too many
-    posY := 450
-    loop 6
+    posY := 325
+    loop 7
     {
         CheckForAllTeleportPoints(posX, posY)
+
+        posY := posY + 62.5
     }
 }
 
@@ -53,8 +57,6 @@ CheckForAllTeleportPoints(posX, posY)
         Sleep, %pause1%
         ClickWarpAndExit()
     }
-
-    posY := posY + 62.5
 }
 
 CheckForWarpPoint(posX, posY)

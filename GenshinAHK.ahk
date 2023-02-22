@@ -80,7 +80,15 @@ IsColorAtPosition(posX, posY, rgb, rgbVariation = 0)
     return !ErrorLevel
 }
 
-SkipDialogue() {
+IsNearTalkableNPC()
+{
+    return IsColorAtPosition(992, 440, 0xFFFFFF)
+        and IsColorAtPosition(992, 454, 0xFFFFFF)
+}
+
+SkipDialogue()
+{
+    ; wait for dialogue to load a bit
     lang := DetectDisplayLanguage()
     if (lang == "KR") {
         Sleep, 500
@@ -88,14 +96,37 @@ SkipDialogue() {
         Sleep, 700
     }
 
-    Send, {f}   ; skip dialogue
+    Send, {f}   ; load the whole dialogue
     Sleep, 200
-    Send, {f}   ; close dialogue
+    Send, {f}   ; skip the dialogue
+}
+
+SelectFirstDialogueOption()
+{
+    ScreenClick(1082, 546)
+}
+
+ReputationShortcut()
+{
+    if (!IsNearTalkableNPC())
+    {
+        return
+    }
+
+    Send, {f}   ; talk to NPC
+    SkipDialogue()
+    SkipDialogue()
+
     Sleep, 1000
+    SelectFirstDialogueOption()
+    SkipDialogue()
+    exit
 }
 
 SpecialInteraction1()
 {
+    ReputationShortcut()
+
     Send, {MButton down}
     while (GetKeyState(A_ThisHotkey, "P"))
     {
