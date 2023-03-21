@@ -63,7 +63,7 @@ SkipKatherineDialogue() {
 
 CollectCommissionRewards()
 {
-    Sleep, 525
+    Sleep, 500
     Send, {f}   ; Skip dialogue
     Sleep, 200
     CheckEscPressedAndExit()
@@ -97,7 +97,7 @@ CollectExpeditionRewardsAndSendExpeditions()
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
     expeditionMapSelected := -1 ; Assume no map was selected and select the map of the first expedition
 
-    Sleep, 500
+    Sleep, 600
 
     For i, expedition in expeditions
     {
@@ -237,8 +237,10 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
 
 ReceiveReward(expedition)
 {
+    pause1 := 160
+
     mapWasChanged := SelectMap(expedition)
-    Sleep, 175
+    Sleep, %pause1%
 
     ; If there's a reward waiting on the expedition (and is before the next expedition, which is not implemented yet), the expedition must be already selected after the map change
     if (!mapWasChanged)
@@ -247,10 +249,10 @@ ReceiveReward(expedition)
     }
 
     ClickOnBottomRightButton()  ; Receive reward
-    Sleep, 175
+    Sleep, %pause1%
 
     Send, {Esc} ; Skip reward menu
-    Sleep, 175
+    Sleep, %pause1%
 }
 
 SelectMap(expedition)

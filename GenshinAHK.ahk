@@ -74,10 +74,12 @@ ClickOnBottomRightButton()
     ScreenClick(1400, 850)
 }
 
-IsColorAtPosition(posX, posY, rgb, rgbVariation = 0)
+IsColorAtPosition(posX, posY, rgb)
 {
-    PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
-    return !ErrorLevel
+    PixelGetColor, color, X(posX), Y(posY), Slow
+    return color = rgb
+    ; PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
+    ; return !ErrorLevel
 }
 
 IsNearTalkableNPC()
@@ -172,7 +174,7 @@ SpecialInteraction2()
         ScreenClick(631, 625)    ; use condensed resin
         Sleep, 125
 
-        if (IsColorAtPosition(1066.7, 433.3, 0x6F5549, 2))    ; bag is full
+        if (IsColorAtPosition(1066.7, 433.3, 0x6F5549))    ; bag is full
         {
             SoundPlay, %A_WinDir%\Media\ding.wav
             ScreenClick(800, 450)    ; dismiss the pop-up
@@ -606,7 +608,8 @@ SnapshotColorAtMousePosition() {
 
 *NumPad8::
 ;SnapshotColorAtPosition(990, 440)
-ScreenMove(1080, 608)
+;ScreenMove(1080, 608)
+IsColorAtPosition(1230, 831.25, 0x00FFFF)
 return
 
 *NumPad9::
