@@ -76,7 +76,7 @@ ClickOnBottomRightButton()
 
 IsColorAtPosition(posX, posY, rgb)
 {
-    PixelGetColor, color, X(posX), Y(posY), Slow
+    PixelGetColor, color, X(posX), Y(posY)
     return color = rgb
     ; PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
     ; return !ErrorLevel
@@ -190,6 +190,7 @@ SpecialInteraction2()
         ScreenClick(1478, 47)  ; skip
 
         MouseMove, X(1000), Y(837)   ; put cursor at Continue challenge(sic)
+        exit
     }
 
     TeleportShortcut()

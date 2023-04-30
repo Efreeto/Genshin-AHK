@@ -17,13 +17,15 @@ TeleportShortcut()
     }
 
     ; Scan skewed list items when there are too many
-    posY := 203
+    posY := 575
     loop 10
     {
         CheckForAllTeleportPoints(posX, posY)
 
-        posY := posY + 62
+        posY := posY - 62
     }
+
+    SoundPlay, %A_WinDir%\Media\Windows Navigation Start.wav
 }
 
 IsWarpPointSelected()
@@ -39,44 +41,30 @@ CheckForAllTeleportPoints(posX, posY)
 
     if (CheckForWarpPoint(posX, posY))
     {
-        ScreenMove(posX, posY)
-        SoundBeep, 100
-        exit
-        ;Sleep, %pause1%
-        ;ClickWarpAndExit()
+        ScreenClick(posX, posY)
+        Sleep, %pause1%
+        ClickWarpAndExit()
     }
 
     if (CheckForStatueOfSeven(posX, posY))
     {
-        ScreenMove(posX, posY)
-        SoundBeep, 300
-        SoundBeep, 100
-        exit
-        ;Sleep, %pause1%
-        ;ClickWarpAndExit()
+        ScreenClick(posX, posY)
+        Sleep, %pause1%
+        ClickWarpAndExit()
     }
 
     if (CheckForDomain(posX, posY))
     {
-        ScreenMove(posX, posY)
-        SoundBeep, 500
-        SoundBeep, 300
-        SoundBeep, 100
-        exit
-        ;Sleep, %pause1%
-        ;ClickWarpAndExit()
+        ScreenClick(posX, posY)
+        Sleep, %pause1%
+        ClickWarpAndExit()
     }
 
     if (CheckForSereniteaPotWarpPoint(posX, posY))
     {
-        ScreenMove(posX, posY)
-        SoundBeep, 700
-        SoundBeep, 500
-        SoundBeep, 300
-        SoundBeep, 100
-        exit
-        ;Sleep, %pause1%
-        ;ClickWarpAndExit()
+        ScreenClick(posX, posY)
+        Sleep, %pause1%
+        ClickWarpAndExit()
     }
 }
 
@@ -94,7 +82,7 @@ CheckForStatueOfSeven(posX, posY)
 
 CheckForDomain(posX, posY)
 {
-    return IsColorAtPosition(posX, posY + 15, 0xFFFFFF)
+    return IsColorAtPosition(posX, posY - 3, 0xFFFF00)
         and IsColorAtPosition(posX + 15, posY, 0xFFFFFF)
 }
 

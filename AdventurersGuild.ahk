@@ -70,6 +70,7 @@ CollectCommissionRewards()
     Send, {f}   ; Close dialogue
     Sleep, 1500
     Send, {Esc}
+    exit
 }
 
 CollectExpeditionRewardsAndSendExpeditions()
@@ -93,11 +94,9 @@ CollectExpeditionRewardsAndSendExpeditions()
     DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
 
     ;; Conditions ;;
-    expeditions := [StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna, ArdraviValley] ; Choose 5 expeditions
+    expeditions := [StormterrorLair, WhisperingWoods, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
     expeditionMapSelected := -1 ; Assume no map was selected and select the map of the first expedition
-
-    Sleep, 600
 
     For i, expedition in expeditions
     {
@@ -112,6 +111,7 @@ CollectExpeditionRewardsAndSendExpeditions()
     }
 
     Send, {Esc} ; Exit
+    exit
 }
 
 
