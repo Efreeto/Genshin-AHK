@@ -94,20 +94,20 @@ CollectExpeditionRewardsAndSendExpeditions()
     DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
 
     ;; Conditions ;;
-    expeditions := [StormterrorLair, WhisperingWoods, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
+    expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-    expeditionMapSelected := -1 ; Assume no map was selected and select the map of the first expedition
+    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
 
     For i, expedition in expeditions
     {
         CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        ReceiveReward(expedition)
+        CollectExpeditionReward(expedition)
     }
 
     For i, expedition in expeditions
     {
         CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        SendOnExpedition(expedition, duration)
+        SendExpedition(expedition, duration)
     }
 
     Send, {Esc} ; Exit
@@ -235,46 +235,34 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
 }
 
-ReceiveReward(expedition)
+CollectExpeditionReward(expedition)
 {
-    pause1 := 160
+    pause1 := 170
 
     mapWasChanged := SelectMap(expedition)
     Sleep, %pause1%
 
-    ; If there's a reward waiting on the expedition (and is before the next expedition, which is not implemented yet), the expedition must be already selected after the map change
+    ; If there's a reward waiting on the expedition, the completed expedition is already selected after the map change
+    ; TODO: Fix multiple expeditions on the same map. Currently, the collection order must be from top to bottom
     if (!mapWasChanged)
     {
         ScreenClick(expedition.x, expedition.y) ; Click on the expedition location
     }
 
-    ClickOnBottomRightButton()  ; Receive reward
+    ClickOnBottomRightButton()  ; Collect reward
     Sleep, %pause1%
 
     Send, {Esc} ; Skip reward menu
     Sleep, %pause1%
 }
 
-SelectMap(expedition)
+SendExpedition(expedition, duration)
 {
-    global expeditionMapSelected
+    pause1 := 170
+    pause2 := 225
 
-    if (expedition.map != expeditionMapSelected)
-    {
-        WorldY := 133.3 + (expedition.map * 60)   ; initial position + offset between lines
-        ScreenClick(166.7, WorldY)
-        Sleep, 200
-
-        expeditionMapSelected := expedition.map
-
-        return true
-    }
-    return false
-}
-
-SendOnExpedition(expedition, duration) {
     mapWasChanged := SelectMap(expedition)
-    Sleep, 170
+    Sleep, %pause1%
 
     ; If the current expedition is the first one on the map, the expedition must be already selected after the map change
     if (!(mapWasChanged && expedition.isFirstOnMap))
@@ -285,7 +273,7 @@ SendOnExpedition(expedition, duration) {
     SelectDuration(duration)
 
     ClickOnBottomRightButton()  ; Click on "Select Character"
-    Sleep, 170
+    Sleep, %pause1%
 
     characterNumberInList := 1
     if (!mapWasChanged)
@@ -293,7 +281,24 @@ SendOnExpedition(expedition, duration) {
         characterNumberInList := 2
     }
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, 225
+    Sleep, %pause2%
+}
+
+SelectMap(expedition)
+{
+    global selectedMap
+
+    if (expedition.map != selectedMap)
+    {
+        WorldY := 133.3 + (expedition.map * 60)   ; initial position + offset between lines
+        ScreenClick(166.7, WorldY)
+        Sleep, 220
+
+        selectedMap := expedition.map
+
+        return true
+    }
+    return false
 }
 
 SelectDuration(duration) {

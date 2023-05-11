@@ -60,6 +60,13 @@ CheckForAllTeleportPoints(posX, posY)
         ClickWarpAndExit()
     }
 
+    if (CheckForPocketWarpPoint(posX, posY))
+    {
+        ScreenClick(posX, posY)
+        Sleep, %pause1%
+        ClickWarpAndExit()
+    }
+
     if (CheckForSereniteaPotWarpPoint(posX, posY))
     {
         ScreenClick(posX, posY)
@@ -84,6 +91,12 @@ CheckForDomain(posX, posY)
 {
     return IsColorAtPosition(posX, posY - 3, 0xFFFF00)
         and IsColorAtPosition(posX + 15, posY, 0xFFFFFF)
+}
+
+CheckForPocketWarpPoint(posX, posY)
+{
+    return IsColorAtPosition(posX, posY, 0xFFFFFF)
+        and IsColorAtPosition(posX, posY + 12, 0xFFFF00)
 }
 
 CheckForSereniteaPotWarpPoint(posX, posY)
