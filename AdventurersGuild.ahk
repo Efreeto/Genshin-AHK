@@ -194,6 +194,7 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
 }
 
+; Configure "Conditions" first
 CollectExpeditionRewardsAndSendExpeditions()
 {
     ;; Expeditions ;;
@@ -202,7 +203,6 @@ CollectExpeditionRewardsAndSendExpeditions()
     GuiliPlains := { map: 1, x: 667, y: 458 }
     JueyunKarst := { map: 1, x: 470, y: 470}
     JinrenIsland := { map: 2, x: 914, y: 228, isFirstOnMap: true }
-
     Tatarasuna := { map: 2, x: 690, y: 690 }
     ArdraviValley := { map: 3, x: 860, y: 510 }
 
@@ -216,26 +216,15 @@ CollectExpeditionRewardsAndSendExpeditions()
     DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
 
     ;; Conditions ;;
-    expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
+    expeditions := [StormterrorLair, GuiliPlains, Tatarasuna, JinrenIsland, ArdraviValley] ; Choose 5 mora expeditions
+    ;expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 4 mora expeditions + 1 rock expedition
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
 
-    ; For i, expedition in expeditions
-    ; {
-    ;     CheckEscPressedAndExit()    ; Hold Esc to cancel script
-    ;     CollectExpeditionReward(expedition)
-    ; }
+    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
 
     ; Check each map for completed expeditions. Then check each map again for second completed expeditions of the same map.
     ; TODO: This won't work if there are >2 expeditions on the same map. In this case, work around by duplicating the loop segment
-    loop 4  ; 4 maps
-    {
-        CollectExpeditionRewardFromMap(A_Index - 1)
-    }
-    loop 4
-    {
-        CollectExpeditionRewardFromMap(A_Index - 1)
-    }
+    CollectExpeditionRewards()
 
     For i, expedition in expeditions
     {
@@ -252,23 +241,42 @@ IsRewardReady()
     return IsColorAtPosition(1333, 850, 0x47FFFD)
 }
 
-CollectExpeditionRewardFromMap(mapNumber)
+CollectExpeditionRewards()
 {
     pause1 := 170
 
-    SelectMap(mapNumber)
-    Sleep, %pause1%
+    numTotalMaps := 4
+    numRemainigRewards := 5     ; Once 5 rewards are collected, exit the loop, or ...
+    mapsWithoutRewards := {}    ; ... once all maps are checked not to have remaining rewards
 
-    if (IsRewardReady())
+    mapNumber := 0 ; 0=Mondstadt, 1=Liyue, ...
+
+    while (numRemainigRewards > 0 and mapsWithoutRewards.Length() < numTotalMaps)
     {
-        ClickOnBottomRightButton()  ; Collect reward
+        SelectMap(mapNumber++)  ; Select map (0=Mondstadt, 1=Liyue, ...) `loop`'s A_Index is 1-based
         Sleep, %pause1%
 
-        Send, {Esc} ; Skip reward menu
-        Sleep, %pause1%
+        if (IsRewardReady())
+        {
+            numRemainigRewards--
+
+            ClickOnBottomRightButton()  ; Collect reward
+            Sleep, %pause1%
+
+            Send, {Esc} ; Skip reward menu
+            Sleep, %pause1%
+        }
+        else
+        {
+            mapsWithoutRewards.Push(mapNumber)
+        }
+
+        mapNumber := Mod(mapNumber, 4)  ; If mapNumber reached 4(Sumeru), go back to 0(Mondstadt)
     }
+
 }
 
+; Obsolete
 CollectExpeditionReward(expedition)
 {
     pause1 := 170
