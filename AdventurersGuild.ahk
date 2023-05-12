@@ -73,47 +73,6 @@ CollectCommissionRewards()
     exit
 }
 
-CollectExpeditionRewardsAndSendExpeditions()
-{
-    ;; Expeditions ;;
-    ; Mora
-    StormterrorLair := { map: 0, x: 458, y: 333 }
-    GuiliPlains := { map: 1, x: 667, y: 458 }
-    JueyunKarst := { map: 1, x: 470, y: 470}
-    JinrenIsland := { map: 2, x: 914, y: 228, isFirstOnMap: true }
-    Tatarasuna := { map: 2, x: 690, y: 690 }
-    ArdraviValley := { map: 3, x: 860, y: 510 }
-
-    ; Crystals
-    WhisperingWoods := { map: 0, x: 875, y: 275, isFirstOnMap: true }
-    DadaupaGorge := { map: 0, x: 975, y: 550 }
-    YaoguangShoal := { map: 1, x: 792, y: 375 }
-
-    ; Food
-    Windrise := { map: 0, x: 926, y: 379 }
-    DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
-
-    ;; Conditions ;;
-    expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
-    duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
-
-    For i, expedition in expeditions
-    {
-        CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        CollectExpeditionReward(expedition)
-    }
-
-    For i, expedition in expeditions
-    {
-        CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        SendExpedition(expedition, duration)
-    }
-
-    Send, {Esc} ; Exit
-    exit
-}
-
 
 ; =======================================
 ; Expedition utility functions
@@ -235,11 +194,86 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
 }
 
+CollectExpeditionRewardsAndSendExpeditions()
+{
+    ;; Expeditions ;;
+    ; Mora
+    StormterrorLair := { map: 0, x: 458, y: 333 }
+    GuiliPlains := { map: 1, x: 667, y: 458 }
+    JueyunKarst := { map: 1, x: 470, y: 470}
+    JinrenIsland := { map: 2, x: 914, y: 228, isFirstOnMap: true }
+
+    Tatarasuna := { map: 2, x: 690, y: 690 }
+    ArdraviValley := { map: 3, x: 860, y: 510 }
+
+    ; Crystals
+    WhisperingWoods := { map: 0, x: 875, y: 275, isFirstOnMap: true }
+    DadaupaGorge := { map: 0, x: 975, y: 550 }
+    YaoguangShoal := { map: 1, x: 792, y: 375 }
+
+    ; Food
+    Windrise := { map: 0, x: 926, y: 379 }
+    DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
+
+    ;; Conditions ;;
+    expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 5 expeditions
+    duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
+
+    ; For i, expedition in expeditions
+    ; {
+    ;     CheckEscPressedAndExit()    ; Hold Esc to cancel script
+    ;     CollectExpeditionReward(expedition)
+    ; }
+
+    ; Check each map for completed expeditions. Then check each map again for second completed expeditions of the same map.
+    ; TODO: This won't work if there are >2 expeditions on the same map. In this case, work around by duplicating the loop segment
+    loop 4  ; 4 maps
+    {
+        CollectExpeditionRewardFromMap(A_Index - 1)
+    }
+    loop 4
+    {
+        CollectExpeditionRewardFromMap(A_Index - 1)
+    }
+
+    For i, expedition in expeditions
+    {
+        CheckEscPressedAndExit()    ; Hold Esc to cancel script
+        SendExpedition(expedition, duration)
+    }
+
+    Send, {Esc} ; Exit
+    exit
+}
+
+IsRewardReady()
+{
+    return IsColorAtPosition(1333, 850, 0x47FFFD)
+}
+
+CollectExpeditionRewardFromMap(mapNumber)
+{
+    pause1 := 170
+
+    SelectMap(mapNumber)
+    Sleep, %pause1%
+
+    if (IsRewardReady())
+    {
+        ClickOnBottomRightButton()  ; Collect reward
+        Sleep, %pause1%
+
+        Send, {Esc} ; Skip reward menu
+        Sleep, %pause1%
+    }
+}
+
 CollectExpeditionReward(expedition)
 {
     pause1 := 170
 
-    mapWasChanged := SelectMap(expedition)
+    mapWasChanged := SelectMap(expedition.map)
     Sleep, %pause1%
 
     ; If there's a reward waiting on the expedition, the completed expedition is already selected after the map change
@@ -261,7 +295,7 @@ SendExpedition(expedition, duration)
     pause1 := 170
     pause2 := 225
 
-    mapWasChanged := SelectMap(expedition)
+    mapWasChanged := SelectMap(expedition.map)
     Sleep, %pause1%
 
     ; If the current expedition is the first one on the map, the expedition must be already selected after the map change
@@ -284,36 +318,38 @@ SendExpedition(expedition, duration)
     Sleep, %pause2%
 }
 
-SelectMap(expedition)
+SelectMap(mapNumber)
 {
     global selectedMap
 
-    if (expedition.map != selectedMap)
+    if (mapNumber != selectedMap)
     {
-        WorldY := 133.3 + (expedition.map * 60)   ; initial position + offset between lines
+        WorldY := 133.3 + (mapNumber * 60)   ; initial position + offset between lines
         ScreenClick(166.7, WorldY)
         Sleep, 220
 
-        selectedMap := expedition.map
+        selectedMap := mapNumber
 
         return true
     }
     return false
 }
 
-SelectDuration(duration) {
-    Switch duration {
-        Case 0:
+SelectDuration(duration)
+{
+    switch duration
+    {
+        case 0:
             return
-        Case 4:
+        case 4:
             ScreenClick(1250, 583)
             Sleep, 150
             return
-        Case 20:
+        case 20:
             ScreenClick(1500, 583)
             Sleep, 150
             return
-        Default :
+        default:
             MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
             return
     }
