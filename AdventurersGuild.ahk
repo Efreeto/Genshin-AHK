@@ -216,7 +216,7 @@ CollectExpeditionRewardsAndSendExpeditions()
     DihuaMarsh := { map: 1, x: 607, y: 277, isFirstOnMap: true }
 
     ;; Conditions ;;
-    expeditions := [StormterrorLair, GuiliPlains, Tatarasuna, JinrenIsland, ArdraviValley] ; Choose 5 mora expeditions
+    expeditions := [StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna, ArdraviValley] ; Choose 5 mora expeditions
     ;expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 4 mora expeditions + 1 rock expedition
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
 

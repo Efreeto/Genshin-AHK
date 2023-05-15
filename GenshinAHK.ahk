@@ -537,6 +537,9 @@ while GetKeyState(A_Space, "P") {
 }
 return
 
+; For flying
+LShift::Space
+
 ; Enable typing mode
 ~Backspace::
 EnableTypingMode()
