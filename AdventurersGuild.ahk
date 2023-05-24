@@ -244,6 +244,7 @@ IsRewardReady()
 CollectExpeditionRewards()
 {
     pause1 := 170
+    pause2 := 200
 
     numTotalMaps := 4
     numRemainigRewards := 5     ; Once 5 rewards are collected, exit the loop, or ...
@@ -251,10 +252,14 @@ CollectExpeditionRewards()
 
     mapNumber := 0 ; 0=Mondstadt, 1=Liyue, ...
 
+    Sleep, %pause2% ; warmup time
+
     while (numRemainigRewards > 0 and mapsWithoutRewards.Length() < numTotalMaps)
     {
         SelectMap(mapNumber++)  ; Select map (0=Mondstadt, 1=Liyue, ...) `loop`'s A_Index is 1-based
         Sleep, %pause1%
+
+        CheckEscPressedAndExit()    ; Hold Esc to cancel script
 
         if (IsRewardReady())
         {
@@ -274,28 +279,6 @@ CollectExpeditionRewards()
         mapNumber := Mod(mapNumber, 4)  ; If mapNumber reached 4(Sumeru), go back to 0(Mondstadt)
     }
 
-}
-
-; Obsolete
-CollectExpeditionReward(expedition)
-{
-    pause1 := 170
-
-    mapWasChanged := SelectMap(expedition.map)
-    Sleep, %pause1%
-
-    ; If there's a reward waiting on the expedition, the completed expedition is already selected after the map change
-    ; TODO: Fix multiple expeditions on the same map. Currently, the collection order must be from top to bottom
-    if (!mapWasChanged)
-    {
-        ScreenClick(expedition.x, expedition.y) ; Click on the expedition location
-    }
-
-    ClickOnBottomRightButton()  ; Collect reward
-    Sleep, %pause1%
-
-    Send, {Esc} ; Skip reward menu
-    Sleep, %pause1%
 }
 
 SendExpedition(expedition, duration)

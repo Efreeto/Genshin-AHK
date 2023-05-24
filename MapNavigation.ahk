@@ -1,6 +1,8 @@
 
 TeleportShortcut()
 {
+    Sleep, 50  ; warmup time
+
     if (IsWarpPointSelected())
     {
         ClickWarpAndExit()
@@ -30,9 +32,9 @@ TeleportShortcut()
 
 IsWarpPointSelected()
 {
-    return IsColorAtPosition(1230, 831.25, 0x00FFFF)
-        and IsColorAtPosition(1230, 837.5, 0x575757)
-        and IsColorAtPosition(1230, 843, 0x00FFFF)
+    return IsColorAtPosition(1232, 831.25, 0x00FFFF)
+        and IsColorAtPosition(1232, 837.5, 0x575757)    ; 0x575757 at HDR 25
+        and IsColorAtPosition(1232, 843, 0x00FFFF)
 }
 
 CheckForAllTeleportPoints(posX, posY)

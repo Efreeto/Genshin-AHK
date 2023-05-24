@@ -25,23 +25,27 @@ if not A_IsAdmin
 
 SetTimer, Initialize, -1
 
-Initialize() {
+Initialize()
+{
     ConfigureTeamHotkeys()
 }
 
-GetFileName() {
+GetFileName()
+{
     WinGet, activeprocess, ProcessName, A
     MsgBox, The active ahk_exe is "%activeprocess%".
     ; "GenshinImpact.exe"
 }
 
-GetWinName() {
+GetWinName()
+{
     WinGetTitle, Title, A
     MsgBox, The active window is "%Title%".
     ; "Genshin Impact", "원신"
 }
 
-DetectDisplayLanguage() {
+DetectDisplayLanguage()
+{
     WinGetTitle, winTitle, A
     if (winTitle == "Genshin Impact")
         return "EN"
@@ -66,7 +70,7 @@ ScreenClick(posX, posY)
 
 ScreenMove(posX, posY)
 {
-    MouseMove, X(posX), Y(posY)
+    MouseMove, X(posX), Y(posY), 0  ; Speed param: 0 is instant, default is 2
 }
 
 ClickOnBottomRightButton()
@@ -187,9 +191,9 @@ SpecialInteraction2()
         Sleep, 150
         ScreenClick(1478, 47)
         Sleep, 150
-        ScreenClick(1478, 47)  ; skip
+        ScreenClick(1478, 47)   ; skip
 
-        MouseMove, X(1000), Y(837)   ; put cursor at Continue challenge(sic)
+        ScreenMove(1000, 837)   ; put cursor at Continue challenge(sic)
         exit
     }
 
@@ -228,7 +232,8 @@ SoundPlay, %A_WinDir%\Media\Windows Error.wav
 ConfigureTeamHotkeys()
 return
 
-ConfigureTeamHotkeys() {
+ConfigureTeamHotkeys()
+{
     global Member1
     global Member4
 
@@ -254,32 +259,38 @@ ConfigureTeamHotkeys() {
     }
 }
 
-ActivateRegularCharacter() {
+ActivateRegularCharacter()
+{
     Hotkey, F18, Regular_AutoAttack
     Hotkey, F19, HuTao_ChargeAttack
 }
 
-ActivateHuTao() {
+ActivateHuTao()
+{
     Hotkey, F18, Regular_AutoAttack
     Hotkey, F19, HuTao_ChargeAttack
 }
 
-ActivateKlee() {
+ActivateKlee()
+{
     Hotkey, F18, Klee_AutoAttack
     Hotkey, F19, Klee_ChargeAttack
 }
 
-ActivateGanyu() {
+ActivateGanyu()
+{
     Hotkey, F18, Regular_AutoAttack
     Hotkey, F19, Ganyu_ChargeAttack
 }
 
-HuTao_ChargeAttack() {
+HuTao_ChargeAttack()
+{
     pause1 := 60
     pause2 := 50
     pause3 := 300
     pause4 := 240
-    while (GetKeyState(A_ThisHotkey, "P")) {
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
         Click, down
         Sleep, %pause1%
         Click, up
@@ -297,7 +308,9 @@ HuTao_ChargeAttack() {
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-HuTao_ChargeAttack_N2C() { ; Good at 230ms
+; Good at 230ms
+HuTao_ChargeAttack_N2C()
+{
     Click
     Sleep, 30
     Click
@@ -319,9 +332,12 @@ HuTao_ChargeAttack_N2C() { ; Good at 230ms
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-HuTao_ChargeAttack_N2C_Hold() { ; Good at 230ms
+; Good at 230ms
+HuTao_ChargeAttack_N2C_Hold()
+{
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    while (GetKeyState(hk, "P")) {
+    while (GetKeyState(hk, "P"))
+    {
         Click
         Sleep, 30
         Click
@@ -449,10 +465,12 @@ Regular_ChargeAttack()
 ; Klee walk cancel
 Klee_AutoAttack()
 {
-    if (IsCharacterSlowed())
-        pause := 590    ; at 84-88ms
-    else
-        pause := 508    ; at 84-88ms
+    ; if (IsCharacterSlowed())
+    ;     pause := 590    ; at 84-88ms
+    ; else
+    ;     pause := 508    ; at 84-88ms
+
+    pause := 510
 
     while (GetKeyState(A_ThisHotkey, "P"))
     {
@@ -591,36 +609,6 @@ F17::SpecialInteraction2()
 PrintScreen::!#PrintScreen ; HDR Screenshot
 ;Insert::!PrintScreen
 
-; =======================================
-; Test
-; =======================================
-
-SnapshotColorAtPosition(posX, posY) {
-    mouseX := X(posX)
-    mouseY := Y(posY)
-    PixelGetColor, color, mouseX, mouseY
-    MsgBox, %mouseX% (%posX%) x %mouseY% (%posY%) => %color%
-}
-
-SnapshotColorAtMousePosition() {
-    MouseGetPos, mouseX, mouseY
-    posX := mouseX / A_ScreenWidth * 1600
-    posY := mouseY / A_ScreenHeight * 900
-    PixelGetColor, color, %mouseX%, %mouseY%
-    MsgBox, %mouseX% (%posX%) x %mouseY% (%posY%) => %color%
-}
-
-*NumPad8::
-;SnapshotColorAtPosition(990, 440)
-;ScreenMove(1080, 608)
-IsColorAtPosition(1230, 831.25, 0x00FFFF)
-return
-
-*NumPad9::
-;SoundBeep, 100
-SnapshotColorAtMousePosition()
-return
-
-
 #Include AdventurersGuild.ahk
 #Include MapNavigation.ahk
+#Include TestFunctions.ahk
