@@ -25,7 +25,7 @@ Down::MouseMove, 0, 1, 0, Relative
 Left::MouseMove, -1, 0, 0, Relative
 Right::MouseMove, 1, 0, 0, Relative
 
-*NumPad7::ScreenMove(1232, 837.5)
+*NumPad7::ScreenMove(1333, 850)
 
 *NumPad8::SnapshotColorAtPosition(1232, 837.5)
 

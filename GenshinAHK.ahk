@@ -78,12 +78,18 @@ ClickOnBottomRightButton()
     ScreenClick(1400, 850)
 }
 
-IsColorAtPosition(posX, posY, rgb)
+IsColorAtPosition(posX, posY, rgb, variation := 0)
 {
-    PixelGetColor, color, X(posX), Y(posY)
-    return color = rgb
-    ; PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, rgbVariation
-    ; return !ErrorLevel
+    if (variation == 0)
+    {
+        PixelGetColor, color, X(posX), Y(posY)
+        return color = rgb
+    }
+    else
+    {
+        PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, variation
+        return !ErrorLevel
+    }
 }
 
 IsNearTalkableNPC()
@@ -131,8 +137,10 @@ ReputationShortcut()
 
 SpecialInteraction1()
 {
+    ; Perform special interaction
     ReputationShortcut()
 
+    ; Act as the middle mouse button (Elemental Vision) if the above doesn't happen
     Send, {MButton down}
     while (GetKeyState(A_ThisHotkey, "P"))
     {
@@ -262,13 +270,13 @@ ConfigureTeamHotkeys()
 ActivateRegularCharacter()
 {
     Hotkey, F18, Regular_AutoAttack
-    Hotkey, F19, HuTao_ChargeAttack
+    Hotkey, F19, HuTao_ChargeAttack_DashCancel
 }
 
 ActivateHuTao()
 {
-    Hotkey, F18, Regular_AutoAttack
-    Hotkey, F19, HuTao_ChargeAttack
+    Hotkey, F18, HuTao_ChargeAttack_JumpCancel
+    Hotkey, F19, HuTao_ChargeAttack_DashCancel
 }
 
 ActivateKlee()
@@ -283,7 +291,23 @@ ActivateGanyu()
     Hotkey, F19, Ganyu_ChargeAttack
 }
 
-HuTao_ChargeAttack()
+; Hu Tao jump cancel
+HuTao_ChargeAttack_JumpCancel()
+{
+    pause1 := 450
+    pause2 := 600
+    while (GetKeyState(A_ThisHotkey, "P"))
+    {
+        Click, down
+        Sleep, %pause1%
+        Send, {Space}
+        Click, up
+        Sleep, %pause2%
+    }
+}
+
+; Hu Tao dash cancel (Need Constellation 1)
+HuTao_ChargeAttack_DashCancel()
 {
     pause1 := 60
     pause2 := 50
@@ -555,9 +579,6 @@ while GetKeyState(A_Space, "P") {
 }
 return
 
-; For flying
-LShift::Space
-
 ; Enable typing mode
 ~Backspace::
 EnableTypingMode()
@@ -586,17 +607,18 @@ CheckTypingModeAndExit() {
     }
 }
 
-CheckEscPressedAndExit() {
-    if (GetKeyState("Esc", "P")) {
+; Hold during a script run to cancel the script
+CheckForCancelAndExit() {
+    if (GetKeyState("NumpadEnter", "P")) {
         SoundPlay, %A_WinDir%\Media\Speech Off.wav
         Exit
     }
 }
 
-; Hold to exit the boat
-NumpadEnter::Space
+; Non-repeated space key for flying upwards and exiting boat
+LShift::Space
 
-F13::RapidCanceling_ElementalSkill()
+;F13::RapidCanceling_ElementalSkill()   ; Not bound to my mouse
 
 F14::[
 
@@ -606,7 +628,10 @@ F16::SpecialInteraction1()
 
 F17::SpecialInteraction2()
 
-PrintScreen::!#PrintScreen ; HDR Screenshot
+; HDR Screenshot
+PrintScreen::!#PrintScreen
+
+; For keyboards without a PrintScreen key
 ;Insert::!PrintScreen
 
 #Include AdventurersGuild.ahk

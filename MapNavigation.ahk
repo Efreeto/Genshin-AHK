@@ -19,7 +19,7 @@ TeleportShortcut()
     }
 
     ; Scan skewed list items when there are too many
-    posY := 575
+    posY := 761
     loop 10
     {
         CheckForAllTeleportPoints(posX, posY)
@@ -85,8 +85,8 @@ CheckForWarpPoint(posX, posY)
 
 CheckForStatueOfSeven(posX, posY)
 {
-    return IsColorAtPosition(posX, posY, 0xFFFFD6)
-        and IsColorAtPosition(posX, posY + 13, 0x5C5A5A)
+    return IsColorAtPosition(posX, posY, 0xFFFFD6, 1)
+        and IsColorAtPosition(posX, posY + 13, 0x5B5A5A, 1)
 }
 
 CheckForDomain(posX, posY)

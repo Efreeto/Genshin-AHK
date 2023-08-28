@@ -66,7 +66,7 @@ CollectCommissionRewards()
     Sleep, 500
     Send, {f}   ; Skip dialogue
     Sleep, 200
-    CheckEscPressedAndExit()
+    CheckForCancelAndExit()
     Send, {f}   ; Close dialogue
     Sleep, 1500
     Send, {Esc}
@@ -217,20 +217,15 @@ CollectExpeditionRewardsAndSendExpeditions()
 
     ;; Conditions ;;
     expeditions := [StormterrorLair, GuiliPlains, JinrenIsland, Tatarasuna, ArdraviValley] ; Choose 5 mora expeditions
-    ;expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 4 mora expeditions + 1 rock expedition
+    ;expeditions := [WhisperingWoods, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 4 short mora expeditions + 1 rock expedition
+    ;expeditions := [StormterrorLair, StormterrorLair, GuiliPlains, JinrenIsland, ArdraviValley] ; Choose 4 long mora expeditions + 1 rock expedition
     duration := 0    ; Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
-
-    selectedMap := -1 ; Assume no map was selected and select the map of the first expedition
 
     ; Check each map for completed expeditions. Then check each map again for second completed expeditions of the same map.
     ; TODO: This won't work if there are >2 expeditions on the same map. In this case, work around by duplicating the loop segment
     CollectExpeditionRewards()
 
-    For i, expedition in expeditions
-    {
-        CheckEscPressedAndExit()    ; Hold Esc to cancel script
-        SendExpedition(expedition, duration)
-    }
+    SendExpeditions(expeditions, duration)
 
     Send, {Esc} ; Exit
     exit
@@ -238,7 +233,7 @@ CollectExpeditionRewardsAndSendExpeditions()
 
 IsRewardReady()
 {
-    return IsColorAtPosition(1333, 850, 0x47FFFD)
+    return IsColorAtPosition(1333, 850, 0x47FFFC, 1)
 }
 
 CollectExpeditionRewards()
@@ -246,20 +241,20 @@ CollectExpeditionRewards()
     pause1 := 170
     pause2 := 200
 
-    numTotalMaps := 4
     numRemainigRewards := 5     ; Once 5 rewards are collected, exit the loop, or ...
-    mapsWithoutRewards := {}    ; ... once all maps are checked not to have remaining rewards
+    numTotalMaps := 4           ; ... once all maps are checked. (Checked to have no rewards to collect)
+    checkedMapsDict := {}
 
     mapNumber := 0 ; 0=Mondstadt, 1=Liyue, ...
 
     Sleep, %pause2% ; warmup time
 
-    while (numRemainigRewards > 0 and mapsWithoutRewards.Length() < numTotalMaps)
+    while (numRemainigRewards > 0 and checkedMapsDict.Length() < numTotalMaps)
     {
-        SelectMap(mapNumber++)  ; Select map (0=Mondstadt, 1=Liyue, ...) `loop`'s A_Index is 1-based
+        SelectMap(mapNumber)  ; Select map (0=Mondstadt, 1=Liyue, ...)
         Sleep, %pause1%
 
-        CheckEscPressedAndExit()    ; Hold Esc to cancel script
+        CheckForCancelAndExit()
 
         if (IsRewardReady())
         {
@@ -273,12 +268,12 @@ CollectExpeditionRewards()
         }
         else
         {
-            mapsWithoutRewards.Push(mapNumber)
+            checkedMapsDict.Push(mapNumber)
         }
 
-        mapNumber := Mod(mapNumber, 4)  ; If mapNumber reached 4(Sumeru), go back to 0(Mondstadt)
+        mapNumber++
+        mapNumber := Mod(mapNumber, numTotalMaps)  ; If mapNumber reached end, start again from the first map. For example, after checking 3(Sumeru), go back to 0(Mondstadt).
     }
-
 }
 
 SendExpedition(expedition, duration)
@@ -307,6 +302,15 @@ SendExpedition(expedition, duration)
     }
     FindAndSelectCharacter(characterNumberInList)
     Sleep, %pause2%
+}
+
+SendExpeditions(expeditions, duration)
+{
+    For _, expedition in expeditions
+    {
+        CheckForCancelAndExit()
+        SendExpedition(expedition, duration)
+    }
 }
 
 SelectMap(mapNumber)
