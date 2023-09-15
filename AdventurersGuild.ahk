@@ -242,7 +242,7 @@ CollectExpeditionRewards()
     pause2 := 200
 
     numRemainigRewards := 5     ; Once 5 rewards are collected, exit the loop, or ...
-    numTotalMaps := 4           ; ... once all maps are checked. (Checked to have no rewards to collect)
+    numTotalMaps := 5           ; ... once all maps are checked. (Checked to have no rewards to collect)
     checkedMapsDict := {}
 
     mapNumber := 0 ; 0=Mondstadt, 1=Liyue, ...

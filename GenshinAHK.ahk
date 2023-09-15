@@ -13,7 +13,7 @@
 ; 'Start in:': {this location}
 
 
-#IfWinActive ahk_exe GenshinImpact.exe
+; #IfWinActive ahk_exe GenshinImpact.exe
 #SingleInstance Force
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
@@ -39,8 +39,8 @@ GetFileName()
 
 GetWinName()
 {
-    WinGetTitle, Title, A
-    MsgBox, The active window is "%Title%".
+    WinGetTitle, winTitle, A
+    MsgBox, The active window is "%winTitle%".
     ; "Genshin Impact", "원신"
 }
 
@@ -632,8 +632,9 @@ F17::SpecialInteraction2()
 PrintScreen::!#PrintScreen
 
 ; For keyboards without a PrintScreen key
-;Insert::!PrintScreen
+F12::!PrintScreen
 
 #Include AdventurersGuild.ahk
 #Include MapNavigation.ahk
 #Include TestFunctions.ahk
+#Include HonkaiStarRail.ahk
