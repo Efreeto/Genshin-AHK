@@ -1,5 +1,4 @@
 
-#IfWinActive ahk_exe StarRail.exe
-#SingleInstance Force
+#HotIf WinActive("ahk_exe StarRail.exe")
 
 Tab::M

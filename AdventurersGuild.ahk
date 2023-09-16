@@ -4,14 +4,16 @@
 ; =======================================
 
 NumpadAdd::
+{ ; V1toV2: Added bracket
 CollectExpeditionRewardsAndSendExpeditions()
 return
+} ; Added bracket before function
 
 CollectKatheryneRewards()
 {
-    loop
+    Loop
     {
-        Send, {f}   ; talk to Katherine
+        Send("{f}")   ; talk to Katherine
         SkipKatherineDialogue()
 
         if (CheckCommissionRewards_AtMondstadtOrLiyue())
@@ -36,12 +38,12 @@ CollectKatheryneRewards()
         }
         else
         {
-            SoundPlay, %A_WinDir%\Media\Speech Sleep.wav
+            SoundPlay(A_WinDir "\Media\Speech Sleep.wav")
             ScreenClick(1150, 670)  ; Exit Katherine
-            Sleep, 500
-            Send, {f}   ; Skip dialogue
-            Sleep, 200
-            Send, {f}   ; Close dialogue
+            Sleep(500)
+            Send("{f}")   ; Skip dialogue
+            Sleep(200)
+            Send("{f}")   ; Close dialogue
             break
         }
     }
@@ -50,27 +52,27 @@ CollectKatheryneRewards()
 SkipKatherineDialogue() {
     lang := DetectDisplayLanguage()
     if (lang == "KR") {
-        Sleep, 500
+        Sleep(500)
     } else {    ; "EN"
-        Sleep, 700
+        Sleep(700)
     }
 
-    Send, {f}   ; skip dialogue
-    Sleep, 200
-    Send, {f}   ; close dialogue
-    Sleep, 1000
+    Send("{f}")   ; skip dialogue
+    Sleep(200)
+    Send("{f}")   ; close dialogue
+    Sleep(1000)
 }
 
 CollectCommissionRewards()
 {
-    Sleep, 500
-    Send, {f}   ; Skip dialogue
-    Sleep, 200
+    Sleep(500)
+    Send("{f}")   ; Skip dialogue
+    Sleep(200)
     CheckForCancelAndExit()
-    Send, {f}   ; Close dialogue
-    Sleep, 1500
-    Send, {Esc}
-    exit
+    Send("{f}")   ; Close dialogue
+    Sleep(1500)
+    Send("{Esc}")
+    Exit()
 }
 
 
@@ -83,11 +85,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(1113), Y(425), X(1113), Y(425), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1113), Y(425), X(1113), Y(425), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1334), Y(427), X(1334), Y(427), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1334), Y(427), X(1334), Y(427), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -95,11 +97,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(1109), Y(424), X(1109), Y(424), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1109), Y(424), X(1109), Y(424), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1495), Y(412), X(1495), Y(412), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1495), Y(412), X(1495), Y(412), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -112,11 +114,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(1112), Y(363), X(1112), Y(363), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1112), Y(363), X(1112), Y(363), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1215), Y(350), X(1215), Y(350), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1215), Y(350), X(1215), Y(350), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -124,11 +126,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(1120), Y(351), X(1120), Y(351), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(351), X(1120), Y(351), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1496), Y(360), X(1496), Y(360), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1496), Y(360), X(1496), Y(360), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -141,11 +143,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(1110), Y(540), X(1110), Y(540), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(540), X(1110), Y(540), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1198), Y(539), X(1198), Y(539), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1198), Y(539), X(1198), Y(539), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -153,11 +155,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(1110), Y(537), X(1110), Y(537), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(537), X(1110), Y(537), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1503), Y(546), X(1503), Y(546), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1503), Y(546), X(1503), Y(546), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -170,11 +172,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        PixelSearch, varX, varY, X(1122), Y(488), X(1122), Y(488), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1122), Y(488), X(1122), Y(488), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1193), Y(477), X(1193), Y(477), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1193), Y(477), X(1193), Y(477), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -182,11 +184,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        PixelSearch, varX, varY, X(1120), Y(483), X(1120), Y(483), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(483), X(1120), Y(483), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
-        PixelSearch, varX, varY, X(1383), Y(476), X(1383), Y(476), 0x00FFFF, 0
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1383), Y(476), X(1383), Y(476), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
         if ErrorLevel
             return false
 
@@ -227,8 +229,8 @@ CollectExpeditionRewardsAndSendExpeditions()
 
     SendExpeditions(expeditions, duration)
 
-    Send, {Esc} ; Exit
-    exit
+    Send("{Esc}") ; Exit
+    Exit()
 }
 
 IsRewardReady()
@@ -247,12 +249,12 @@ CollectExpeditionRewards()
 
     mapNumber := 0 ; 0=Mondstadt, 1=Liyue, ...
 
-    Sleep, %pause2% ; warmup time
+    Sleep(pause2) ; warmup time
 
-    while (numRemainigRewards > 0 and checkedMapsDict.Length() < numTotalMaps)
+    while (numRemainigRewards > 0 and checkedMapsDict.Length < numTotalMaps)
     {
         SelectMap(mapNumber)  ; Select map (0=Mondstadt, 1=Liyue, ...)
-        Sleep, %pause1%
+        Sleep(pause1)
 
         CheckForCancelAndExit()
 
@@ -261,10 +263,10 @@ CollectExpeditionRewards()
             numRemainigRewards--
 
             ClickOnBottomRightButton()  ; Collect reward
-            Sleep, %pause1%
+            Sleep(pause1)
 
-            Send, {Esc} ; Skip reward menu
-            Sleep, %pause1%
+            Send("{Esc}") ; Skip reward menu
+            Sleep(pause1)
         }
         else
         {
@@ -282,7 +284,7 @@ SendExpedition(expedition, duration)
     pause2 := 225
 
     mapWasChanged := SelectMap(expedition.map)
-    Sleep, %pause1%
+    Sleep(pause1)
 
     ; If the current expedition is the first one on the map, the expedition must be already selected after the map change
     if (!(mapWasChanged && expedition.isFirstOnMap))
@@ -293,7 +295,7 @@ SendExpedition(expedition, duration)
     SelectDuration(duration)
 
     ClickOnBottomRightButton()  ; Click on "Select Character"
-    Sleep, %pause1%
+    Sleep(pause1)
 
     characterNumberInList := 1
     if (!mapWasChanged)
@@ -301,7 +303,7 @@ SendExpedition(expedition, duration)
         characterNumberInList := 2
     }
     FindAndSelectCharacter(characterNumberInList)
-    Sleep, %pause2%
+    Sleep(pause2)
 }
 
 SendExpeditions(expeditions, duration)
@@ -321,7 +323,7 @@ SelectMap(mapNumber)
     {
         WorldY := 133.3 + (mapNumber * 60)   ; initial position + offset between lines
         ScreenClick(166.7, WorldY)
-        Sleep, 220
+        Sleep(220)
 
         selectedMap := mapNumber
 
@@ -338,14 +340,14 @@ SelectDuration(duration)
             return
         case 4:
             ScreenClick(1250, 583)
-            Sleep, 150
+            Sleep(150)
             return
         case 20:
             ScreenClick(1500, 583)
-            Sleep, 150
+            Sleep(150)
             return
         default:
-            MsgBox, Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration
+            MsgBox("Choose 'duration' from 4, 8, 12, or 20. Or choose 0 to skip selection and use the last used duration")
             return
     }
 }

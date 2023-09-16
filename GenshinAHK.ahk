@@ -15,15 +15,15 @@
 
 ; #IfWinActive ahk_exe GenshinImpact.exe
 #SingleInstance Force
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+; REMOVED: #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 
 if not A_IsAdmin
 {
-    Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
-    ExitApp
+    Run("*RunAs `"" A_ScriptFullPath "`"")  ; Requires v1.0.92.01+
+    ExitApp()
 }
 
-SetTimer, Initialize, -1
+SetTimer(Initialize,-1)
 
 Initialize()
 {
@@ -32,21 +32,21 @@ Initialize()
 
 GetFileName()
 {
-    WinGet, activeprocess, ProcessName, A
-    MsgBox, The active ahk_exe is "%activeprocess%".
+    activeprocess := WinGetProcessName("A")
+    MsgBox("The active ahk_exe is `"" activeprocess "`".")
     ; "GenshinImpact.exe"
 }
 
 GetWinName()
 {
-    WinGetTitle, winTitle, A
-    MsgBox, The active window is "%winTitle%".
+    winTitle := WinGetTitle("A")
+    MsgBox("The active window is `"" winTitle "`".")
     ; "Genshin Impact", "원신"
 }
 
 DetectDisplayLanguage()
 {
-    WinGetTitle, winTitle, A
+    winTitle := WinGetTitle("A")
     if (winTitle == "Genshin Impact")
         return "EN"
     else ; "원신"
@@ -65,12 +65,12 @@ Y(posY)
 
 ScreenClick(posX, posY)
 {
-    MouseClick, left, X(posX), Y(posY)
+    MouseClick("left", X(posX), Y(posY))
 }
 
 ScreenMove(posX, posY)
 {
-    MouseMove, X(posX), Y(posY), 0  ; Speed param: 0 is instant, default is 2
+    MouseMove(X(posX), Y(posY), 0)  ; Speed param: 0 is instant, default is 2
 }
 
 ClickOnBottomRightButton()
@@ -82,12 +82,12 @@ IsColorAtPosition(posX, posY, rgb, variation := 0)
 {
     if (variation == 0)
     {
-        PixelGetColor, color, X(posX), Y(posY)
+        color := PixelGetColor(X(posX), Y(posY), ) ;V1toV2: Switched from BGR to RGB values
         return color = rgb
     }
     else
     {
-        PixelSearch, _, _, X(posX), Y(posY), X(posX), Y(posY), rgb, variation
+        ErrorLevel := !PixelSearch(&_, &_, X(posX), Y(posY), X(posX), Y(posY), rgb, variation, ) ;V1toV2: Switched from BGR to RGB values
         return !ErrorLevel
     }
 }
@@ -103,14 +103,14 @@ SkipDialogue()
     ; wait for dialogue to load a bit
     lang := DetectDisplayLanguage()
     if (lang == "KR") {
-        Sleep, 500
+        Sleep(500)
     } else {    ; "EN"
-        Sleep, 700
+        Sleep(700)
     }
 
-    Send, {f}   ; load the whole dialogue
-    Sleep, 200
-    Send, {f}   ; skip the dialogue
+    Send("{f}")   ; load the whole dialogue
+    Sleep(200)
+    Send("{f}")   ; skip the dialogue
 }
 
 SelectFirstDialogueOption()
@@ -125,14 +125,14 @@ ReputationShortcut()
         return
     }
 
-    Send, {f}   ; talk to NPC
+    Send("{f}")   ; talk to NPC
     SkipDialogue()
     SkipDialogue()
 
-    Sleep, 1000
+    Sleep(1000)
     SelectFirstDialogueOption()
     SkipDialogue()
-    exit
+    Exit()
 }
 
 SpecialInteraction1()
@@ -141,11 +141,11 @@ SpecialInteraction1()
     ReputationShortcut()
 
     ; Act as the middle mouse button (Elemental Vision) if the above doesn't happen
-    Send, {MButton down}
+    Send("{MButton down}")
     while (GetKeyState(A_ThisHotkey, "P"))
     {
     }
-    Send, {MButton up}
+    Send("{MButton up}")
 }
 
 SpecialInteraction2()
@@ -153,56 +153,56 @@ SpecialInteraction2()
     if (CheckCommissionRewards_AtMondstadtOrLiyue())
     {
         ScreenClick(1280, 410)  ; Select Commissions from Mondstadt or Liyue's Katheryne menu
-        Sleep, 500
+        Sleep(500)
         CollectCommissionRewards()
     }
     else if (CheckCommissionRewards_AtInazumaOrSumeru())
     {
         ScreenClick(1280, 350)  ; Select Commissions from Inazuma or Sumeru's Katheryne menu
-        Sleep, 500
+        Sleep(500)
         CollectCommissionRewards()
     }
     else if (CheckExpeditionRewards_AtMondstadtOrLiyue())
     {
         ScreenClick(1280, 540)   ; Select Expeditions from Mondstadt or Liyue's Katheryne menu
-        Sleep, 500
+        Sleep(500)
         CollectExpeditionRewardsAndSendExpeditions()
     }
     else if (CheckExpeditionRewards_AtInazumaOrSumeru())
     {
         ScreenClick(1280, 480)   ; Select Expeditions from Inazuma or Sumeru's Katheryne menu
-        Sleep, 500
+        Sleep(500)
         CollectExpeditionRewardsAndSendExpeditions()
     }
     else if (IsNearKatheryne())
     {
-        SoundPlay, %A_WinDir%\Media\Speech On.wav
+        SoundPlay(A_WinDir "\Media\Speech On.wav")
         CollectKatheryneRewards()
     }
     else if (IsAtEndOfDomain())
     {
-        Send, {f}   ; collect rewards
-        Sleep, 50
+        Send("{f}")   ; collect rewards
+        Sleep(50)
         ScreenClick(631, 625)    ; use condensed resin
-        Sleep, 125
+        Sleep(125)
 
         if (IsColorAtPosition(1066.7, 433.3, 0x6F5549))    ; bag is full
         {
-            SoundPlay, %A_WinDir%\Media\ding.wav
+            SoundPlay(A_WinDir "\Media\ding.wav")
             ScreenClick(800, 450)    ; dismiss the pop-up
             return
         }
 
         ScreenClick(1478, 47)
-        Sleep, 125
+        Sleep(125)
         ScreenClick(1478, 47)
-        Sleep, 150
+        Sleep(150)
         ScreenClick(1478, 47)
-        Sleep, 150
+        Sleep(150)
         ScreenClick(1478, 47)   ; skip
 
         ScreenMove(1000, 837)   ; put cursor at Continue challenge(sic)
-        exit
+        Exit()
     }
 
     TeleportShortcut()
@@ -216,29 +216,37 @@ Member1 := "regular"
 Member4 := "regular"
 
 NumPad1::
+{ ; V1toV2: Added bracket
 Member1 := "hutao"
-SoundPlay, %A_WinDir%\Media\chimes.wav
+SoundPlay(A_WinDir "\Media\chimes.wav")
 ConfigureTeamHotkeys()
 return
+} ; V1toV2: Added Bracket before hotkey or Hotstring
 
 NumPad2::
+{ ; V1toV2: Added bracket
 Member1 := "klee"
-SoundPlay, %A_WinDir%\Media\tada.wav
+SoundPlay(A_WinDir "\Media\tada.wav")
 ConfigureTeamHotkeys()
 return
+} ; V1toV2: Added Bracket before hotkey or Hotstring
 
 NumPad4::
+{ ; V1toV2: Added bracket
 Member4 := "ganyu"
-SoundPlay, %A_WinDir%\Media\Windows Exclamation.wav
+SoundPlay(A_WinDir "\Media\Windows Exclamation.wav")
 ConfigureTeamHotkeys()
 return
+} ; V1toV2: Added Bracket before hotkey or Hotstring
 
 NumPad0::
+{ ; V1toV2: Added bracket
 Member1 := "regular"
 Member4 := "regular"
-SoundPlay, %A_WinDir%\Media\Windows Error.wav
+SoundPlay(A_WinDir "\Media\Windows Error.wav")
 ConfigureTeamHotkeys()
 return
+} ; Added bracket before function
 
 ConfigureTeamHotkeys()
 {
@@ -246,49 +254,49 @@ ConfigureTeamHotkeys()
     global Member4
 
     if (Member1 == "hutao") {
-        Hotkey, ~1, ActivateHuTao
+        Hotkey("~1", ActivateHuTao)
         ActivateHuTao()
     } else if (Member1 == "klee") {
-        Hotkey, ~1, ActivateKlee
+        Hotkey("~1", ActivateKlee)
         ActivateKlee()
     } else {
-        Hotkey, ~1, ActivateRegularCharacter
+        Hotkey("~1", ActivateRegularCharacter)
         ActivateRegularCharacter()
     }
 
-    Hotkey, ~q, ActivateRegularCharacter
+    Hotkey("~q", ActivateRegularCharacter)
 
-    Hotkey, ~3, ActivateRegularCharacter
+    Hotkey("~3", ActivateRegularCharacter)
 
     if (Member4 == "ganyu") {
-        Hotkey, ~e, ActivateGanyu
+        Hotkey("~e", ActivateGanyu)
     } else {
-        Hotkey, ~e, ActivateRegularCharacter
+        Hotkey("~e", ActivateRegularCharacter)
     }
 }
 
 ActivateRegularCharacter()
 {
-    Hotkey, F18, Regular_AutoAttack
-    Hotkey, F19, HuTao_ChargeAttack_DashCancel
+    Hotkey("F18", Regular_AutoAttack)
+    Hotkey("F19", HuTao_ChargeAttack_DashCancel)
 }
 
 ActivateHuTao()
 {
-    Hotkey, F18, HuTao_ChargeAttack_JumpCancel
-    Hotkey, F19, HuTao_ChargeAttack_DashCancel
+    Hotkey("F18", HuTao_ChargeAttack_JumpCancel)
+    Hotkey("F19", HuTao_ChargeAttack_DashCancel)
 }
 
 ActivateKlee()
 {
-    Hotkey, F18, Klee_AutoAttack
-    Hotkey, F19, Klee_ChargeAttack
+    Hotkey("F18", Klee_AutoAttack)
+    Hotkey("F19", Klee_ChargeAttack)
 }
 
 ActivateGanyu()
 {
-    Hotkey, F18, Regular_AutoAttack
-    Hotkey, F19, Ganyu_ChargeAttack
+    Hotkey("F18", Regular_AutoAttack)
+    Hotkey("F19", Ganyu_ChargeAttack)
 }
 
 ; Hu Tao jump cancel
@@ -298,11 +306,11 @@ HuTao_ChargeAttack_JumpCancel()
     pause2 := 600
     while (GetKeyState(A_ThisHotkey, "P"))
     {
-        Click, down
-        Sleep, %pause1%
-        Send, {Space}
-        Click, up
-        Sleep, %pause2%
+        Click("down")
+        Sleep(pause1)
+        Send("{Space}")
+        Click("up")
+        Sleep(pause2)
     }
 }
 
@@ -315,19 +323,19 @@ HuTao_ChargeAttack_DashCancel()
     pause4 := 240
     while (GetKeyState(A_ThisHotkey, "P"))
     {
-        Click, down
-        Sleep, %pause1%
-        Click, up
-        Sleep, %pause2%
-        Click, down
-        Sleep, %pause1%
-        Click, up
-        Sleep, %pause2%
-        Click, down
-        Sleep, %pause3%
-        Click, up
-        Click, right
-        Sleep, %pause4%
+        Click("down")
+        Sleep(pause1)
+        Click("up")
+        Sleep(pause2)
+        Click("down")
+        Sleep(pause1)
+        Click("up")
+        Sleep(pause2)
+        Click("down")
+        Sleep(pause3)
+        Click("up")
+        Click("right")
+        Sleep(pause4)
     }
 }
 
@@ -335,23 +343,23 @@ HuTao_ChargeAttack_DashCancel()
 ; Good at 230ms
 HuTao_ChargeAttack_N2C()
 {
-    Click
-    Sleep, 30
-    Click
-    Sleep, 30
-    Click
-    Sleep, 30
-    Click
-    Sleep, 30
-    Click
-    Sleep, 30
-    Click
-    Sleep, 30
-    Click, down
-    Sleep, 350
-    Click, right
-    Sleep, 50
-    Click, up
+    Click()
+    Sleep(30)
+    Click()
+    Sleep(30)
+    Click()
+    Sleep(30)
+    Click()
+    Sleep(30)
+    Click()
+    Sleep(30)
+    Click()
+    Sleep(30)
+    Click("down")
+    Sleep(350)
+    Click("right")
+    Sleep(50)
+    Click("up")
     ;Sleep, 200  ; 150
 }
 
@@ -362,64 +370,64 @@ HuTao_ChargeAttack_N2C_Hold()
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P"))
     {
-        Click
-        Sleep, 30
-        Click
-        Sleep, 30
-        Click
-        Sleep, 30
-        Click
-        Sleep, 30
-        Click
-        Sleep, 30
-        Click
-        Sleep, 30
-        Click, down
-        Sleep, 350
-        Click, right
-        Sleep, 150
-        Click, up
-        Sleep, 200  ; 150
+        Click()
+        Sleep(30)
+        Click()
+        Sleep(30)
+        Click()
+        Sleep(30)
+        Click()
+        Sleep(30)
+        Click()
+        Sleep(30)
+        Click()
+        Sleep(30)
+        Click("down")
+        Sleep(350)
+        Click("right")
+        Sleep(150)
+        Click("up")
+        Sleep(200)  ; 150
     }
 }
 
 HuTao_ChargeAttack_N1C() {
     ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-    Click, down
-    Sleep, 550  ; 600
-    Click, up
-    Click, right
+    Click("down")
+    Sleep(550)  ; 600
+    Click("up")
+    Click("right")
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
 HuTao_ChargeAttack_N1C_Hold() {
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P")) {
-        Click, down
-        Sleep, 600  ; 600
-        Click, up
-        Click, right
-        Sleep, 175  ; 150
+        Click("down")
+        Sleep(600)  ; 600
+        Click("up")
+        Click("right")
+        Sleep(175)  ; 150
     }
 }
 
 HuTao_ChargeAttack_Frozen() {
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
     numCycle := 0
-    loop
+    Loop
     {
         if (numCycle < 2)
         {
-            Click, down
-            Sleep, 425
+            Click("down")
+            Sleep(425)
             if (not GetKeyState(hk, "P"))
                 break
-            Click, right
-            Sleep, 300
+            Click("right")
+            Sleep(300)
             if (not GetKeyState(hk, "P"))
                 break
-            Click, up
-            Sleep, 200  ; 175
+            Click("up")
+            Sleep(200)  ; 175
             ;numCycle++
         }
         else
@@ -434,56 +442,56 @@ HuTao_ChargeAttack_Frozen() {
 
 Klee_ChargeAttack() {
     while (GetKeyState(A_ThisHotkey, "P")) {
-        Click, down
-        Sleep, 500  ; 500
-        Click, up
-        Send, {Space}
-        Sleep, 575  ; 550
+        Click("down")
+        Sleep(500)  ; 500
+        Click("up")
+        Send("{Space}")
+        Sleep(575)  ; 550
     }
 }
 
 ; Hold to animation cancel elemental skills
 RapidCanceling_ElementalSkill() {
     ; Send, {[}
-    Click, right   ; OR Send, {Space}
-    Sleep, 30
+    Click("right")   ; OR Send, {Space}
+    Sleep(30)
 }
 
 Regular_ElementalSkill() {
-    Send, {[ down}
+    Send("{[ down}")
     while (GetKeyState(A_ThisHotkey, "P")) {
     }
-    Send, {[ up}
+    Send("{[ up}")
 }
 
 Ganyu_ChargeAttack() {
     hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
-    Click    ; Apply a normal attack element, if any
-    Sleep, 30
-    Click, down
-    KeyWait, % hk  ; (AHK bug) KeyWait doesn't work with variables
+    Click()    ; Apply a normal attack element, if any
+    Sleep(30)
+    Click("down")
+    ErrorLevel := !KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 2000) {
         ; hold LMB minimum for 2000ms
-        Sleep, % 2000 - TimeSinceKeyPressed
+        Sleep(2000 - TimeSinceKeyPressed)
     }
     while (GetKeyState(hk, "P")) {
         ; Hold LMB if hotkey is still pressed. I think this can be deleted?
     }
-    Click, up
+    Click("up")
 }
 
 Regular_ChargeAttack()
 {
-    Click, down
-    KeyWait, % hk  ; (AHK bug) KeyWait doesn't work with variables
+    Click("down")
+    ErrorLevel := !KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370)    ; 350
     {
         ; Hold LMB minimum for 370ms
-        Sleep, % 370 - TimeSinceKeyPressed
+        Sleep(370 - TimeSinceKeyPressed)
     }
-    Click, up
+    Click("up")
 }
 
 ; Klee walk cancel
@@ -494,12 +502,12 @@ Klee_AutoAttack()
     ; else
     ;     pause := 508    ; at 84-88ms
 
-    pause := 510
+    Pause(:= 510)
 
     while (GetKeyState(A_ThisHotkey, "P"))
     {
-        Click
-        Sleep, %pause%
+        Click()
+        Sleep(pause)
     }
 }
 
@@ -508,10 +516,10 @@ Klee_AutoAttack2()
 {
     while (GetKeyState(A_ThisHotkey, "P"))
     {
-        Click
-        Sleep, 35
-        Send, {Space}
-        Sleep, 550
+        Click()
+        Sleep(35)
+        Send("{Space}")
+        Sleep(550)
     }
 }
 
@@ -519,24 +527,24 @@ Regular_AutoAttack()
 {
     while (GetKeyState(A_ThisHotkey, "P"))
     {
-        Click
-        Sleep, 25
+        Click()
+        Sleep(25)
     }
 }
 
 IsCharacterSlowed()
 {
-    PixelSearch, varX, varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8
+    ErrorLevel := !PixelSearch(&varX, &varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8, ) ;V1toV2: Switched from BGR to RGB values
     return !ErrorLevel
 }
 
 IsNearKatheryne()
 {
-    PixelSearch, varX, varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0
+    ErrorLevel := !PixelSearch(&varX, &varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
     if ErrorLevel
         return false
 
-    PixelSearch, varX, varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0
+    ErrorLevel := !PixelSearch(&varX, &varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0, ) ;V1toV2: Switched from BGR to RGB values
     if ErrorLevel
         return false
 
@@ -556,8 +564,9 @@ IsAtEndOfDomain()
 TypingMode := false
 ; Hold to unfreeze self
 Space::
+{ ; V1toV2: Added bracket
 global TypingMode
-Send, {Space down}
+Send("{Space down}")
 if (TypingMode) {
     while (GetKeyState(A_ThisHotkey, "P")) {
         if (A_TimeSinceThisHotkey > 750) {
@@ -566,28 +575,31 @@ if (TypingMode) {
             break
         }
     }
-    Send, {Space up}
+    Send("{Space up}")
     return
 } else {
-    Sleep, 250 ; Repeat delay
+    Sleep(250) ; Repeat delay
 }
 
-Send, {Space up}
+Send("{Space up}")
 while GetKeyState(A_Space, "P") {
-    Send, {Space} ; Repeated keydowns
-    Sleep, 30 ; Repeat rate
+    Send("{Space}") ; Repeated keydowns
+    Sleep(30) ; Repeat rate
 }
 return
 
 ; Enable typing mode
+} ; V1toV2: Added Bracket before hotkey or Hotstring
 ~Backspace::
+{ ; V1toV2: Added bracket
 EnableTypingMode()
 return
+} ; Added bracket before function
 
 EnableTypingMode() {
     global TypingMode
     if (!TypingMode) {
-        SoundPlay, %A_WinDir%\Media\Windows User Account Control.wav
+        SoundPlay(A_WinDir "\Media\Windows User Account Control.wav")
         TypingMode := true
     }
 }
@@ -595,7 +607,7 @@ EnableTypingMode() {
 DisableTypingMode() {
     global TypingMode
     if (TypingMode) {
-        SoundPlay, %A_WinDir%\Media\Windows Notify Calendar.wav
+        SoundPlay(A_WinDir "\Media\Windows Notify Calendar.wav")
         TypingMode := false
     }
 }
@@ -603,15 +615,15 @@ DisableTypingMode() {
 CheckTypingModeAndExit() {
     global TypingMode
     if (TypingMode) {
-        Exit
+        Exit()
     }
 }
 
 ; Hold during a script run to cancel the script
 CheckForCancelAndExit() {
     if (GetKeyState("NumpadEnter", "P")) {
-        SoundPlay, %A_WinDir%\Media\Speech Off.wav
-        Exit
+        SoundPlay(A_WinDir "\Media\Speech Off.wav")
+        Exit()
     }
 }
 
@@ -634,7 +646,11 @@ PrintScreen::!#PrintScreen
 ; For keyboards without a PrintScreen key
 F12::!PrintScreen
 
-#Include AdventurersGuild.ahk
-#Include MapNavigation.ahk
-#Include TestFunctions.ahk
-#Include HonkaiStarRail.ahk
+{ ; V1toV2: Added bracket
+#Include "AdventurersGuild.ahk"
+#Include "MapNavigation.ahk"
+#Include "TestFunctions.ahk"
+#Include "HonkaiStarRail.ahk"
+
+
+} ; V1toV2: Added bracket in the end

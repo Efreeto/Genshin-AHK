@@ -1,4 +1,4 @@
-﻿
+
 ; =======================================
 ; Test Functions
 ; =======================================
@@ -7,17 +7,17 @@ SnapshotColorAtPosition(posX, posY)
 {
     mouseX := X(posX)
     mouseY := Y(posY)
-    color := PixelGetColor(mouseX, mouseY, ) ;V1toV2: Switched from BGR to RGB values
-    MsgBox(mouseX " (" posX ") x " mouseY " (" posY ") => " color)
+    color := PixelGetColor(mouseX, mouseY)
+    MsgBox mouseX "(" posX ") x " mouseY "(" posY ") => " color
 }
 
 SnapshotColorAtMousePosition()
 {
-    MouseGetPos(&mouseX, &mouseY)
+    MouseGetPos &mouseX, &mouseY
     posX := mouseX / A_ScreenWidth * 1600
     posY := mouseY / A_ScreenHeight * 900
-    color := PixelGetColor(mouseX, mouseY, ) ;V1toV2: Switched from BGR to RGB values
-    MsgBox(mouseX " (" posX ") x " mouseY " (" posY ") => " color)
+    color := PixelGetColor(mouseX, mouseY)
+    MsgBox mouseX "(" posX ") x " mouseY "(" posY ") => " color
 }
 
 Up::MouseMove(0, -1, 0, "Relative")

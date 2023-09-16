@@ -1,7 +1,7 @@
-
+﻿
 TeleportShortcut()
 {
-    Sleep, 50  ; warmup time
+    Sleep(50)  ; warmup time
 
     if (IsWarpPointSelected())
     {
@@ -11,7 +11,7 @@ TeleportShortcut()
     ; Scan list items
     posX := 1082
     posY := 611.5
-    loop 3
+    Loop 3
     {
         CheckForAllTeleportPoints(posX, posY)
 
@@ -20,14 +20,14 @@ TeleportShortcut()
 
     ; Scan skewed list items when there are too many
     posY := 761
-    loop 10
+    Loop 10
     {
         CheckForAllTeleportPoints(posX, posY)
 
         posY := posY - 62
     }
 
-    SoundPlay, %A_WinDir%\Media\Windows Navigation Start.wav
+    SoundPlay(A_WinDir "\Media\Windows Navigation Start.wav")
 }
 
 IsWarpPointSelected()
@@ -44,35 +44,35 @@ CheckForAllTeleportPoints(posX, posY)
     if (CheckForWarpPoint(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep, %pause1%
+        Sleep(pause1)
         ClickWarpAndExit()
     }
 
     if (CheckForStatueOfSeven(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep, %pause1%
+        Sleep(pause1)
         ClickWarpAndExit()
     }
 
     if (CheckForDomain(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep, %pause1%
+        Sleep(pause1)
         ClickWarpAndExit()
     }
 
     if (CheckForPocketWarpPoint(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep, %pause1%
+        Sleep(pause1)
         ClickWarpAndExit()
     }
 
     if (CheckForSereniteaPotWarpPoint(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep, %pause1%
+        Sleep(pause1)
         ClickWarpAndExit()
     }
 }
@@ -110,5 +110,5 @@ CheckForSereniteaPotWarpPoint(posX, posY)
 ClickWarpAndExit()
 {
     ClickOnBottomRightButton()
-    Exit
+    Exit()
 }
