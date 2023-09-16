@@ -32,4 +32,4 @@ Right::MouseMove(1, 0, 0, "Relative")
 *NumPad9::SnapshotColorAtMousePosition()
 
 ;IsColorAtPosition(1230, 831.25, 0x00FFFF)
-;SoundBeep, 100
+;SoundBeep 100

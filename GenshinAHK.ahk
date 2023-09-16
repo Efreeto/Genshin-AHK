@@ -254,13 +254,13 @@ ConfigureTeamHotkeys()
 
     if (Member1 == "hutao")
     {
-        Hotkey "~1", ActivateHuTao
-        ActivateHuTao()
+        Hotkey("~1", ActivateHuTao)
+        ActivateHuTao(ThisHotkey)
     }
     else if (Member1 == "klee")
     {
         Hotkey("~1", ActivateKlee)
-        ActivateKlee()
+        ActivateKlee(ThisHotkey)
     }
     else
     {
@@ -285,16 +285,16 @@ ConfigureTeamHotkeys()
 ActivateRegularCharacter(ThisHotkey)
 {
     Hotkey("F18", Regular_AutoAttack)
-    Hotkey("F19", HuTao_ChargeAttack_DashCancel)
+    Hotkey("F19", HuTao_ChargeAttack_N2DC)
 }
 
-ActivateHuTao()
+ActivateHuTao(ThisHotkey)
 {
-    Hotkey("F18", HuTao_ChargeAttack_JumpCancel)
-    Hotkey("F19", HuTao_ChargeAttack_DashCancel)
+    Hotkey("F18", HuTao_ChargeAttack_N1JC)
+    Hotkey("F19", HuTao_ChargeAttack_N2DC)
 }
 
-ActivateKlee()
+ActivateKlee(ThisHotkey)
 {
     Hotkey("F18", Klee_AutoAttack)
     Hotkey("F19", Klee_ChargeAttack)
@@ -307,7 +307,7 @@ ActivateGanyu()
 }
 
 ; Hu Tao jump cancel
-HuTao_ChargeAttack_JumpCancel(ThisHotkey)
+HuTao_ChargeAttack_N1JC(ThisHotkey)
 {
     pause1 := 450
     pause2 := 600
@@ -322,32 +322,29 @@ HuTao_ChargeAttack_JumpCancel(ThisHotkey)
 }
 
 ; Hu Tao dash cancel (Need Constellation 1)
-HuTao_ChargeAttack_DashCancel(ThisHotkey)
+HuTao_ChargeAttack_N2DC(ThisHotkey)
 {
-    pause1 := 60
-    pause2 := 50
-    pause3 := 300
-    pause4 := 240
+    pause1 := 70
+    pause2 := 350
+    pause3 := 500
     while (GetKeyState(ThisHotkey, "P"))
     {
-        Click("down")
+        Click()
         Sleep(pause1)
-        Click("up")
-        Sleep(pause2)
-        Click("down")
+        Click()
         Sleep(pause1)
-        Click("up")
-        Sleep(pause2)
+        Click()
+        Sleep(pause1)
         Click("down")
-        Sleep(pause3)
-        Click("up")
+        Sleep(pause2)
         Click("right")
-        Sleep(pause4)
+        Click("up")
+        Sleep(pause3)
     }
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-; Good at 230ms
+; Good at 230ms, not working at 74ms
 HuTao_ChargeAttack_N2C(ThisHotkey)
 {
     Click()
@@ -368,34 +365,6 @@ HuTao_ChargeAttack_N2C(ThisHotkey)
     Sleep(50)
     Click("up")
     ;Sleep, 200  ; 150
-}
-
-; Hu Tao Blood Blossom cancel (Need Constellation 1)
-; Good at 230ms
-HuTao_ChargeAttack_N2C_Hold(ThisHotkey)
-{
-    hk := SubStr(ThisHotkey, 2)  ; remove '~'
-    while (GetKeyState(hk, "P"))
-    {
-        Click()
-        Sleep(30)
-        Click()
-        Sleep(30)
-        Click()
-        Sleep(30)
-        Click()
-        Sleep(30)
-        Click()
-        Sleep(30)
-        Click()
-        Sleep(30)
-        Click("down")
-        Sleep(350)
-        Click("right")
-        Sleep(150)
-        Click("up")
-        Sleep(200)  ; 150
-    }
 }
 
 HuTao_ChargeAttack_N1C(ThisHotkey)
@@ -583,31 +552,37 @@ TypingMode := false
 ; Hold to unfreeze self
 Space::
 {
-global TypingMode
-Send("{Space down}")
-if (TypingMode) {
-    while (GetKeyState(A_ThisHotkey, "P")) {
-        if (A_TimeSinceThisHotkey > 750) {
-            ; Disable typing mode if pressed for a long time
-            DisableTypingMode()
-            break
+    global TypingMode
+    Send("{Space down}")
+    if (TypingMode)
+    {
+        while (GetKeyState(A_ThisHotkey, "P"))
+        {
+            if (A_TimeSinceThisHotkey > 750)
+            {
+                ; Disable typing mode if pressed for a long time
+                DisableTypingMode()
+                break
+            }
         }
+        Send("{Space up}")
+        return
     }
-    Send("{Space up}")
-    return
-} else {
-    Sleep(250) ; Repeat delay
-}
+    else
+    {
+        Sleep(250) ; Repeat delay
+    }
 
-Send("{Space up}")
-while GetKeyState(A_Space, "P") {
-    Send("{Space}") ; Repeated keydowns
-    Sleep(30) ; Repeat rate
+    Send("{Space up}")
+    while GetKeyState(A_Space, "P")
+    {
+        Send("{Space}") ; Repeated keydowns
+        Sleep(30) ; Repeat rate
+    }
+    return
 }
-return
 
 ; Enable typing mode
-}
 ~Backspace::
 {
 EnableTypingMode()
