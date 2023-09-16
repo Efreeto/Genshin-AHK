@@ -12,10 +12,8 @@
 ; 'Target': "{this location}\GenshinAHK.ahk"
 ; 'Start in:': {this location}
 
-
-; #IfWinActive ahk_exe GenshinImpact.exe
-#SingleInstance Force
-; REMOVED: #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#HotIf WinActive("ahk_exe GenshinImpact.exe")
+#SingleInstance
 
 if not A_IsAdmin
 {
@@ -82,12 +80,12 @@ IsColorAtPosition(posX, posY, rgb, variation := 0)
 {
     if (variation == 0)
     {
-        color := PixelGetColor(X(posX), Y(posY), ) ;V1toV2: Switched from BGR to RGB values
+        color := PixelGetColor(X(posX), Y(posY), )
         return color = rgb
     }
     else
     {
-        ErrorLevel := !PixelSearch(&_, &_, X(posX), Y(posY), X(posX), Y(posY), rgb, variation, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&_, &_, X(posX), Y(posY), X(posX), Y(posY), rgb, variation, )
         return !ErrorLevel
     }
 }
@@ -216,66 +214,75 @@ Member1 := "regular"
 Member4 := "regular"
 
 NumPad1::
-{ ; V1toV2: Added bracket
+{
 Member1 := "hutao"
 SoundPlay(A_WinDir "\Media\chimes.wav")
 ConfigureTeamHotkeys()
 return
-} ; V1toV2: Added Bracket before hotkey or Hotstring
+}
 
 NumPad2::
-{ ; V1toV2: Added bracket
+{
 Member1 := "klee"
 SoundPlay(A_WinDir "\Media\tada.wav")
 ConfigureTeamHotkeys()
 return
-} ; V1toV2: Added Bracket before hotkey or Hotstring
+}
 
 NumPad4::
-{ ; V1toV2: Added bracket
+{
 Member4 := "ganyu"
 SoundPlay(A_WinDir "\Media\Windows Exclamation.wav")
 ConfigureTeamHotkeys()
 return
-} ; V1toV2: Added Bracket before hotkey or Hotstring
+}
 
 NumPad0::
-{ ; V1toV2: Added bracket
+{
 Member1 := "regular"
 Member4 := "regular"
 SoundPlay(A_WinDir "\Media\Windows Error.wav")
 ConfigureTeamHotkeys()
 return
-} ; Added bracket before function
+}
 
 ConfigureTeamHotkeys()
 {
     global Member1
     global Member4
+    ThisHotkey := ""
 
-    if (Member1 == "hutao") {
-        Hotkey("~1", ActivateHuTao)
+    if (Member1 == "hutao")
+    {
+        Hotkey "~1", ActivateHuTao
         ActivateHuTao()
-    } else if (Member1 == "klee") {
+    }
+    else if (Member1 == "klee")
+    {
         Hotkey("~1", ActivateKlee)
         ActivateKlee()
-    } else {
+    }
+    else
+    {
         Hotkey("~1", ActivateRegularCharacter)
-        ActivateRegularCharacter()
+        ActivateRegularCharacter(ThisHotkey)
     }
 
     Hotkey("~q", ActivateRegularCharacter)
 
     Hotkey("~3", ActivateRegularCharacter)
 
-    if (Member4 == "ganyu") {
+    if (Member4 == "ganyu")
+    {
         Hotkey("~e", ActivateGanyu)
-    } else {
+    }
+    else
+    {
         Hotkey("~e", ActivateRegularCharacter)
     }
 }
 
-ActivateRegularCharacter()
+ActivateRegularCharacter(ThisHotkey)
 {
     Hotkey("F18", Regular_AutoAttack)
     Hotkey("F19", HuTao_ChargeAttack_DashCancel)
@@ -300,11 +307,11 @@ ActivateGanyu()
 }
 
 ; Hu Tao jump cancel
-HuTao_ChargeAttack_JumpCancel()
+HuTao_ChargeAttack_JumpCancel(ThisHotkey)
 {
     pause1 := 450
     pause2 := 600
-    while (GetKeyState(A_ThisHotkey, "P"))
+    while (GetKeyState(ThisHotkey, "P"))
     {
         Click("down")
         Sleep(pause1)
@@ -315,13 +322,13 @@ HuTao_ChargeAttack_JumpCancel()
 }
 
 ; Hu Tao dash cancel (Need Constellation 1)
-HuTao_ChargeAttack_DashCancel()
+HuTao_ChargeAttack_DashCancel(ThisHotkey)
 {
     pause1 := 60
     pause2 := 50
     pause3 := 300
     pause4 := 240
-    while (GetKeyState(A_ThisHotkey, "P"))
+    while (GetKeyState(ThisHotkey, "P"))
     {
         Click("down")
         Sleep(pause1)
@@ -341,7 +348,7 @@ HuTao_ChargeAttack_DashCancel()
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
 ; Good at 230ms
-HuTao_ChargeAttack_N2C()
+HuTao_ChargeAttack_N2C(ThisHotkey)
 {
     Click()
     Sleep(30)
@@ -365,9 +372,9 @@ HuTao_ChargeAttack_N2C()
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
 ; Good at 230ms
-HuTao_ChargeAttack_N2C_Hold()
+HuTao_ChargeAttack_N2C_Hold(ThisHotkey)
 {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+    hk := SubStr(ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P"))
     {
         Click()
@@ -391,7 +398,8 @@ HuTao_ChargeAttack_N2C_Hold()
     }
 }
 
-HuTao_ChargeAttack_N1C() {
+HuTao_ChargeAttack_N1C(ThisHotkey)
+{
     ; Hu Tao Blood Blossom cancel (Need Constellation 1)
     Click("down")
     Sleep(550)  ; 600
@@ -400,8 +408,9 @@ HuTao_ChargeAttack_N1C() {
 }
 
 ; Hu Tao Blood Blossom cancel (Need Constellation 1)
-HuTao_ChargeAttack_N1C_Hold() {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+HuTao_ChargeAttack_N1C_Hold(ThisHotkey)
+{
+    hk := SubStr(ThisHotkey, 2)  ; remove '~'
     while (GetKeyState(hk, "P")) {
         Click("down")
         Sleep(600)  ; 600
@@ -411,8 +420,9 @@ HuTao_ChargeAttack_N1C_Hold() {
     }
 }
 
-HuTao_ChargeAttack_Frozen() {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+HuTao_ChargeAttack_Frozen(ThisHotkey)
+{
+    hk := SubStr(ThisHotkey, 2)  ; remove '~'
     numCycle := 0
     Loop
     {
@@ -432,7 +442,7 @@ HuTao_ChargeAttack_Frozen() {
         }
         else
         {
-            HuTao_ChargeAttack_N2C()
+            HuTao_ChargeAttack_N2C(ThisHotkey)
             numCycle := 0
         }
         if (not GetKeyState(hk, "P"))
@@ -440,8 +450,10 @@ HuTao_ChargeAttack_Frozen() {
     }
 }
 
-Klee_ChargeAttack() {
-    while (GetKeyState(A_ThisHotkey, "P")) {
+Klee_ChargeAttack(ThisHotkey)
+{
+    while (GetKeyState(ThisHotkey, "P"))
+    {
         Click("down")
         Sleep(500)  ; 500
         Click("up")
@@ -451,25 +463,30 @@ Klee_ChargeAttack() {
 }
 
 ; Hold to animation cancel elemental skills
-RapidCanceling_ElementalSkill() {
+RapidCanceling_ElementalSkill(ThisHotkey)
+{
     ; Send, {[}
     Click("right")   ; OR Send, {Space}
     Sleep(30)
 }
 
-Regular_ElementalSkill() {
+Regular_ElementalSkill(ThisHotkey)
+{
     Send("{[ down}")
-    while (GetKeyState(A_ThisHotkey, "P")) {
+    while (GetKeyState(ThisHotkey, "P"))
+    {
+        ; pass
     }
     Send("{[ up}")
 }
 
-Ganyu_ChargeAttack() {
-    hk := SubStr(A_ThisHotkey, 2)  ; remove '~'
+Ganyu_ChargeAttack(ThisHotkey)
+{
+    hk := SubStr(ThisHotkey, 2)  ; remove '~'
     Click()    ; Apply a normal attack element, if any
     Sleep(30)
     Click("down")
-    ErrorLevel := !KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 2000) {
         ; hold LMB minimum for 2000ms
@@ -481,10 +498,11 @@ Ganyu_ChargeAttack() {
     Click("up")
 }
 
-Regular_ChargeAttack()
+Regular_ChargeAttack(ThisHotkey)
 {
+    hk := SubStr(ThisHotkey, 2)  ; remove '~'
     Click("down")
-    ErrorLevel := !KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
+    KeyWait(hk)  ; (AHK bug) KeyWait doesn't work with variables
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     if (TimeSinceKeyPressed < 370)    ; 350
     {
@@ -495,26 +513,26 @@ Regular_ChargeAttack()
 }
 
 ; Klee walk cancel
-Klee_AutoAttack()
+Klee_AutoAttack(ThisHotkey)
 {
     ; if (IsCharacterSlowed())
-    ;     pause := 590    ; at 84-88ms
+    ;     pause1 := 590    ; at 84-88ms
     ; else
-    ;     pause := 508    ; at 84-88ms
+    ;     pause1 := 508    ; at 84-88ms
 
-    Pause(:= 510)
+    pause1 := 510
 
-    while (GetKeyState(A_ThisHotkey, "P"))
+    while (GetKeyState(ThisHotkey, "P"))
     {
         Click()
-        Sleep(pause)
+        Sleep(pause1)
     }
 }
 
 ; Klee jump cancel
-Klee_AutoAttack2()
+Klee_AutoAttack2(ThisHotkey)
 {
-    while (GetKeyState(A_ThisHotkey, "P"))
+    while (GetKeyState(ThisHotkey, "P"))
     {
         Click()
         Sleep(35)
@@ -523,9 +541,9 @@ Klee_AutoAttack2()
     }
 }
 
-Regular_AutoAttack()
+Regular_AutoAttack(ThisHotkey)
 {
-    while (GetKeyState(A_ThisHotkey, "P"))
+    while (GetKeyState(ThisHotkey, "P"))
     {
         Click()
         Sleep(25)
@@ -534,17 +552,17 @@ Regular_AutoAttack()
 
 IsCharacterSlowed()
 {
-    ErrorLevel := !PixelSearch(&varX, &varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8, ) ;V1toV2: Switched from BGR to RGB values
+    ErrorLevel := !PixelSearch(&varX, &varY, X(6.88), Y(8.06), X(6.89), Y(8.07), 0xFDFDCD, 8, )
     return !ErrorLevel
 }
 
 IsNearKatheryne()
 {
-    ErrorLevel := !PixelSearch(&varX, &varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+    ErrorLevel := !PixelSearch(&varX, &varY, X(9.88), Y(4.53), X(9.88), Y(4.53), 0xFFFFFF, 0, )
     if ErrorLevel
         return false
 
-    ErrorLevel := !PixelSearch(&varX, &varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0, ) ;V1toV2: Switched from BGR to RGB values
+    ErrorLevel := !PixelSearch(&varX, &varY, X(9.29), Y(4.43), X(9.29), Y(4.43), 0x626262, 0, )
     if ErrorLevel
         return false
 
@@ -564,7 +582,7 @@ IsAtEndOfDomain()
 TypingMode := false
 ; Hold to unfreeze self
 Space::
-{ ; V1toV2: Added bracket
+{
 global TypingMode
 Send("{Space down}")
 if (TypingMode) {
@@ -589,9 +607,9 @@ while GetKeyState(A_Space, "P") {
 return
 
 ; Enable typing mode
-} ; V1toV2: Added Bracket before hotkey or Hotstring
+}
 ~Backspace::
-{ ; V1toV2: Added bracket
+{
 EnableTypingMode()
 return
 } ; Added bracket before function
@@ -646,11 +664,9 @@ PrintScreen::!#PrintScreen
 ; For keyboards without a PrintScreen key
 F12::!PrintScreen
 
-{ ; V1toV2: Added bracket
+{
 #Include "AdventurersGuild.ahk"
 #Include "MapNavigation.ahk"
 #Include "TestFunctions.ahk"
 #Include "HonkaiStarRail.ahk"
-
-
-} ; V1toV2: Added bracket in the end
+}
