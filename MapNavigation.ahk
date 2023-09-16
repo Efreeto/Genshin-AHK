@@ -32,9 +32,9 @@ TeleportShortcut()
 
 IsWarpPointSelected()
 {
-    return IsColorAtPosition(1232, 831.25, 0x00FFFF)
+    return IsColorAtPosition(1232, 831.25, 0xFFFF00)
         and IsColorAtPosition(1232, 837.5, 0x575757)    ; 0x575757 at HDR 25
-        and IsColorAtPosition(1232, 843, 0x00FFFF)
+        and IsColorAtPosition(1232, 843, 0xFFFF00)
 }
 
 CheckForAllTeleportPoints(posX, posY)
@@ -79,32 +79,32 @@ CheckForAllTeleportPoints(posX, posY)
 
 CheckForWarpPoint(posX, posY)
 {
-    return IsColorAtPosition(posX, posY, 0xFFF500)
+    return IsColorAtPosition(posX, posY, 0x00F5FF)
         and IsColorAtPosition(posX, posY + 12, 0xFFFFFF)
 }
 
 CheckForStatueOfSeven(posX, posY)
 {
-    return IsColorAtPosition(posX, posY, 0xFFFFD6, 1)
-        and IsColorAtPosition(posX, posY + 13, 0x5B5A5A, 1)
+    return IsColorAtPosition(posX, posY, 0xD6FFFF, 1)
+        and IsColorAtPosition(posX, posY + 13, 0x5A5A5B, 1)
 }
 
 CheckForDomain(posX, posY)
 {
-    return IsColorAtPosition(posX, posY - 3, 0xFFFF00)
+    return IsColorAtPosition(posX, posY - 3, 0x00FFFF)
         and IsColorAtPosition(posX + 15, posY, 0xFFFFFF)
 }
 
 CheckForPocketWarpPoint(posX, posY)
 {
     return IsColorAtPosition(posX, posY, 0xFFFFFF)
-        and IsColorAtPosition(posX, posY + 12, 0xFFFF00)
+        and IsColorAtPosition(posX, posY + 12, 0x00FFFF)
 }
 
 CheckForSereniteaPotWarpPoint(posX, posY)
 {
     return IsColorAtPosition(posX, posY, 0xFFFFFF)
-        and IsColorAtPosition(posX, posY + 12, 0x00FFFF)
+        and IsColorAtPosition(posX, posY + 12, 0xFFFF00)
 }
 
 ClickWarpAndExit()

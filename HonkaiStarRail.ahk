@@ -1,4 +1,10 @@
 
 #HotIf WinActive("ahk_exe StarRail.exe")
+#SingleInstance
 
-Tab::M
+!Tab::!Tab
+
+Tab::
+{
+    Send "M"
+}

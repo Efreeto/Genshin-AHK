@@ -80,12 +80,12 @@ IsColorAtPosition(posX, posY, rgb, variation := 0)
 {
     if (variation == 0)
     {
-        color := PixelGetColor(X(posX), Y(posY), )
+        color := PixelGetColor(X(posX), Y(posY))
         return color = rgb
     }
     else
     {
-        ErrorLevel := !PixelSearch(&_, &_, X(posX), Y(posY), X(posX), Y(posY), rgb, variation, )
+        ErrorLevel := !PixelSearch(&_, &_, X(posX), Y(posY), X(posX), Y(posY), rgb, variation)
         return !ErrorLevel
     }
 }
@@ -184,7 +184,7 @@ SpecialInteraction2()
         ScreenClick(631, 625)    ; use condensed resin
         Sleep(125)
 
-        if (IsColorAtPosition(1066.7, 433.3, 0x6F5549))    ; bag is full
+        if (IsColorAtPosition(1066.7, 433.3, 0x49556F))    ; bag is full
         {
             SoundPlay(A_WinDir "\Media\ding.wav")
             ScreenClick(800, 450)    ; dismiss the pop-up
@@ -541,7 +541,7 @@ IsNearKatheryne()
 IsAtEndOfDomain()
 {
     return IsColorAtPosition(992, 456, 0xFFFFFF)
-        and IsColorAtPosition(990, 440, 0x705A47)
+        and IsColorAtPosition(990, 440, 0x475A70)
 }
 
 ; =======================================

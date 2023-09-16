@@ -85,11 +85,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1113), Y(425), X(1113), Y(425), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1113), Y(425), X(1113), Y(425), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1334), Y(427), X(1334), Y(427), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1334), Y(427), X(1334), Y(427), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -97,11 +97,11 @@ CheckCommissionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1109), Y(424), X(1109), Y(424), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1109), Y(424), X(1109), Y(424), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1495), Y(412), X(1495), Y(412), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1495), Y(412), X(1495), Y(412), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -114,11 +114,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1112), Y(363), X(1112), Y(363), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1112), Y(363), X(1112), Y(363), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1215), Y(350), X(1215), Y(350), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1215), Y(350), X(1215), Y(350), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -126,11 +126,11 @@ CheckCommissionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(351), X(1120), Y(351), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(351), X(1120), Y(351), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1496), Y(360), X(1496), Y(360), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1496), Y(360), X(1496), Y(360), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -143,11 +143,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(540), X(1110), Y(540), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(540), X(1110), Y(540), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1198), Y(539), X(1198), Y(539), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1198), Y(539), X(1198), Y(539), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -155,11 +155,11 @@ CheckExpeditionRewards_AtMondstadtOrLiyue()
     }
     else    ; "EN"
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(537), X(1110), Y(537), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1110), Y(537), X(1110), Y(537), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1503), Y(546), X(1503), Y(546), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1503), Y(546), X(1503), Y(546), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -172,11 +172,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     lang := DetectDisplayLanguage()
     if (lang == "KR")
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1122), Y(488), X(1122), Y(488), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1122), Y(488), X(1122), Y(488), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1193), Y(477), X(1193), Y(477), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1193), Y(477), X(1193), Y(477), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -184,11 +184,11 @@ CheckExpeditionRewards_AtInazumaOrSumeru()
     }
     else    ; "EN"
     {
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(483), X(1120), Y(483), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1120), Y(483), X(1120), Y(483), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
-        ErrorLevel := !PixelSearch(&varX, &varY, X(1383), Y(476), X(1383), Y(476), 0x00FFFF, 0, ) ;V1toV2: Switched from BGR to RGB values
+        ErrorLevel := !PixelSearch(&varX, &varY, X(1383), Y(476), X(1383), Y(476), 0xFFFF00, 0)
         if ErrorLevel
             return false
 
@@ -235,7 +235,7 @@ CollectExpeditionRewardsAndSendExpeditions()
 
 IsRewardReady()
 {
-    return IsColorAtPosition(1333, 850, 0x47FFFC, 1)
+    return IsColorAtPosition(1333, 850, 0xFCFF47, 1)
 }
 
 CollectExpeditionRewards()
