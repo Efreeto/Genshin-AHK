@@ -9,8 +9,9 @@ TeleportShortcut()
     }
 
     ; Scan list items
-    posX := 1082
-    posY := 611.5
+    posX := 1080
+    posY := 610
+
     Loop 3
     {
         CheckForAllTeleportPoints(posX, posY)
@@ -32,14 +33,26 @@ TeleportShortcut()
 
 IsWarpPointSelected()
 {
-    return IsColorAtPosition(1232, 831.25, 0xFFFF00)
-        and IsColorAtPosition(1232, 837.5, 0x575757)    ; 0x575757 at HDR 25
-        and IsColorAtPosition(1232, 843, 0xFFFF00)
+    If DetectHDR()
+    {
+        yellowColor := 0xFFFF00
+        blackColor := 0x595859
+    }
+    Else
+    {
+        yellowColor := 0xFFCC33
+        blackColor := 0x323232
+    }
+
+    return IsColorAtPosition(1230, 831, yellowColor)
+        and IsColorAtPosition(1230, 836, blackColor)
+        and IsColorAtPosition(1230, 842, yellowColor)
 }
 
 CheckForAllTeleportPoints(posX, posY)
 {
-    pause1 := 10
+    pause1 := 30
+    pause2 := 150
 
     if (CheckForWarpPoint(posX, posY))
     {
@@ -58,7 +71,7 @@ CheckForAllTeleportPoints(posX, posY)
     if (CheckForDomain(posX, posY))
     {
         ScreenClick(posX, posY)
-        Sleep(pause1)
+        Sleep(pause2)
         ClickWarpAndExit()
     }
 
@@ -79,20 +92,30 @@ CheckForAllTeleportPoints(posX, posY)
 
 CheckForWarpPoint(posX, posY)
 {
-    return IsColorAtPosition(posX, posY, 0x00F5FF)
+    If DetectHDR()
+        blueColor := 0x00F5FF
+    Else
+        blueColor := 0x2D91D9
+
+    return IsColorAtPosition(posX, posY, blueColor)
         and IsColorAtPosition(posX, posY + 12, 0xFFFFFF)
 }
 
 CheckForStatueOfSeven(posX, posY)
 {
-    return IsColorAtPosition(posX, posY, 0xD6FFFF, 1)
-        and IsColorAtPosition(posX, posY + 13, 0x5A5A5B, 1)
+    If DetectHDR()
+        blueColor := 0xD6FFFF
+    Else
+        blueColor := 0x99ECF5
+
+    return IsColorAtPosition(posX, posY, blueColor, 1)
+        and IsColorAtPosition(posX + 5, posY + 5, blueColor, 1)
 }
 
 CheckForDomain(posX, posY)
 {
     return IsColorAtPosition(posX, posY - 3, 0x00FFFF)
-        and IsColorAtPosition(posX + 15, posY, 0xFFFFFF)
+        and IsColorAtPosition(posX + 17, posY, 0xFFFFFF)
 }
 
 CheckForPocketWarpPoint(posX, posY)

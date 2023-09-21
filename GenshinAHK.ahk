@@ -28,27 +28,66 @@ Initialize()
     ConfigureTeamHotkeys()
 }
 
-GetFileName()
-{
-    activeprocess := WinGetProcessName("A")
-    MsgBox("The active ahk_exe is `"" activeprocess "`".")
-    ; "GenshinImpact.exe"
-}
-
-GetWinName()
-{
-    winTitle := WinGetTitle("A")
-    MsgBox("The active window is `"" winTitle "`".")
-    ; "Genshin Impact", "원신"
-}
-
 DetectDisplayLanguage()
 {
+    global _displayLanguage
+
+    If IsSet(_displayLanguage)
+        return _displayLanguage
+
     winTitle := WinGetTitle("A")
     if (winTitle == "Genshin Impact")
-        return "EN"
+        _displayLanguage := "EN"
     else ; "원신"
-        return "KR"
+        _displayLanguage := "KR"
+    return _displayLanguage
+}
+
+DetectHDR()
+{
+    global _hdrEnabled
+
+    If IsSet(_hdrEnabled)
+        return _hdrEnabled
+
+    _hdrEnabled := 0
+    err := DllCall("GetDisplayConfigBufferSizes", "UInt", 2, "UInt*", &pathCount:=0, "UInt*", &modeCount:=0) ; 2:QDC_ONLY_ACTIVE_PATHS
+    CheckError(err, A_LineNumber - 1)
+    paths := Buffer(72 * pathCount)   ; 72 for DISPLAYCONFIG_PATH_INFO
+    modes := Buffer(64 * modeCount)   ; 64 for DISPLAYCONFIG_MODE_INFO
+    err := DllCall("QueryDisplayConfig", "UInt", 2, "UInt*", &pathCount, "Ptr", paths, "UInt*", &modeCount, "Ptr", modes, "Ptr", 0) ; 2:QDC_ONLY_ACTIVE_PATHS
+    CheckError(err, A_LineNumber - 1)
+
+    offset := 0
+    Loop pathCount
+    {
+        adapterId := NumGet(paths, offset, "UInt64")
+        sourceId := NumGet(paths, offset + 8, "UInt")
+        targetId := NumGet(paths, offset + 28, "UInt")
+        ; MsgBox adapterID " and " sourceId " and " targetId
+
+        colorInfo := Buffer(32)                         ; 32 for DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO
+        NumPut("Int", 9, colorInfo, 0)                  ; 9:DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO
+        NumPut("UInt", colorInfo.Size, colorInfo, 4)    ; size
+        NumPut("UInt64", adapterId, colorInfo, 8)       ; adapterId
+        NumPut("UInt", targetId, colorInfo, 16)         ; id
+        err := DllCall("DisplayConfigGetDeviceInfo", "Ptr", colorInfo)
+        CheckError(err, A_LineNumber - 1)
+        value := NumGet(colorInfo, 20, "Int")    ; get the `value` after 20 header
+        advancedColorEnabled := (value & 0x2) == 0x2
+        _hdrEnabled |= advancedColorEnabled
+        offset += 72
+    }
+    return _hdrEnabled
+
+    CheckError(error, lineNumber)
+    {
+        If error
+        {
+            MsgBox "Error! code: " error " (ln:" lineNumber ")"
+            ExitApp
+        }
+    }
 }
 
 X(posX)
@@ -180,9 +219,10 @@ SpecialInteraction2()
     else if (IsAtEndOfDomain())
     {
         Send("{f}")   ; collect rewards
-        Sleep(50)
+        Sleep(200)
         ScreenClick(631, 625)    ; use condensed resin
-        Sleep(125)
+        ; ScreenClick(980, 625)    ; use normal resin
+        Sleep(200)
 
         if (IsColorAtPosition(1066.7, 433.3, 0x49556F))    ; bag is full
         {
@@ -191,12 +231,11 @@ SpecialInteraction2()
             return
         }
 
+        Sleep(500)
         ScreenClick(1478, 47)
-        Sleep(125)
+        Sleep(200)
         ScreenClick(1478, 47)
-        Sleep(150)
-        ScreenClick(1478, 47)
-        Sleep(150)
+        Sleep(200)
         ScreenClick(1478, 47)   ; skip
 
         ScreenMove(1000, 837)   ; put cursor at Continue challenge(sic)
@@ -548,15 +587,16 @@ IsAtEndOfDomain()
 ; Regular actions
 ; =======================================
 
-TypingMode := false
+_typingMode := false
 ; Hold to unfreeze self
 Space::
 {
-    global TypingMode
+    global _typingMode
+
     Send("{Space down}")
-    if (TypingMode)
+    if (_typingMode)
     {
-        while (GetKeyState(A_ThisHotkey, "P"))
+        while GetKeyState("Space", "P")
         {
             if (A_TimeSinceThisHotkey > 750)
             {
@@ -574,7 +614,7 @@ Space::
     }
 
     Send("{Space up}")
-    while GetKeyState(A_Space, "P")
+    while GetKeyState("Space", "P")
     {
         Send("{Space}") ; Repeated keydowns
         Sleep(30) ; Repeat rate
@@ -582,39 +622,35 @@ Space::
     return
 }
 
-; Enable typing mode
-~Backspace::
-{
+~Backspace::EnableTypingMode()
+
 EnableTypingMode()
-return
-} ; Added bracket before function
+{
+    global _typingMode
 
-EnableTypingMode() {
-    global TypingMode
-    if (!TypingMode) {
+    if (!_typingMode)
+    {
         SoundPlay(A_WinDir "\Media\Windows User Account Control.wav")
-        TypingMode := true
+        _typingMode := true
     }
 }
 
-DisableTypingMode() {
-    global TypingMode
-    if (TypingMode) {
+DisableTypingMode()
+{
+    global _typingMode
+
+    if (_typingMode)
+    {
         SoundPlay(A_WinDir "\Media\Windows Notify Calendar.wav")
-        TypingMode := false
-    }
-}
-
-CheckTypingModeAndExit() {
-    global TypingMode
-    if (TypingMode) {
-        Exit()
+        _typingMode := false
     }
 }
 
 ; Hold during a script run to cancel the script
-CheckForCancelAndExit() {
-    if (GetKeyState("NumpadEnter", "P")) {
+CheckForCancelAndExit()
+{
+    if (GetKeyState("F16", "P"))
+    {
         SoundPlay(A_WinDir "\Media\Speech Off.wav")
         Exit()
     }
@@ -623,13 +659,13 @@ CheckForCancelAndExit() {
 ; Non-repeated space key for flying upwards and exiting boat
 LShift::Space
 
-;F13::RapidCanceling_ElementalSkill()   ; Not bound to my mouse
+; F13::RapidCanceling_ElementalSkill()   ; Not bound to my mouse
 
-F14::[
+; F14::[
 
-F15::]
+; F15::]
 
-F16::SpecialInteraction1()
+; F16::SpecialInteraction1()
 
 F17::SpecialInteraction2()
 
